@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business → Data Platform · Claude Skill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --cream: #ede8da;
+    --accent: #c8410a;
+    --accent-light: #f2ddd2;
+    --steel: #2a2a35;
+    --muted: #6b6660;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.5;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(245,240,232,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 3rem 5rem 5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid rgba(200,65,10,0.2);
+    padding: 0.35rem 0.8rem;
+    border-radius: 100px;
+    width: fit-content;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    line-height: 1.08;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 42ch;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(200,65,10,0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
+
+  .btn-secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translateY(-1px);
+  }
+
+  /* ─── HERO RIGHT — Terminal ─── */
+  .hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 4rem 5rem 2rem;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .terminal {
+    background: var(--steel);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05);
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    background: #1e1e28;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .terminal-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: #666;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .terminal-body {
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.9;
+  }
+
+  .t-prompt { color: #28c840; }
+  .t-cmd { color: #e8e8e8; }
+  .t-comment { color: #555; }
+  .t-out { color: #888; }
+  .t-success { color: #28c840; }
+  .t-warn { color: #febc2e; }
+  .t-accent { color: #f09060; }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: #e8e8e8;
+    vertical-align: middle;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.12), transparent);
+    margin: 0 4rem;
+  }
+
+  /* ─── SECTIONS ─── */
+  section {
+    padding: 7rem 5rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .section-body {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 55ch;
+    line-height: 1.8;
+  }
+
+  /* ─── HOW IT WORKS — PIPELINE ─── */
+  .pipeline {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .pipe-step {
+    padding: 2.5rem 2rem;
+    border-right: 1px solid rgba(0,0,0,0.08);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    background: #faf7f0;
+    position: relative;
+    transition: background 0.25s;
+  }
+
+  .pipe-step:hover { background: var(--accent-light); }
+  .pipe-step:nth-child(3n) { border-right: none; }
+  .pipe-step:nth-child(n+4) { border-bottom: none; }
+
+  .pipe-num {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .pipe-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .pipe-step h3 {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .pipe-step p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ─── WHAT YOU GET ─── */
+  .outputs-grid {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .output-card {
+    background: var(--cream);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
+    padding: 2rem;
+    display: flex;
+    gap: 1.25rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .output-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .output-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 3rem;
+    text-align: center;
+    margin-top: 0.1rem;
+  }
+
+  .output-card h3 {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .output-card p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .output-tag {
+    display: inline-flex;
+    margin-top: 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+  }
+
+  /* ─── CODE BLOCK ─── */
+  .code-section {
+    background: var(--steel);
+    border-radius: 12px;
+    margin-top: 4rem;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+
+  .code-tabs {
+    display: flex;
+    background: #1e1e28;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 1.5rem;
+  }
+
+  .code-tab {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #666;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .code-tab.active {
+    color: #e8e8e8;
+    border-bottom-color: var(--accent);
+  }
+
+  .code-body {
+    padding: 2rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 2;
+    color: #ccc;
+    overflow-x: auto;
+  }
+
+  .code-body .kw { color: #c792ea; }
+  .code-body .str { color: #c3e88d; }
+  .code-body .fn { color: #82aaff; }
+  .code-body .cm { color: #546e7a; }
+  .code-body .ty { color: #ffcb6b; }
+  .code-body .op { color: #89ddff; }
+
+  /* ─── REQUIREMENTS ─── */
+  .req-section { background: var(--steel); border-radius: 12px; padding: 3rem; color: var(--paper); }
+  .req-section .section-label { color: #f09060; }
+  .req-section .section-title { color: var(--paper); }
+
+  .req-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .req-block h4 {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #f09060;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .req-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: #aaa;
+    line-height: 1.5;
+  }
+
+  .req-item .check { color: #28c840; flex-shrink: 0; margin-top: 0.1rem; }
+  .req-item .opt { color: #febc2e; flex-shrink: 0; margin-top: 0.1rem; }
+
+  .install-block {
+    margin-top: 2.5rem;
+    background: #1e1e28;
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 2;
+    color: #888;
+  }
+
+  .install-block .prompt { color: #28c840; }
+  .install-block .cmd { color: #e8e8e8; }
+
+  /* ─── BLOG PREVIEW ─── */
+  .blog-card {
+    background: var(--cream);
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 3rem;
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .blog-meta { }
+  .blog-tag {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .blog-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .blog-title em { font-style: italic; color: var(--accent); }
+
+  .blog-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .blog-excerpt {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid rgba(0,0,0,0.08);
+    padding: 3rem 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .footer-brand {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--ink); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── HERO BG DECOR ─── */
+  .hero-decor {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 55%;
+    background: linear-gradient(135deg, #ede8da 0%, #e8dfc8 100%);
+    z-index: 0;
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+
+  .hero-decor-dots {
+    position: absolute;
+    top: 3rem; right: 3rem;
+    width: 200px; height: 200px;
+    background-image: radial-gradient(circle, rgba(200,65,10,0.15) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-right { display: none; }
+    .hero-left { padding: 7rem 2rem 4rem; }
+    section { padding: 4rem 2rem; }
+    .pipeline { grid-template-columns: 1fr; }
+    .pipe-step { border-right: none; }
+    .outputs-grid { grid-template-columns: 1fr; }
+    .req-grid { grid-template-columns: 1fr; }
+    .blog-card { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .hero-decor { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">⬡ business-to-data-platform</a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#outputs">What you get</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#blog">Blog post</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-decor"></div>
+  <div class="hero-decor-dots"></div>
+
+  <div class="hero-left">
+    <div class="hero-badge">Claude Skill · v1.1</div>
+    <h1>Describe a business.<br><em>Get a database.</em></h1>
+    <p class="hero-sub">
+      A Claude skill that transforms any business description into a fully provisioned PostgreSQL database — schema, seed data, analytics queries, and repository code — in one conversation.
+    </p>
+    <div class="hero-actions">
+      <a href="#setup" class="btn btn-primary">↓ Get started</a>
+      <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">claude · business-to-data-platform</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt">you</span><span class="t-out"> › </span><span class="t-cmd">I need a backend for a ride-sharing app</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-accent">▸ Extracting entities...</span></div>
+        <div><span class="t-out">  users, drivers, vehicles, rides, payments</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-accent">▸ Designing schema (3NF)...</span></div>
+        <div><span class="t-out">  8 tables · 42 columns · 11 indexes</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-accent">▸ Creating database...</span></div>
+        <div><span class="t-success">  ✓ ride_sharing_db created</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-accent">▸ Provisioning tables...</span></div>
+        <div><span class="t-success">  ✓ users</span><span class="t-out">  ✓ drivers  ✓ vehicles</span></div>
+        <div><span class="t-success">  ✓ rides</span><span class="t-out">  ✓ payments  ✓ ratings</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-accent">▸ Seeding realistic data...</span></div>
+        <div><span class="t-out">  83 users · 41 drivers · 312 rides</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-accent">▸ Generating code...</span></div>
+        <div><span class="t-out">  TypeScript · C# · 8 analytics queries</span></div>
+        <div style="height:0.5rem"></div>
+        <div><span class="t-success">✓ Platform ready</span> <span class="t-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="section-label">The pipeline</div>
+  <h2 class="section-title">Six steps from <em>idea</em> to live database</h2>
+  <p class="section-body">No SQL expertise required. Describe your product in plain English — the skill handles entity design, normalization, provisioning, and code generation end-to-end.</p>
+
+  <div class="pipeline reveal">
+    <div class="pipe-step">
+      <div class="pipe-num">01</div>
+      <span class="pipe-icon">🧠</span>
+      <h3>Entity Extraction</h3>
+      <p>Claude reads your spec and identifies every actor, resource, transaction, relationship, and event before writing any SQL.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">02</div>
+      <span class="pipe-icon">📐</span>
+      <h3>Schema Design</h3>
+      <p>Full PostgreSQL DDL in 3NF — UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ everywhere, and indexes on every FK.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">03</div>
+      <span class="pipe-icon">🗄️</span>
+      <h3>Database Creation</h3>
+      <p>Creates the target database automatically from the business name. Every DDL statement uses IF NOT EXISTS so re-runs never crash.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">04</div>
+      <span class="pipe-icon">🌱</span>
+      <h3>Realistic Seed Data</h3>
+      <p>100–500 rows of coherent, domain-accurate data. Real names, realistic prices, valid FK references via CTEs — not user1@test.com.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">05</div>
+      <span class="pipe-icon">📊</span>
+      <h3>Analytics Queries</h3>
+      <p>6–10 labeled, ready-to-run queries covering revenue, funnels, top performers, anomalies, and operational monitoring.</p>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-num">06</div>
+      <span class="pipe-icon">💻</span>
+      <h3>Repository Code</h3>
+      <p>TypeScript (pg/Prisma) and C# (Dapper/EF Core) functions for the 5 most common operations — drop them straight into your API.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHAT YOU GET -->
+<section id="outputs">
+  <div class="section-label">Deliverables</div>
+  <h2 class="section-title">Everything you need to <em>ship</em></h2>
+  <p class="section-body">One conversation, seven concrete artifacts you can use immediately — or export as SQL files if running offline.</p>
+
+  <div class="outputs-grid reveal">
+    <div class="output-card">
+      <div class="output-icon">🏗️</div>
+      <div>
+        <h3>Business Analysis</h3>
+        <p>A structured breakdown of your entities, attributes, cardinalities, and domain relationships — the blueprint before any SQL.</p>
+        <span class="output-tag">markdown</span>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-icon">📄</div>
+      <div>
+        <h3>Complete DDL Schema</h3>
+        <p>Full CREATE TABLE statements — never abbreviated, never placeholder-truncated. Production-grade conventions baked in.</p>
+        <span class="output-tag">schema.sql</span>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-icon">✅</div>
+      <div>
+        <h3>Provisioning Log</h3>
+        <p>Live table-by-table execution results showing ✓ created or ⚠ already exists — full transparency on what ran.</p>
+        <span class="output-tag">via Datafy MCP</span>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-icon">🌱</div>
+      <div>
+        <h3>Seed Data</h3>
+        <p>Hundreds of INSERT rows with realistic, coherent values. FK consistency guaranteed via CTE chaining.</p>
+        <span class="output-tag">seed.sql</span>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-icon">📊</div>
+      <div>
+        <h3>Analytics Queries</h3>
+        <p>Business-ready SQL for revenue reporting, funnel analysis, anomaly detection, and operational dashboards.</p>
+        <span class="output-tag">queries.sql</span>
+      </div>
+    </div>
+    <div class="output-card">
+      <div class="output-icon">⚡</div>
+      <div>
+        <h3>TypeScript + C# Repos</h3>
+        <p>Typed repository functions for create, find, list, update, and soft-delete. Ready to plug into any API layer.</p>
+        <span class="output-tag">ts · cs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sample SQL -->
+  <div class="code-section reveal">
+    <div class="code-tabs">
+      <button class="code-tab active">schema.sql</button>
+      <button class="code-tab">seed.sql</button>
+      <button class="code-tab">repository.ts</button>
+    </div>
+    <div class="code-body">
+<span class="cm">-- ✓ Created extension pgcrypto</span>
+<span class="cm">-- ✓ Created enum: ride_status</span>
+
+<span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">users</span> (
+  id          <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  email       <span class="ty">TEXT</span> <span class="kw">NOT NULL UNIQUE</span>,
+  full_name   <span class="ty">TEXT</span> <span class="kw">NOT NULL</span>,
+  phone       <span class="ty">TEXT</span>,
+  created_at  <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
+  updated_at  <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
+  deleted_at  <span class="ty">TIMESTAMPTZ</span>
+);
+
+<span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">rides</span> (
+  id           <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  user_id      <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span class="ty">users</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  driver_id    <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span class="ty">drivers</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+  fare_amount  <span class="ty">NUMERIC</span>(12,2) <span class="kw">NOT NULL</span>,
+  status       <span class="ty">ride_status</span> <span class="kw">DEFAULT</span> <span class="str">'pending'</span>,
+  created_at   <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
+  updated_at   <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>()
+);
+
+<span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_user_id <span class="kw">ON</span> <span class="ty">rides</span>(user_id);
+<span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_driver_id <span class="kw">ON</span> <span class="ty">rides</span>(driver_id);
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SETUP -->
+<section id="setup">
+  <div class="req-section reveal">
+    <div class="section-label">Requirements & setup</div>
+    <h2 class="section-title" style="color:var(--paper)">Ready in <em>two minutes</em></h2>
+
+    <div class="req-grid">
+      <div class="req-block">
+        <h4>Required</h4>
+        <div class="req-item">
+          <span class="check">✓</span>
+          <span><strong style="color:#e8e8e8">Claude.ai</strong> — any plan with MCP support enabled</span>
+        </div>
+        <div class="req-item">
+          <span class="check">✓</span>
+          <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> — <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">@teckedd-code2save/datafy</code> connected as an MCP tool</span>
+        </div>
+        <div class="req-item">
+          <span class="check">✓</span>
+          <span><strong style="color:#e8e8e8">PostgreSQL instance</strong> — local or cloud, reachable by Datafy</span>
+        </div>
+        <div class="req-item">
+          <span class="check">✓</span>
+          <span><strong style="color:#e8e8e8">SKILL.md</strong> — placed in your Claude skills directory</span>
+        </div>
+      </div>
+      <div class="req-block">
+        <h4>Optional</h4>
+        <div class="req-item">
+          <span class="opt">○</span>
+          <span>Domain reference files (ecommerce, SaaS, mobility, healthcare, fintech, social) for richer schema suggestions</span>
+        </div>
+        <div class="req-item">
+          <span class="opt">○</span>
+          <span>TypeScript or C# preference — defaults to generating both if unspecified</span>
+        </div>
+        <div class="req-item">
+          <span class="opt">○</span>
+          <span>Existing database — skill connects to whatever Datafy points at, or creates a new one</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <div><span class="prompt">#</span> Install Datafy MCP Server</div>
+      <div><span class="prompt">$</span> <span class="cmd">npm install -g @teckedd-code2save/datafy</span></div>
+      <div style="height:0.5rem"></div>
+      <div><span class="prompt">#</span> Start server connected to your PostgreSQL</div>
+      <div><span class="prompt">$</span> <span class="cmd">datafy start --connection-string "postgresql://user:pass@localhost:5432/postgres"</span></div>
+      <div style="height:0.5rem"></div>
+      <div><span class="prompt">#</span> Then just describe your business to Claude</div>
+      <div><span class="prompt">you</span> <span class="cmd">› Build a database for a subscription meal-kit service</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BLOG POST PREVIEW -->
+<section id="blog">
+  <div class="section-label">From the blog</div>
+  <h2 class="section-title">The <em>thinking</em> behind the skill</h2>
+  <p class="section-body">A deep-dive into how natural language business specs map to production-grade relational schemas — and why idempotency matters more than most tutorials admit.</p>
+
+  <div class="blog-card reveal">
+    <div class="blog-meta">
+      <span class="blog-tag">Skills · Database · AI</span>
+      <h3 class="blog-title">From "build me a ride-sharing app" to a <em>live PostgreSQL database</em></h3>
+      <div class="blog-date">March 2025 · 8 min read</div>
+    </div>
+    <div>
+      <p class="blog-excerpt">
+        Most database tutorials start at the schema. But when a non-technical founder describes their product, they don't think in tables — they think in actors, actions, and outcomes. This skill bridges that gap.<br><br>
+        We walk through the full pipeline: how entity extraction prevents schema drift, why every monetary value must be NUMERIC(12,2) and never FLOAT, what makes seed data feel real versus synthetic, and the two bugs we fixed to make provisioning actually work — database creation, and the nuclear importance of IF NOT EXISTS on every single DDL statement.<br><br>
+        If you've ever watched a beautifully designed schema fail on a second run because someone forgot CREATE TABLE IF NOT EXISTS, this one's for you.
+      </p>
+      <a href="#" class="btn btn-secondary" style="font-size:0.8rem">Read the full post →</a>
+    </div>
+  </div>
+</section>
+
+<div style="height:4rem"></div>
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <span>business-to-data-platform</span> · A Claude Skill · v1.1
+  </div>
+  <ul class="footer-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#outputs">Outputs</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="https://github.com" target="_blank">GitHub</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Code tabs (visual only for demo)
+  document.querySelectorAll('.code-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
