@@ -33,7 +33,6 @@
     overflow-x: hidden;
   }
 
-  /* ─── NOISE TEXTURE OVERLAY ─── */
   body::before {
     content: '';
     position: fixed;
@@ -44,7 +43,6 @@
     opacity: 0.5;
   }
 
-  /* ─── NAV ─── */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -67,11 +65,7 @@
     text-decoration: none;
   }
 
-  .nav-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
 
   .nav-links a {
     font-size: 0.8rem;
@@ -85,7 +79,6 @@
 
   .nav-links a:hover { color: var(--ink); }
 
-  /* ─── HERO ─── */
   .hero {
     min-height: 100vh;
     display: grid;
@@ -145,10 +138,7 @@
     animation: fadeUp 0.8s 0.1s ease both;
   }
 
-  .hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
 
   .hero-sub {
     font-size: 1.05rem;
@@ -183,30 +173,11 @@
     transition: all 0.2s;
   }
 
-  .btn-primary {
-    background: var(--ink);
-    color: var(--paper);
-  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,65,10,0.3); }
+  .btn-secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+  .btn-secondary:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
 
-  .btn-primary:hover {
-    background: var(--accent);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(200,65,10,0.3);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--ink);
-    border: 1.5px solid var(--ink);
-  }
-
-  .btn-secondary:hover {
-    background: var(--ink);
-    color: var(--paper);
-    transform: translateY(-1px);
-  }
-
-  /* ─── HERO RIGHT — Terminal ─── */
   .hero-right {
     display: flex;
     align-items: center;
@@ -237,27 +208,14 @@
   .dot-y { background: #febc2e; }
   .dot-g { background: #28c840; }
 
-  .terminal-title {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    color: #666;
-    margin-left: auto;
-    margin-right: auto;
-  }
+  .terminal-title { font-family: var(--mono); font-size: 0.72rem; color: #666; margin-left: auto; margin-right: auto; }
 
-  .terminal-body {
-    padding: 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    line-height: 1.9;
-  }
+  .terminal-body { padding: 1.5rem; font-family: var(--mono); font-size: 0.8rem; line-height: 1.9; }
 
   .t-prompt { color: #28c840; }
   .t-cmd { color: #e8e8e8; }
-  .t-comment { color: #555; }
   .t-out { color: #888; }
   .t-success { color: #28c840; }
-  .t-warn { color: #febc2e; }
   .t-accent { color: #f09060; }
   .t-cursor {
     display: inline-block;
@@ -269,19 +227,13 @@
 
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  /* ─── DIVIDER ─── */
   .divider {
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(0,0,0,0.12), transparent);
     margin: 0 4rem;
   }
 
-  /* ─── SECTIONS ─── */
-  section {
-    padding: 7rem 5rem;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
+  section { padding: 7rem 5rem; max-width: 1280px; margin: 0 auto; }
 
   .section-label {
     font-family: var(--mono);
@@ -293,24 +245,10 @@
     margin-bottom: 1rem;
   }
 
-  .section-title {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 400;
-    line-height: 1.15;
-    margin-bottom: 1.5rem;
-  }
-
+  .section-title { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; line-height: 1.15; margin-bottom: 1.5rem; }
   .section-title em { font-style: italic; color: var(--accent); }
+  .section-body { font-size: 1rem; color: var(--muted); max-width: 55ch; line-height: 1.8; }
 
-  .section-body {
-    font-size: 1rem;
-    color: var(--muted);
-    max-width: 55ch;
-    line-height: 1.8;
-  }
-
-  /* ─── HOW IT WORKS — PIPELINE ─── */
   .pipeline {
     margin-top: 4rem;
     display: grid;
@@ -334,43 +272,12 @@
   .pipe-step:nth-child(3n) { border-right: none; }
   .pipe-step:nth-child(n+4) { border-bottom: none; }
 
-  .pipe-num {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    color: var(--accent);
-    margin-bottom: 0.75rem;
-    opacity: 0.7;
-  }
+  .pipe-num { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; opacity: 0.7; }
+  .pipe-icon { font-size: 1.8rem; margin-bottom: 0.75rem; display: block; }
+  .pipe-step h3 { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .pipe-step p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
 
-  .pipe-icon {
-    font-size: 1.8rem;
-    margin-bottom: 0.75rem;
-    display: block;
-  }
-
-  .pipe-step h3 {
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    letter-spacing: -0.01em;
-  }
-
-  .pipe-step p {
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  /* ─── WHAT YOU GET ─── */
-  .outputs-grid {
-    margin-top: 4rem;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
+  .outputs-grid { margin-top: 4rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
 
   .output-card {
     background: var(--cream);
@@ -382,31 +289,10 @@
     transition: transform 0.2s, box-shadow 0.2s;
   }
 
-  .output-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-  }
-
-  .output-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-    width: 3rem;
-    text-align: center;
-    margin-top: 0.1rem;
-  }
-
-  .output-card h3 {
-    font-family: var(--sans);
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-  }
-
-  .output-card p {
-    font-size: 0.875rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
+  .output-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+  .output-icon { font-size: 2rem; flex-shrink: 0; width: 3rem; text-align: center; margin-top: 0.1rem; }
+  .output-card h3 { font-family: var(--sans); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .output-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
 
   .output-tag {
     display: inline-flex;
@@ -421,21 +307,9 @@
     border-radius: 100px;
   }
 
-  /* ─── CODE BLOCK ─── */
-  .code-section {
-    background: var(--steel);
-    border-radius: 12px;
-    margin-top: 4rem;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-  }
+  .code-section { background: var(--steel); border-radius: 12px; margin-top: 4rem; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
 
-  .code-tabs {
-    display: flex;
-    background: #1e1e28;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    padding: 0 1.5rem;
-  }
+  .code-tabs { display: flex; background: #1e1e28; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0 1.5rem; }
 
   .code-tab {
     font-family: var(--mono);
@@ -451,38 +325,21 @@
     border-right: none;
   }
 
-  .code-tab.active {
-    color: #e8e8e8;
-    border-bottom-color: var(--accent);
-  }
+  .code-tab.active { color: #e8e8e8; border-bottom-color: var(--accent); }
 
-  .code-body {
-    padding: 2rem;
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    line-height: 2;
-    color: #ccc;
-    overflow-x: auto;
-  }
-
+  .code-body { padding: 2rem; font-family: var(--mono); font-size: 0.8rem; line-height: 2; color: #ccc; overflow-x: auto; }
   .code-body .kw { color: #c792ea; }
   .code-body .str { color: #c3e88d; }
   .code-body .fn { color: #82aaff; }
   .code-body .cm { color: #546e7a; }
   .code-body .ty { color: #ffcb6b; }
-  .code-body .op { color: #89ddff; }
 
-  /* ─── REQUIREMENTS ─── */
+  /* ─── SETUP ─── */
   .req-section { background: var(--steel); border-radius: 12px; padding: 3rem; color: var(--paper); }
   .req-section .section-label { color: #f09060; }
   .req-section .section-title { color: var(--paper); }
 
-  .req-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 2.5rem;
-  }
+  .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem; }
 
   .req-block h4 {
     font-family: var(--mono);
@@ -496,21 +353,21 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
 
-  .req-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.875rem;
-    color: #aaa;
-    line-height: 1.5;
-  }
-
+  .req-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.875rem; color: #aaa; line-height: 1.5; }
   .req-item .check { color: #28c840; flex-shrink: 0; margin-top: 0.1rem; }
   .req-item .opt { color: #febc2e; flex-shrink: 0; margin-top: 0.1rem; }
 
+  .step-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #f09060;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
   .install-block {
-    margin-top: 2.5rem;
     background: #1e1e28;
     border-radius: 8px;
     padding: 1.5rem;
@@ -523,7 +380,9 @@
   .install-block .prompt { color: #28c840; }
   .install-block .cmd { color: #e8e8e8; }
 
-  /* ─── BLOG PREVIEW ─── */
+  .toml-tip { margin-top: 0.75rem; font-family: var(--mono); font-size: 0.74rem; color: #666; line-height: 1.7; }
+
+  /* ─── BLOG ─── */
   .blog-card {
     background: var(--cream);
     border: 1px solid rgba(0,0,0,0.08);
@@ -536,40 +395,12 @@
     align-items: center;
   }
 
-  .blog-meta { }
-  .blog-tag {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-    display: block;
-  }
-
-  .blog-title {
-    font-family: var(--serif);
-    font-size: 1.6rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
-
+  .blog-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: block; }
+  .blog-title { font-family: var(--serif); font-size: 1.6rem; line-height: 1.2; margin-bottom: 1rem; }
   .blog-title em { font-style: italic; color: var(--accent); }
+  .blog-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  .blog-excerpt { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
 
-  .blog-date {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-
-  .blog-excerpt {
-    font-size: 0.95rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-  }
-
-  /* ─── FOOTER ─── */
   footer {
     border-top: 1px solid rgba(0,0,0,0.08);
     padding: 3rem 5rem;
@@ -580,47 +411,20 @@
     margin: 0 auto;
   }
 
-  .footer-brand {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--muted);
-  }
-
+  .footer-brand { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
   .footer-brand span { color: var(--accent); }
-
-  .footer-links {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-  }
-
-  .footer-links a {
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
+  .footer-links { display: flex; gap: 2rem; list-style: none; }
+  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--ink); }
 
-  /* ─── ANIMATIONS ─── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* ─── HERO BG DECOR ─── */
   .hero-decor {
     position: absolute;
     top: 0; right: 0; bottom: 0;
@@ -639,7 +443,6 @@
     z-index: 1;
   }
 
-  /* ─── RESPONSIVE ─── */
   @media (max-width: 900px) {
     .hero { grid-template-columns: 1fr; min-height: auto; }
     .hero-right { display: none; }
@@ -659,9 +462,8 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a class="nav-logo" href="#">⬡ business-to-data-platform</a>
+  <a class="nav-logo" href="#">&#x2B21; business-to-data-platform</a>
   <ul class="nav-links">
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#outputs">What you get</a></li>
@@ -670,19 +472,17 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-decor"></div>
   <div class="hero-decor-dots"></div>
-
   <div class="hero-left">
-    <div class="hero-badge">Claude Skill · v1.1</div>
+    <div class="hero-badge">Claude Skill &middot; v1.1</div>
     <h1>Describe a business.<br><em>Get a database.</em></h1>
     <p class="hero-sub">
-      A Claude skill that transforms any business description into a fully provisioned PostgreSQL database — schema, seed data, analytics queries, and repository code — in one conversation.
+      A Claude skill that transforms any business description into a fully provisioned PostgreSQL database &mdash; schema, seed data, analytics queries, and repository code &mdash; in one conversation.
     </p>
     <div class="hero-actions">
-      <a href="#setup" class="btn btn-primary">↓ Get started</a>
+      <a href="#setup" class="btn btn-primary">&#8595; Get started</a>
       <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
     </div>
   </div>
@@ -693,31 +493,31 @@
         <div class="dot dot-r"></div>
         <div class="dot dot-y"></div>
         <div class="dot dot-g"></div>
-        <span class="terminal-title">claude · business-to-data-platform</span>
+        <span class="terminal-title">claude &middot; business-to-data-platform</span>
       </div>
       <div class="terminal-body">
-        <div><span class="t-prompt">you</span><span class="t-out"> › </span><span class="t-cmd">I need a backend for a ride-sharing app</span></div>
+        <div><span class="t-prompt">you</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">I need a backend for a ride-sharing app</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-accent">▸ Extracting entities...</span></div>
-        <div><span class="t-out">  users, drivers, vehicles, rides, payments</span></div>
+        <div><span class="t-accent">&#9658; Extracting entities...</span></div>
+        <div><span class="t-out">&nbsp;&nbsp;users, drivers, vehicles, rides, payments</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-accent">▸ Designing schema (3NF)...</span></div>
-        <div><span class="t-out">  8 tables · 42 columns · 11 indexes</span></div>
+        <div><span class="t-accent">&#9658; Designing schema (3NF)...</span></div>
+        <div><span class="t-out">&nbsp;&nbsp;8 tables &middot; 42 columns &middot; 11 indexes</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-accent">▸ Creating database...</span></div>
-        <div><span class="t-success">  ✓ ride_sharing_db created</span></div>
+        <div><span class="t-accent">&#9658; Creating database...</span></div>
+        <div><span class="t-success">&nbsp;&nbsp;&#10003; ride_sharing_db created</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-accent">▸ Provisioning tables...</span></div>
-        <div><span class="t-success">  ✓ users</span><span class="t-out">  ✓ drivers  ✓ vehicles</span></div>
-        <div><span class="t-success">  ✓ rides</span><span class="t-out">  ✓ payments  ✓ ratings</span></div>
+        <div><span class="t-accent">&#9658; Provisioning tables...</span></div>
+        <div><span class="t-success">&nbsp;&nbsp;&#10003; users</span><span class="t-out">&nbsp;&nbsp;&#10003; drivers&nbsp;&nbsp;&#10003; vehicles</span></div>
+        <div><span class="t-success">&nbsp;&nbsp;&#10003; rides</span><span class="t-out">&nbsp;&nbsp;&#10003; payments&nbsp;&nbsp;&#10003; ratings</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-accent">▸ Seeding realistic data...</span></div>
-        <div><span class="t-out">  83 users · 41 drivers · 312 rides</span></div>
+        <div><span class="t-accent">&#9658; Seeding realistic data...</span></div>
+        <div><span class="t-out">&nbsp;&nbsp;83 users &middot; 41 drivers &middot; 312 rides</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-accent">▸ Generating code...</span></div>
-        <div><span class="t-out">  TypeScript · C# · 8 analytics queries</span></div>
+        <div><span class="t-accent">&#9658; Generating code...</span></div>
+        <div><span class="t-out">&nbsp;&nbsp;TypeScript &middot; C# &middot; 8 analytics queries</span></div>
         <div style="height:0.5rem"></div>
-        <div><span class="t-success">✓ Platform ready</span> <span class="t-cursor"></span></div>
+        <div><span class="t-success">&#10003; Platform ready</span> <span class="t-cursor"></span></div>
       </div>
     </div>
   </div>
@@ -729,44 +529,44 @@
 <section id="how-it-works">
   <div class="section-label">The pipeline</div>
   <h2 class="section-title">Six steps from <em>idea</em> to live database</h2>
-  <p class="section-body">No SQL expertise required. Describe your product in plain English — the skill handles entity design, normalization, provisioning, and code generation end-to-end.</p>
+  <p class="section-body">No SQL expertise required. Describe your product in plain English &mdash; the skill handles entity design, normalization, provisioning, and code generation end-to-end.</p>
 
   <div class="pipeline reveal">
     <div class="pipe-step">
       <div class="pipe-num">01</div>
-      <span class="pipe-icon">🧠</span>
+      <span class="pipe-icon">&#x1F9E0;</span>
       <h3>Entity Extraction</h3>
       <p>Claude reads your spec and identifies every actor, resource, transaction, relationship, and event before writing any SQL.</p>
     </div>
     <div class="pipe-step">
       <div class="pipe-num">02</div>
-      <span class="pipe-icon">📐</span>
+      <span class="pipe-icon">&#x1F4D0;</span>
       <h3>Schema Design</h3>
-      <p>Full PostgreSQL DDL in 3NF — UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ everywhere, and indexes on every FK.</p>
+      <p>Full PostgreSQL DDL in 3NF &mdash; UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ everywhere, and indexes on every FK.</p>
     </div>
     <div class="pipe-step">
       <div class="pipe-num">03</div>
-      <span class="pipe-icon">🗄️</span>
+      <span class="pipe-icon">&#x1F5C4;&#xFE0F;</span>
       <h3>Database Creation</h3>
       <p>Creates the target database automatically from the business name. Every DDL statement uses IF NOT EXISTS so re-runs never crash.</p>
     </div>
     <div class="pipe-step">
       <div class="pipe-num">04</div>
-      <span class="pipe-icon">🌱</span>
+      <span class="pipe-icon">&#x1F331;</span>
       <h3>Realistic Seed Data</h3>
-      <p>100–500 rows of coherent, domain-accurate data. Real names, realistic prices, valid FK references via CTEs — not user1@test.com.</p>
+      <p>100&ndash;500 rows of coherent, domain-accurate data. Real names, realistic prices, valid FK references via CTEs &mdash; not placeholder junk data.</p>
     </div>
     <div class="pipe-step">
       <div class="pipe-num">05</div>
-      <span class="pipe-icon">📊</span>
+      <span class="pipe-icon">&#x1F4CA;</span>
       <h3>Analytics Queries</h3>
-      <p>6–10 labeled, ready-to-run queries covering revenue, funnels, top performers, anomalies, and operational monitoring.</p>
+      <p>6&ndash;10 labeled, ready-to-run queries covering revenue, funnels, top performers, anomalies, and operational monitoring.</p>
     </div>
     <div class="pipe-step">
       <div class="pipe-num">06</div>
-      <span class="pipe-icon">💻</span>
+      <span class="pipe-icon">&#x1F4BB;</span>
       <h3>Repository Code</h3>
-      <p>TypeScript (pg/Prisma) and C# (Dapper/EF Core) functions for the 5 most common operations — drop them straight into your API.</p>
+      <p>TypeScript (pg/Prisma) and C# (Dapper/EF Core) functions for the 5 most common operations &mdash; drop them straight into your API.</p>
     </div>
   </div>
 </section>
@@ -777,35 +577,35 @@
 <section id="outputs">
   <div class="section-label">Deliverables</div>
   <h2 class="section-title">Everything you need to <em>ship</em></h2>
-  <p class="section-body">One conversation, seven concrete artifacts you can use immediately — or export as SQL files if running offline.</p>
+  <p class="section-body">One conversation, seven concrete artifacts you can use immediately &mdash; or export as SQL files if running offline.</p>
 
   <div class="outputs-grid reveal">
     <div class="output-card">
-      <div class="output-icon">🏗️</div>
+      <div class="output-icon">&#x1F3D7;&#xFE0F;</div>
       <div>
         <h3>Business Analysis</h3>
-        <p>A structured breakdown of your entities, attributes, cardinalities, and domain relationships — the blueprint before any SQL.</p>
+        <p>A structured breakdown of your entities, attributes, cardinalities, and domain relationships &mdash; the blueprint before any SQL.</p>
         <span class="output-tag">markdown</span>
       </div>
     </div>
     <div class="output-card">
-      <div class="output-icon">📄</div>
+      <div class="output-icon">&#x1F4C4;</div>
       <div>
         <h3>Complete DDL Schema</h3>
-        <p>Full CREATE TABLE statements — never abbreviated, never placeholder-truncated. Production-grade conventions baked in.</p>
+        <p>Full CREATE TABLE statements &mdash; never abbreviated, never placeholder-truncated. Production-grade conventions baked in.</p>
         <span class="output-tag">schema.sql</span>
       </div>
     </div>
     <div class="output-card">
-      <div class="output-icon">✅</div>
+      <div class="output-icon">&#x2705;</div>
       <div>
         <h3>Provisioning Log</h3>
-        <p>Live table-by-table execution results showing ✓ created or ⚠ already exists — full transparency on what ran.</p>
+        <p>Live table-by-table execution results showing &#10003; created or &#9888; already exists &mdash; full transparency on what ran.</p>
         <span class="output-tag">via Datafy MCP</span>
       </div>
     </div>
     <div class="output-card">
-      <div class="output-icon">🌱</div>
+      <div class="output-icon">&#x1F331;</div>
       <div>
         <h3>Seed Data</h3>
         <p>Hundreds of INSERT rows with realistic, coherent values. FK consistency guaranteed via CTE chaining.</p>
@@ -813,7 +613,7 @@
       </div>
     </div>
     <div class="output-card">
-      <div class="output-icon">📊</div>
+      <div class="output-icon">&#x1F4CA;</div>
       <div>
         <h3>Analytics Queries</h3>
         <p>Business-ready SQL for revenue reporting, funnel analysis, anomaly detection, and operational dashboards.</p>
@@ -821,16 +621,15 @@
       </div>
     </div>
     <div class="output-card">
-      <div class="output-icon">⚡</div>
+      <div class="output-icon">&#x26A1;</div>
       <div>
         <h3>TypeScript + C# Repos</h3>
         <p>Typed repository functions for create, find, list, update, and soft-delete. Ready to plug into any API layer.</p>
-        <span class="output-tag">ts · cs</span>
+        <span class="output-tag">ts &middot; cs</span>
       </div>
     </div>
   </div>
 
-  <!-- Sample SQL -->
   <div class="code-section reveal">
     <div class="code-tabs">
       <button class="code-tab active">schema.sql</button>
@@ -838,8 +637,8 @@
       <button class="code-tab">repository.ts</button>
     </div>
     <div class="code-body">
-<span class="cm">-- ✓ Created extension pgcrypto</span>
-<span class="cm">-- ✓ Created enum: ride_status</span>
+<span class="cm">-- &#10003; Created extension pgcrypto</span>
+<span class="cm">-- &#10003; Created enum: ride_status</span>
 
 <span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">users</span> (
   id          <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
@@ -872,80 +671,148 @@
 <!-- SETUP -->
 <section id="setup">
   <div class="req-section reveal">
-    <div class="section-label">Requirements & setup</div>
-    <h2 class="section-title" style="color:var(--paper)">Ready in <em>two minutes</em></h2>
+    <div class="section-label">Requirements &amp; setup</div>
+    <h2 class="section-title" style="color:var(--paper)">Connect via <em>MCP</em> in three steps</h2>
 
     <div class="req-grid">
       <div class="req-block">
         <h4>Required</h4>
         <div class="req-item">
-          <span class="check">✓</span>
-          <span><strong style="color:#e8e8e8">Claude.ai</strong> — any plan with MCP support enabled</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">Claude Desktop</strong> &mdash; with MCP support enabled (Settings &rarr; Developer)</span>
         </div>
         <div class="req-item">
-          <span class="check">✓</span>
-          <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> — <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">@teckedd-code2save/datafy</code> connected as an MCP tool</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> &mdash; <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">@teckedd-code2save/datafy</code> registered in <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">claude_desktop_config.json</code></span>
         </div>
         <div class="req-item">
-          <span class="check">✓</span>
-          <span><strong style="color:#e8e8e8">PostgreSQL instance</strong> — local or cloud, reachable by Datafy</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">PostgreSQL instance</strong> &mdash; local or remote, defined as a source in your <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">dbhub.toml</code></span>
         </div>
         <div class="req-item">
-          <span class="check">✓</span>
-          <span><strong style="color:#e8e8e8">SKILL.md</strong> — placed in your Claude skills directory</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">SKILL.md</strong> &mdash; placed in your Claude skills directory so the skill auto-triggers</span>
         </div>
       </div>
       <div class="req-block">
-        <h4>Optional</h4>
+        <h4>MCP tools Datafy exposes</h4>
         <div class="req-item">
-          <span class="opt">○</span>
-          <span>Domain reference files (ecommerce, SaaS, mobility, healthcare, fintech, social) for richer schema suggestions</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">execute_sql_&lt;id&gt;</strong> &mdash; run DDL or DML against any configured postgres source</span>
         </div>
         <div class="req-item">
-          <span class="opt">○</span>
-          <span>TypeScript or C# preference — defaults to generating both if unspecified</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">search_objects_&lt;id&gt;</strong> &mdash; inspect schemas, tables, columns, indexes</span>
         </div>
         <div class="req-item">
-          <span class="opt">○</span>
-          <span>Existing database — skill connects to whatever Datafy points at, or creates a new one</span>
+          <span class="check">&#10003;</span>
+          <span><strong style="color:#e8e8e8">generate_code</strong> &mdash; converts SQL to TypeScript or C# (Prisma, Dapper, EF Core)</span>
+        </div>
+        <div class="req-item">
+          <span class="opt">&#9675;</span>
+          <span><strong style="color:#aaa">redis_command_&lt;id&gt;</strong> &mdash; optional session/cache store</span>
+        </div>
+        <div class="req-item">
+          <span class="opt">&#9675;</span>
+          <span><strong style="color:#aaa">elasticsearch_search_&lt;id&gt;</strong> &mdash; optional logs and analytics store</span>
         </div>
       </div>
     </div>
 
+    <div class="step-label">Step 1 &mdash; Install Datafy</div>
     <div class="install-block">
-      <div><span class="prompt">#</span> Install Datafy MCP Server</div>
       <div><span class="prompt">$</span> <span class="cmd">npm install -g @teckedd-code2save/datafy</span></div>
+    </div>
+
+    <div class="step-label">Step 2 &mdash; Add to <span style="color:#e8e8e8">claude_desktop_config.json</span></div>
+    <div class="install-block" style="line-height:1.8;">
+      <div style="color:#555">{</div>
+      <div style="color:#555">&nbsp;&nbsp;<span style="color:#89ddff">"mcpServers"</span>: {</div>
+      <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"datafy"</span>: {</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"command"</span>: <span style="color:#c3e88d">"npx"</span>,</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"args"</span>: [</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"@teckedd-code2save/datafy@latest"</span>,</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--config"</span>,</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmd">"/path/to/your/dbhub.toml"</span>,</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--transport"</span>,</div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"stdio"</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</div>
+      <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+      <div style="color:#555">&nbsp;&nbsp;}</div>
+      <div style="color:#555">}</div>
+    </div>
+
+    <div class="step-label">Step 3 &mdash; Create your <span style="color:#e8e8e8">dbhub.toml</span></div>
+    <div class="install-block" style="line-height:1.8;">
+      <div style="color:#555"># dbhub.toml &mdash; define all your data sources</div>
       <div style="height:0.5rem"></div>
-      <div><span class="prompt">#</span> Start server connected to your PostgreSQL</div>
-      <div><span class="prompt">$</span> <span class="cmd">datafy start --connection-string "postgresql://user:pass@localhost:5432/postgres"</span></div>
+      <div style="color:#555"># PostgreSQL (required)</div>
+      <div><span style="color:#c792ea">[[sources]]</span></div>
+      <div><span style="color:#89ddff">id</span>       = <span style="color:#c3e88d">"pet_market"</span>         <span style="color:#555"># &rarr; execute_sql_pet_market, search_objects_pet_market</span></div>
+      <div><span style="color:#89ddff">type</span>     = <span style="color:#c3e88d">"postgres"</span></div>
+      <div><span style="color:#89ddff">host</span>     = <span style="color:#c3e88d">"localhost"</span></div>
+      <div><span style="color:#89ddff">port</span>     = <span style="color:#f09060">5432</span></div>
+      <div><span style="color:#89ddff">database</span> = <span style="color:#c3e88d">"petty"</span></div>
+      <div><span style="color:#89ddff">user</span>     = <span style="color:#c3e88d">"postgres"</span></div>
+      <div><span style="color:#89ddff">password</span> = <span style="color:#c3e88d">"postgres"</span></div>
+      <div><span style="color:#89ddff">lazy</span>     = <span style="color:#f09060">true</span></div>
       <div style="height:0.5rem"></div>
-      <div><span class="prompt">#</span> Then just describe your business to Claude</div>
-      <div><span class="prompt">you</span> <span class="cmd">› Build a database for a subscription meal-kit service</span></div>
+      <div style="color:#555"># Redis &mdash; session / cache (optional)</div>
+      <div><span style="color:#c792ea">[[sources]]</span></div>
+      <div><span style="color:#89ddff">id</span>          = <span style="color:#c3e88d">"session_storage"</span>    <span style="color:#555"># &rarr; redis_command_session_storage</span></div>
+      <div><span style="color:#89ddff">type</span>        = <span style="color:#c3e88d">"redis"</span></div>
+      <div><span style="color:#89ddff">host</span>        = <span style="color:#c3e88d">"localhost"</span></div>
+      <div><span style="color:#89ddff">port</span>        = <span style="color:#f09060">6379</span></div>
+      <div><span style="color:#89ddff">database</span>    = <span style="color:#c3e88d">"0"</span></div>
+      <div><span style="color:#89ddff">lazy</span>        = <span style="color:#f09060">true</span></div>
+      <div><span style="color:#89ddff">description</span> = <span style="color:#c3e88d">"Redis for session storage"</span></div>
+      <div style="height:0.5rem"></div>
+      <div style="color:#555"># Elasticsearch &mdash; logs &amp; analytics (optional)</div>
+      <div><span style="color:#c792ea">[[sources]]</span></div>
+      <div><span style="color:#89ddff">id</span>          = <span style="color:#c3e88d">"logs_and_analytics"</span> <span style="color:#555"># &rarr; elasticsearch_search_logs_and_analytics</span></div>
+      <div><span style="color:#89ddff">type</span>        = <span style="color:#c3e88d">"elasticsearch"</span></div>
+      <div><span style="color:#89ddff">host</span>        = <span style="color:#c3e88d">"localhost"</span></div>
+      <div><span style="color:#89ddff">port</span>        = <span style="color:#f09060">9200</span></div>
+      <div><span style="color:#89ddff">lazy</span>        = <span style="color:#f09060">true</span></div>
+      <div><span style="color:#89ddff">description</span> = <span style="color:#c3e88d">"Elasticsearch for logs and analytics"</span></div>
+    </div>
+    <div class="toml-tip">
+      &#x1F4A1; Each <span style="color:#c792ea">[[sources]]</span> <span style="color:#89ddff">id</span> becomes the MCP tool suffix &mdash;
+      so <span style="color:#c3e88d">"pet_market"</span> automatically exposes
+      <span style="color:#f09060">execute_sql_pet_market</span> and <span style="color:#f09060">search_objects_pet_market</span> to Claude.
+    </div>
+
+    <div class="step-label">Then just talk to Claude</div>
+    <div class="install-block">
+      <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build a database for a subscription meal-kit service</span></div>
+      <div style="height:0.25rem"></div>
+      <div style="color:#555"># Claude detects the skill, calls execute_sql_pet_market,</div>
+      <div style="color:#555"># creates the DB, seeds data, and generates analytics queries.</div>
     </div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- BLOG POST PREVIEW -->
+<!-- BLOG -->
 <section id="blog">
   <div class="section-label">From the blog</div>
   <h2 class="section-title">The <em>thinking</em> behind the skill</h2>
-  <p class="section-body">A deep-dive into how natural language business specs map to production-grade relational schemas — and why idempotency matters more than most tutorials admit.</p>
+  <p class="section-body">A deep-dive into how natural language business specs map to production-grade relational schemas &mdash; and why idempotency matters more than most tutorials admit.</p>
 
   <div class="blog-card reveal">
     <div class="blog-meta">
-      <span class="blog-tag">Skills · Database · AI</span>
-      <h3 class="blog-title">From "build me a ride-sharing app" to a <em>live PostgreSQL database</em></h3>
-      <div class="blog-date">March 2025 · 8 min read</div>
+      <span class="blog-tag">Skills &middot; Database &middot; AI</span>
+      <h3 class="blog-title">From &ldquo;build me a ride-sharing app&rdquo; to a <em>live PostgreSQL database</em></h3>
+      <div class="blog-date">March 2026 &middot; 8 min read</div>
     </div>
     <div>
       <p class="blog-excerpt">
-        Most database tutorials start at the schema. But when a non-technical founder describes their product, they don't think in tables — they think in actors, actions, and outcomes. This skill bridges that gap.<br><br>
-        We walk through the full pipeline: how entity extraction prevents schema drift, why every monetary value must be NUMERIC(12,2) and never FLOAT, what makes seed data feel real versus synthetic, and the two bugs we fixed to make provisioning actually work — database creation, and the nuclear importance of IF NOT EXISTS on every single DDL statement.<br><br>
-        If you've ever watched a beautifully designed schema fail on a second run because someone forgot CREATE TABLE IF NOT EXISTS, this one's for you.
+        Most database tutorials start at the schema. But when a non-technical founder describes their product, they don&rsquo;t think in tables &mdash; they think in actors, actions, and outcomes. This skill bridges that gap.<br><br>
+        We walk through the full pipeline: how entity extraction prevents schema drift, why every monetary value must be NUMERIC(12,2) and never FLOAT, what makes seed data feel real versus synthetic, and the two bugs we fixed to make provisioning actually work &mdash; database creation, and the nuclear importance of IF NOT EXISTS on every single DDL statement.<br><br>
+        If you&rsquo;ve ever watched a beautifully designed schema fail on a second run because someone forgot CREATE TABLE IF NOT EXISTS, this one&rsquo;s for you.
       </p>
-      <a href="#" class="btn btn-secondary" style="font-size:0.8rem">Read the full post →</a>
+      <a href="#" class="btn btn-secondary" style="font-size:0.8rem">Read the full post &rarr;</a>
     </div>
   </div>
 </section>
@@ -953,21 +820,19 @@
 <div style="height:4rem"></div>
 <div class="divider"></div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-brand">
-    <span>business-to-data-platform</span> · A Claude Skill · v1.1
+    <span>business-to-data-platform</span> &middot; A Claude Skill &middot; v1.1
   </div>
   <ul class="footer-links">
     <li><a href="#how-it-works">How it works</a></li>
     <li><a href="#outputs">Outputs</a></li>
     <li><a href="#setup">Setup</a></li>
-    <li><a href="https://github.com" target="_blank">GitHub</a></li>
+    <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub</a></li>
   </ul>
 </footer>
 
 <script>
-  // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -979,7 +844,6 @@
   }, { threshold: 0.1 });
   reveals.forEach(el => observer.observe(el));
 
-  // Code tabs (visual only for demo)
   document.querySelectorAll('.code-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
@@ -987,6 +851,5 @@
     });
   });
 </script>
-
 </body>
 </html>
