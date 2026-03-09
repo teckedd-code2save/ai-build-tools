@@ -1,855 +1,1262 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Business → Data Platform · Claude Skill</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business → Data Platform · Claude Skill</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  :root {
-    --ink: #0d0d0d;
-    --paper: #f5f0e8;
-    --cream: #ede8da;
-    --accent: #c8410a;
-    --accent-light: #f2ddd2;
-    --steel: #2a2a35;
-    --muted: #6b6660;
-    --mono: 'DM Mono', monospace;
-    --serif: 'Instrument Serif', serif;
-    --sans: 'Syne', sans-serif;
-  }
+    :root {
+      --ink: #0d0d0d;
+      --paper: #f5f0e8;
+      --cream: #ede8da;
+      --accent: #c8410a;
+      --accent-light: #f2ddd2;
+      --steel: #2a2a35;
+      --muted: #6b6660;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Instrument Serif', serif;
+      --sans: 'Syne', sans-serif;
+    }
 
-  html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0.5;
-  }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.5;
+    }
 
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2.5rem;
-    background: rgba(245,240,232,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-  }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(245, 240, 232, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
 
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    color: var(--accent);
-    text-decoration: none;
-  }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
 
-  .nav-links a {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
+    .nav-links a {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
 
-  .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover {
+      color: var(--ink);
+    }
 
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-top: 5rem;
-    position: relative;
-    overflow: hidden;
-  }
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 5rem 3rem 5rem 5rem;
-    position: relative;
-    z-index: 2;
-  }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3rem 5rem 5rem;
+      position: relative;
+      z-index: 2;
+    }
 
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-light);
-    border: 1px solid rgba(200,65,10,0.2);
-    padding: 0.35rem 0.8rem;
-    border-radius: 100px;
-    width: fit-content;
-    margin-bottom: 2rem;
-    animation: fadeUp 0.8s ease both;
-  }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-light);
+      border: 1px solid rgba(200, 65, 10, 0.2);
+      padding: 0.35rem 0.8rem;
+      border-radius: 100px;
+      width: fit-content;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
 
-  .hero-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: pulse 2s ease infinite;
-  }
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease infinite;
+    }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
+    @keyframes pulse {
 
-  .hero h1 {
-    font-family: var(--serif);
-    font-size: clamp(3rem, 5vw, 4.5rem);
-    line-height: 1.08;
-    font-weight: 400;
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.8s 0.1s ease both;
-  }
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
 
-  .hero h1 em { font-style: italic; color: var(--accent); }
+      50% {
+        opacity: 0.5;
+        transform: scale(0.8);
+      }
+    }
 
-  .hero-sub {
-    font-size: 1.05rem;
-    color: var(--muted);
-    max-width: 42ch;
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-    animation: fadeUp 0.8s 0.2s ease both;
-  }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      line-height: 1.08;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
 
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    animation: fadeUp 0.8s 0.3s ease both;
-  }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    text-decoration: none;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-  }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 42ch;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
 
-  .btn-primary { background: var(--ink); color: var(--paper); }
-  .btn-primary:hover { background: var(--accent); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,65,10,0.3); }
-  .btn-secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
-  .btn-secondary:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
 
-  .hero-right {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5rem 4rem 5rem 2rem;
-    animation: fadeUp 0.8s 0.4s ease both;
-  }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
 
-  .terminal {
-    background: var(--steel);
-    border-radius: 10px;
-    width: 100%;
-    max-width: 480px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.05);
-    overflow: hidden;
-  }
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
 
-  .terminal-bar {
-    background: #1e1e28;
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(200, 65, 10, 0.3);
+    }
 
-  .dot { width: 12px; height: 12px; border-radius: 50%; }
-  .dot-r { background: #ff5f57; }
-  .dot-y { background: #febc2e; }
-  .dot-g { background: #28c840; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+    }
 
-  .terminal-title { font-family: var(--mono); font-size: 0.72rem; color: #666; margin-left: auto; margin-right: auto; }
+    .btn-secondary:hover {
+      background: var(--ink);
+      color: var(--paper);
+      transform: translateY(-1px);
+    }
 
-  .terminal-body { padding: 1.5rem; font-family: var(--mono); font-size: 0.8rem; line-height: 1.9; }
+    .hero-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 4rem 5rem 2rem;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
 
-  .t-prompt { color: #28c840; }
-  .t-cmd { color: #e8e8e8; }
-  .t-out { color: #888; }
-  .t-success { color: #28c840; }
-  .t-accent { color: #f09060; }
-  .t-cursor {
-    display: inline-block;
-    width: 8px; height: 14px;
-    background: #e8e8e8;
-    vertical-align: middle;
-    animation: blink 1.1s step-end infinite;
-  }
+    .terminal {
+      background: var(--steel);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
 
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .terminal-bar {
+      background: #1e1e28;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.12), transparent);
-    margin: 0 4rem;
-  }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
 
-  section { padding: 7rem 5rem; max-width: 1280px; margin: 0 auto; }
+    .dot-r {
+      background: #ff5f57;
+    }
 
-  .section-label {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-  }
+    .dot-y {
+      background: #febc2e;
+    }
 
-  .section-title { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 400; line-height: 1.15; margin-bottom: 1.5rem; }
-  .section-title em { font-style: italic; color: var(--accent); }
-  .section-body { font-size: 1rem; color: var(--muted); max-width: 55ch; line-height: 1.8; }
+    .dot-g {
+      background: #28c840;
+    }
 
-  .pipeline {
-    margin-top: 4rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
+    .terminal-title {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: #666;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-  .pipe-step {
-    padding: 2.5rem 2rem;
-    border-right: 1px solid rgba(0,0,0,0.08);
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    background: #faf7f0;
-    position: relative;
-    transition: background 0.25s;
-  }
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 1.9;
+    }
 
-  .pipe-step:hover { background: var(--accent-light); }
-  .pipe-step:nth-child(3n) { border-right: none; }
-  .pipe-step:nth-child(n+4) { border-bottom: none; }
+    .t-prompt {
+      color: #28c840;
+    }
 
-  .pipe-num { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; opacity: 0.7; }
-  .pipe-icon { font-size: 1.8rem; margin-bottom: 0.75rem; display: block; }
-  .pipe-step h3 { font-family: var(--sans); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
-  .pipe-step p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .t-cmd {
+      color: #e8e8e8;
+    }
 
-  .outputs-grid { margin-top: 4rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .t-out {
+      color: #888;
+    }
 
-  .output-card {
-    background: var(--cream);
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 8px;
-    padding: 2rem;
-    display: flex;
-    gap: 1.25rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
+    .t-success {
+      color: #28c840;
+    }
 
-  .output-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
-  .output-icon { font-size: 2rem; flex-shrink: 0; width: 3rem; text-align: center; margin-top: 0.1rem; }
-  .output-card h3 { font-family: var(--sans); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-  .output-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+    .t-accent {
+      color: #f09060;
+    }
 
-  .output-tag {
-    display: inline-flex;
-    margin-top: 0.75rem;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    background: var(--accent-light);
-    padding: 0.2rem 0.6rem;
-    border-radius: 100px;
-  }
+    .t-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: #e8e8e8;
+      vertical-align: middle;
+      animation: blink 1.1s step-end infinite;
+    }
 
-  .code-section { background: var(--steel); border-radius: 12px; margin-top: 4rem; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    @keyframes blink {
 
-  .code-tabs { display: flex; background: #1e1e28; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0 1.5rem; }
+      0%,
+      100% {
+        opacity: 1
+      }
 
-  .code-tab {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    padding: 0.75rem 1rem;
-    color: #666;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-    background: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
+      50% {
+        opacity: 0
+      }
+    }
 
-  .code-tab.active { color: #e8e8e8; border-bottom-color: var(--accent); }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.12), transparent);
+      margin: 0 4rem;
+    }
 
-  .code-body { padding: 2rem; font-family: var(--mono); font-size: 0.8rem; line-height: 2; color: #ccc; overflow-x: auto; }
-  .code-body .kw { color: #c792ea; }
-  .code-body .str { color: #c3e88d; }
-  .code-body .fn { color: #82aaff; }
-  .code-body .cm { color: #546e7a; }
-  .code-body .ty { color: #ffcb6b; }
+    section {
+      padding: 7rem 5rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
 
-  /* ─── SETUP ─── */
-  .req-section { background: var(--steel); border-radius: 12px; padding: 3rem; color: var(--paper); }
-  .req-section .section-label { color: #f09060; }
-  .req-section .section-title { color: var(--paper); }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
 
-  .req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.5rem; }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
 
-  .req-block h4 {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #f09060;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
+    .section-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
 
-  .req-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.875rem; color: #aaa; line-height: 1.5; }
-  .req-item .check { color: #28c840; flex-shrink: 0; margin-top: 0.1rem; }
-  .req-item .opt { color: #febc2e; flex-shrink: 0; margin-top: 0.1rem; }
+    .section-body {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 55ch;
+      line-height: 1.8;
+    }
 
-  .step-label {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #f09060;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-  }
+    .pipeline {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
 
-  .install-block {
-    background: #1e1e28;
-    border-radius: 8px;
-    padding: 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    line-height: 2;
-    color: #888;
-  }
+    .pipe-step {
+      padding: 2.5rem 2rem;
+      border-right: 1px solid rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      background: #faf7f0;
+      position: relative;
+      transition: background 0.25s;
+    }
 
-  .install-block .prompt { color: #28c840; }
-  .install-block .cmd { color: #e8e8e8; }
+    .pipe-step:hover {
+      background: var(--accent-light);
+    }
 
-  .toml-tip { margin-top: 0.75rem; font-family: var(--mono); font-size: 0.74rem; color: #666; line-height: 1.7; }
+    .pipe-step:nth-child(3n) {
+      border-right: none;
+    }
 
-  /* ─── BLOG ─── */
-  .blog-card {
-    background: var(--cream);
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 12px;
-    padding: 3rem;
-    margin-top: 3rem;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 3rem;
-    align-items: center;
-  }
+    .pipe-step:nth-child(n+4) {
+      border-bottom: none;
+    }
 
-  .blog-tag { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; display: block; }
-  .blog-title { font-family: var(--serif); font-size: 1.6rem; line-height: 1.2; margin-bottom: 1rem; }
-  .blog-title em { font-style: italic; color: var(--accent); }
-  .blog-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
-  .blog-excerpt { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
+    .pipe-num {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      opacity: 0.7;
+    }
 
-  footer {
-    border-top: 1px solid rgba(0,0,0,0.08);
-    padding: 3rem 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
+    .pipe-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
 
-  .footer-brand { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
-  .footer-brand span { color: var(--accent); }
-  .footer-links { display: flex; gap: 2rem; list-style: none; }
-  .footer-links a { font-size: 0.8rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--ink); }
+    .pipe-step h3 {
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    .pipe-step p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
 
-  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
-  .reveal.visible { opacity: 1; transform: none; }
+    .outputs-grid {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
 
-  .hero-decor {
-    position: absolute;
-    top: 0; right: 0; bottom: 0;
-    width: 55%;
-    background: linear-gradient(135deg, #ede8da 0%, #e8dfc8 100%);
-    z-index: 0;
-    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%);
-  }
+    .output-card {
+      background: var(--cream);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+      padding: 2rem;
+      display: flex;
+      gap: 1.25rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-  .hero-decor-dots {
-    position: absolute;
-    top: 3rem; right: 3rem;
-    width: 200px; height: 200px;
-    background-image: radial-gradient(circle, rgba(200,65,10,0.15) 1px, transparent 1px);
-    background-size: 20px 20px;
-    z-index: 1;
-  }
+    .output-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
 
-  @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-right { display: none; }
-    .hero-left { padding: 7rem 2rem 4rem; }
-    section { padding: 4rem 2rem; }
-    .pipeline { grid-template-columns: 1fr; }
-    .pipe-step { border-right: none; }
-    .outputs-grid { grid-template-columns: 1fr; }
-    .req-grid { grid-template-columns: 1fr; }
-    .blog-card { grid-template-columns: 1fr; }
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
-    .hero-decor { display: none; }
-  }
-</style>
+    .output-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      width: 3rem;
+      text-align: center;
+      margin-top: 0.1rem;
+    }
+
+    .output-card h3 {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .output-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .output-tag {
+      display: inline-flex;
+      margin-top: 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+    }
+
+    .code-section {
+      background: var(--steel);
+      border-radius: 12px;
+      margin-top: 4rem;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .code-tabs {
+      display: flex;
+      background: #1e1e28;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0 1.5rem;
+    }
+
+    .code-tab {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+
+    .code-tab.active {
+      color: #e8e8e8;
+      border-bottom-color: var(--accent);
+    }
+
+    .code-body {
+      padding: 2rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 2;
+      color: #ccc;
+      overflow-x: auto;
+    }
+
+    .code-body .kw {
+      color: #c792ea;
+    }
+
+    .code-body .str {
+      color: #c3e88d;
+    }
+
+    .code-body .fn {
+      color: #82aaff;
+    }
+
+    .code-body .cm {
+      color: #546e7a;
+    }
+
+    .code-body .ty {
+      color: #ffcb6b;
+    }
+
+    /* ─── SETUP ─── */
+    .req-section {
+      background: var(--steel);
+      border-radius: 12px;
+      padding: 3rem;
+      color: var(--paper);
+    }
+
+    .req-section .section-label {
+      color: #f09060;
+    }
+
+    .req-section .section-title {
+      color: var(--paper);
+    }
+
+    .req-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+
+    .req-block h4 {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #f09060;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .req-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      color: #aaa;
+      line-height: 1.5;
+    }
+
+    .req-item .check {
+      color: #28c840;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .req-item .opt {
+      color: #febc2e;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .step-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #f09060;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .install-block {
+      background: #1e1e28;
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 2;
+      color: #888;
+    }
+
+    .install-block .prompt {
+      color: #28c840;
+    }
+
+    .install-block .cmd {
+      color: #e8e8e8;
+    }
+
+    .toml-tip {
+      margin-top: 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    /* ─── BLOG ─── */
+    .blog-card {
+      background: var(--cream);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 12px;
+      padding: 3rem;
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .blog-tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .blog-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .blog-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .blog-date {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .blog-excerpt {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    footer {
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 3rem 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-brand {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-brand span {
+      color: var(--accent);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--ink);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-decor {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 55%;
+      background: linear-gradient(135deg, #ede8da 0%, #e8dfc8 100%);
+      z-index: 0;
+      clip-path: polygon(8% 0, 100% 0, 100% 100%, 0% 100%);
+    }
+
+    .hero-decor-dots {
+      position: absolute;
+      top: 3rem;
+      right: 3rem;
+      width: 200px;
+      height: 200px;
+      background-image: radial-gradient(circle, rgba(200, 65, 10, 0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+      z-index: 1;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .hero-left {
+        padding: 7rem 2rem 4rem;
+      }
+
+      section {
+        padding: 4rem 2rem;
+      }
+
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+
+      .pipe-step {
+        border-right: none;
+      }
+
+      .outputs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .req-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .blog-card {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+      }
+
+      .hero-decor {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<nav>
-  <a class="nav-logo" href="#">&#x2B21; business-to-data-platform</a>
-  <ul class="nav-links">
-    <li><a href="#how-it-works">How it works</a></li>
-    <li><a href="#outputs">What you get</a></li>
-    <li><a href="#setup">Setup</a></li>
-    <li><a href="#blog">Blog post</a></li>
-  </ul>
-</nav>
+  <nav>
+    <a class="nav-logo" href="#">&#x2B21; business-to-data-platform</a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#outputs">What you get</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="#blog">Blog post</a></li>
+    </ul>
+  </nav>
 
-<div class="hero">
-  <div class="hero-decor"></div>
-  <div class="hero-decor-dots"></div>
-  <div class="hero-left">
-    <div class="hero-badge">Claude Skill &middot; v1.1</div>
-    <h1>Describe a business.<br><em>Get a database.</em></h1>
-    <p class="hero-sub">
-      A Claude skill that transforms any business description into a fully provisioned PostgreSQL database &mdash; schema, seed data, analytics queries, and repository code &mdash; in one conversation.
-    </p>
-    <div class="hero-actions">
-      <a href="#setup" class="btn btn-primary">&#8595; Get started</a>
-      <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="terminal">
-      <div class="terminal-bar">
-        <div class="dot dot-r"></div>
-        <div class="dot dot-y"></div>
-        <div class="dot dot-g"></div>
-        <span class="terminal-title">claude &middot; business-to-data-platform</span>
-      </div>
-      <div class="terminal-body">
-        <div><span class="t-prompt">you</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">I need a backend for a ride-sharing app</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-accent">&#9658; Extracting entities...</span></div>
-        <div><span class="t-out">&nbsp;&nbsp;users, drivers, vehicles, rides, payments</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-accent">&#9658; Designing schema (3NF)...</span></div>
-        <div><span class="t-out">&nbsp;&nbsp;8 tables &middot; 42 columns &middot; 11 indexes</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-accent">&#9658; Creating database...</span></div>
-        <div><span class="t-success">&nbsp;&nbsp;&#10003; ride_sharing_db created</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-accent">&#9658; Provisioning tables...</span></div>
-        <div><span class="t-success">&nbsp;&nbsp;&#10003; users</span><span class="t-out">&nbsp;&nbsp;&#10003; drivers&nbsp;&nbsp;&#10003; vehicles</span></div>
-        <div><span class="t-success">&nbsp;&nbsp;&#10003; rides</span><span class="t-out">&nbsp;&nbsp;&#10003; payments&nbsp;&nbsp;&#10003; ratings</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-accent">&#9658; Seeding realistic data...</span></div>
-        <div><span class="t-out">&nbsp;&nbsp;83 users &middot; 41 drivers &middot; 312 rides</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-accent">&#9658; Generating code...</span></div>
-        <div><span class="t-out">&nbsp;&nbsp;TypeScript &middot; C# &middot; 8 analytics queries</span></div>
-        <div style="height:0.5rem"></div>
-        <div><span class="t-success">&#10003; Platform ready</span> <span class="t-cursor"></span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- HOW IT WORKS -->
-<section id="how-it-works">
-  <div class="section-label">The pipeline</div>
-  <h2 class="section-title">Six steps from <em>idea</em> to live database</h2>
-  <p class="section-body">No SQL expertise required. Describe your product in plain English &mdash; the skill handles entity design, normalization, provisioning, and code generation end-to-end.</p>
-
-  <div class="pipeline reveal">
-    <div class="pipe-step">
-      <div class="pipe-num">01</div>
-      <span class="pipe-icon">&#x1F9E0;</span>
-      <h3>Entity Extraction</h3>
-      <p>Claude reads your spec and identifies every actor, resource, transaction, relationship, and event before writing any SQL.</p>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-num">02</div>
-      <span class="pipe-icon">&#x1F4D0;</span>
-      <h3>Schema Design</h3>
-      <p>Full PostgreSQL DDL in 3NF &mdash; UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ everywhere, and indexes on every FK.</p>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-num">03</div>
-      <span class="pipe-icon">&#x1F5C4;&#xFE0F;</span>
-      <h3>Database Creation</h3>
-      <p>Creates the target database automatically from the business name. Every DDL statement uses IF NOT EXISTS so re-runs never crash.</p>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-num">04</div>
-      <span class="pipe-icon">&#x1F331;</span>
-      <h3>Realistic Seed Data</h3>
-      <p>100&ndash;500 rows of coherent, domain-accurate data. Real names, realistic prices, valid FK references via CTEs &mdash; not placeholder junk data.</p>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-num">05</div>
-      <span class="pipe-icon">&#x1F4CA;</span>
-      <h3>Analytics Queries</h3>
-      <p>6&ndash;10 labeled, ready-to-run queries covering revenue, funnels, top performers, anomalies, and operational monitoring.</p>
-    </div>
-    <div class="pipe-step">
-      <div class="pipe-num">06</div>
-      <span class="pipe-icon">&#x1F4BB;</span>
-      <h3>Repository Code</h3>
-      <p>TypeScript (pg/Prisma) and C# (Dapper/EF Core) functions for the 5 most common operations &mdash; drop them straight into your API.</p>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- WHAT YOU GET -->
-<section id="outputs">
-  <div class="section-label">Deliverables</div>
-  <h2 class="section-title">Everything you need to <em>ship</em></h2>
-  <p class="section-body">One conversation, seven concrete artifacts you can use immediately &mdash; or export as SQL files if running offline.</p>
-
-  <div class="outputs-grid reveal">
-    <div class="output-card">
-      <div class="output-icon">&#x1F3D7;&#xFE0F;</div>
-      <div>
-        <h3>Business Analysis</h3>
-        <p>A structured breakdown of your entities, attributes, cardinalities, and domain relationships &mdash; the blueprint before any SQL.</p>
-        <span class="output-tag">markdown</span>
-      </div>
-    </div>
-    <div class="output-card">
-      <div class="output-icon">&#x1F4C4;</div>
-      <div>
-        <h3>Complete DDL Schema</h3>
-        <p>Full CREATE TABLE statements &mdash; never abbreviated, never placeholder-truncated. Production-grade conventions baked in.</p>
-        <span class="output-tag">schema.sql</span>
-      </div>
-    </div>
-    <div class="output-card">
-      <div class="output-icon">&#x2705;</div>
-      <div>
-        <h3>Provisioning Log</h3>
-        <p>Live table-by-table execution results showing &#10003; created or &#9888; already exists &mdash; full transparency on what ran.</p>
-        <span class="output-tag">via Datafy MCP</span>
-      </div>
-    </div>
-    <div class="output-card">
-      <div class="output-icon">&#x1F331;</div>
-      <div>
-        <h3>Seed Data</h3>
-        <p>Hundreds of INSERT rows with realistic, coherent values. FK consistency guaranteed via CTE chaining.</p>
-        <span class="output-tag">seed.sql</span>
-      </div>
-    </div>
-    <div class="output-card">
-      <div class="output-icon">&#x1F4CA;</div>
-      <div>
-        <h3>Analytics Queries</h3>
-        <p>Business-ready SQL for revenue reporting, funnel analysis, anomaly detection, and operational dashboards.</p>
-        <span class="output-tag">queries.sql</span>
-      </div>
-    </div>
-    <div class="output-card">
-      <div class="output-icon">&#x26A1;</div>
-      <div>
-        <h3>TypeScript + C# Repos</h3>
-        <p>Typed repository functions for create, find, list, update, and soft-delete. Ready to plug into any API layer.</p>
-        <span class="output-tag">ts &middot; cs</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="code-section reveal">
-    <div class="code-tabs">
-      <button class="code-tab active">schema.sql</button>
-      <button class="code-tab">seed.sql</button>
-      <button class="code-tab">repository.ts</button>
-    </div>
-    <div class="code-body">
-<span class="cm">-- &#10003; Created extension pgcrypto</span>
-<span class="cm">-- &#10003; Created enum: ride_status</span>
-
-<span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">users</span> (
-  id          <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
-  email       <span class="ty">TEXT</span> <span class="kw">NOT NULL UNIQUE</span>,
-  full_name   <span class="ty">TEXT</span> <span class="kw">NOT NULL</span>,
-  phone       <span class="ty">TEXT</span>,
-  created_at  <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
-  updated_at  <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
-  deleted_at  <span class="ty">TIMESTAMPTZ</span>
-);
-
-<span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">rides</span> (
-  id           <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
-  user_id      <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span class="ty">users</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
-  driver_id    <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span class="ty">drivers</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
-  fare_amount  <span class="ty">NUMERIC</span>(12,2) <span class="kw">NOT NULL</span>,
-  status       <span class="ty">ride_status</span> <span class="kw">DEFAULT</span> <span class="str">'pending'</span>,
-  created_at   <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
-  updated_at   <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>()
-);
-
-<span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_user_id <span class="kw">ON</span> <span class="ty">rides</span>(user_id);
-<span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_driver_id <span class="kw">ON</span> <span class="ty">rides</span>(driver_id);
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- SETUP -->
-<section id="setup">
-  <div class="req-section reveal">
-    <div class="section-label">Requirements &amp; setup</div>
-    <h2 class="section-title" style="color:var(--paper)">Connect via <em>MCP</em> in three steps</h2>
-
-    <div class="req-grid">
-      <div class="req-block">
-        <h4>Required</h4>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">Claude Desktop</strong> &mdash; with MCP support enabled (Settings &rarr; Developer)</span>
-        </div>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> &mdash; <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">@teckedd-code2save/datafy</code> registered in <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">claude_desktop_config.json</code></span>
-        </div>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">PostgreSQL instance</strong> &mdash; local or remote, defined as a source in your <code style="color:#f09060;font-family:var(--mono);font-size:0.8em">dbhub.toml</code></span>
-        </div>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">SKILL.md</strong> &mdash; placed in your Claude skills directory so the skill auto-triggers</span>
-        </div>
-      </div>
-      <div class="req-block">
-        <h4>MCP tools Datafy exposes</h4>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">execute_sql_&lt;id&gt;</strong> &mdash; run DDL or DML against any configured postgres source</span>
-        </div>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">search_objects_&lt;id&gt;</strong> &mdash; inspect schemas, tables, columns, indexes</span>
-        </div>
-        <div class="req-item">
-          <span class="check">&#10003;</span>
-          <span><strong style="color:#e8e8e8">generate_code</strong> &mdash; converts SQL to TypeScript or C# (Prisma, Dapper, EF Core)</span>
-        </div>
-        <div class="req-item">
-          <span class="opt">&#9675;</span>
-          <span><strong style="color:#aaa">redis_command_&lt;id&gt;</strong> &mdash; optional session/cache store</span>
-        </div>
-        <div class="req-item">
-          <span class="opt">&#9675;</span>
-          <span><strong style="color:#aaa">elasticsearch_search_&lt;id&gt;</strong> &mdash; optional logs and analytics store</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="step-label">Step 1 &mdash; Install Datafy</div>
-    <div class="install-block">
-      <div><span class="prompt">$</span> <span class="cmd">npm install -g @teckedd-code2save/datafy</span></div>
-    </div>
-
-    <div class="step-label">Step 2 &mdash; Add to <span style="color:#e8e8e8">claude_desktop_config.json</span></div>
-    <div class="install-block" style="line-height:1.8;">
-      <div style="color:#555">{</div>
-      <div style="color:#555">&nbsp;&nbsp;<span style="color:#89ddff">"mcpServers"</span>: {</div>
-      <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"datafy"</span>: {</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"command"</span>: <span style="color:#c3e88d">"npx"</span>,</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"args"</span>: [</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"@teckedd-code2save/datafy@latest"</span>,</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--config"</span>,</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmd">"/path/to/your/dbhub.toml"</span>,</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--transport"</span>,</div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"stdio"</span></div>
-      <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</div>
-      <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-      <div style="color:#555">&nbsp;&nbsp;}</div>
-      <div style="color:#555">}</div>
-    </div>
-
-    <div class="step-label">Step 3 &mdash; Create your <span style="color:#e8e8e8">dbhub.toml</span></div>
-    <div class="install-block" style="line-height:1.8;">
-      <div style="color:#555"># dbhub.toml &mdash; define all your data sources</div>
-      <div style="height:0.5rem"></div>
-      <div style="color:#555"># PostgreSQL (required)</div>
-      <div><span style="color:#c792ea">[[sources]]</span></div>
-      <div><span style="color:#89ddff">id</span>       = <span style="color:#c3e88d">"pet_market"</span>         <span style="color:#555"># &rarr; execute_sql_pet_market, search_objects_pet_market</span></div>
-      <div><span style="color:#89ddff">type</span>     = <span style="color:#c3e88d">"postgres"</span></div>
-      <div><span style="color:#89ddff">host</span>     = <span style="color:#c3e88d">"localhost"</span></div>
-      <div><span style="color:#89ddff">port</span>     = <span style="color:#f09060">5432</span></div>
-      <div><span style="color:#89ddff">database</span> = <span style="color:#c3e88d">"petty"</span></div>
-      <div><span style="color:#89ddff">user</span>     = <span style="color:#c3e88d">"postgres"</span></div>
-      <div><span style="color:#89ddff">password</span> = <span style="color:#c3e88d">"postgres"</span></div>
-      <div><span style="color:#89ddff">lazy</span>     = <span style="color:#f09060">true</span></div>
-      <div style="height:0.5rem"></div>
-      <div style="color:#555"># Redis &mdash; session / cache (optional)</div>
-      <div><span style="color:#c792ea">[[sources]]</span></div>
-      <div><span style="color:#89ddff">id</span>          = <span style="color:#c3e88d">"session_storage"</span>    <span style="color:#555"># &rarr; redis_command_session_storage</span></div>
-      <div><span style="color:#89ddff">type</span>        = <span style="color:#c3e88d">"redis"</span></div>
-      <div><span style="color:#89ddff">host</span>        = <span style="color:#c3e88d">"localhost"</span></div>
-      <div><span style="color:#89ddff">port</span>        = <span style="color:#f09060">6379</span></div>
-      <div><span style="color:#89ddff">database</span>    = <span style="color:#c3e88d">"0"</span></div>
-      <div><span style="color:#89ddff">lazy</span>        = <span style="color:#f09060">true</span></div>
-      <div><span style="color:#89ddff">description</span> = <span style="color:#c3e88d">"Redis for session storage"</span></div>
-      <div style="height:0.5rem"></div>
-      <div style="color:#555"># Elasticsearch &mdash; logs &amp; analytics (optional)</div>
-      <div><span style="color:#c792ea">[[sources]]</span></div>
-      <div><span style="color:#89ddff">id</span>          = <span style="color:#c3e88d">"logs_and_analytics"</span> <span style="color:#555"># &rarr; elasticsearch_search_logs_and_analytics</span></div>
-      <div><span style="color:#89ddff">type</span>        = <span style="color:#c3e88d">"elasticsearch"</span></div>
-      <div><span style="color:#89ddff">host</span>        = <span style="color:#c3e88d">"localhost"</span></div>
-      <div><span style="color:#89ddff">port</span>        = <span style="color:#f09060">9200</span></div>
-      <div><span style="color:#89ddff">lazy</span>        = <span style="color:#f09060">true</span></div>
-      <div><span style="color:#89ddff">description</span> = <span style="color:#c3e88d">"Elasticsearch for logs and analytics"</span></div>
-    </div>
-    <div class="toml-tip">
-      &#x1F4A1; Each <span style="color:#c792ea">[[sources]]</span> <span style="color:#89ddff">id</span> becomes the MCP tool suffix &mdash;
-      so <span style="color:#c3e88d">"pet_market"</span> automatically exposes
-      <span style="color:#f09060">execute_sql_pet_market</span> and <span style="color:#f09060">search_objects_pet_market</span> to Claude.
-    </div>
-
-    <div class="step-label">Then just talk to Claude</div>
-    <div class="install-block">
-      <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build a database for a subscription meal-kit service</span></div>
-      <div style="height:0.25rem"></div>
-      <div style="color:#555"># Claude detects the skill, calls execute_sql_pet_market,</div>
-      <div style="color:#555"># creates the DB, seeds data, and generates analytics queries.</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- BLOG -->
-<section id="blog">
-  <div class="section-label">From the blog</div>
-  <h2 class="section-title">The <em>thinking</em> behind the skill</h2>
-  <p class="section-body">A deep-dive into how natural language business specs map to production-grade relational schemas &mdash; and why idempotency matters more than most tutorials admit.</p>
-
-  <div class="blog-card reveal">
-    <div class="blog-meta">
-      <span class="blog-tag">Skills &middot; Database &middot; AI</span>
-      <h3 class="blog-title">From &ldquo;build me a ride-sharing app&rdquo; to a <em>live PostgreSQL database</em></h3>
-      <div class="blog-date">March 2026 &middot; 8 min read</div>
-    </div>
-    <div>
-      <p class="blog-excerpt">
-        Most database tutorials start at the schema. But when a non-technical founder describes their product, they don&rsquo;t think in tables &mdash; they think in actors, actions, and outcomes. This skill bridges that gap.<br><br>
-        We walk through the full pipeline: how entity extraction prevents schema drift, why every monetary value must be NUMERIC(12,2) and never FLOAT, what makes seed data feel real versus synthetic, and the two bugs we fixed to make provisioning actually work &mdash; database creation, and the nuclear importance of IF NOT EXISTS on every single DDL statement.<br><br>
-        If you&rsquo;ve ever watched a beautifully designed schema fail on a second run because someone forgot CREATE TABLE IF NOT EXISTS, this one&rsquo;s for you.
+  <div class="hero">
+    <div class="hero-decor"></div>
+    <div class="hero-decor-dots"></div>
+    <div class="hero-left">
+      <div class="hero-badge">Claude Skill &middot; v1.1</div>
+      <h1>Describe a business.<br><em>Get a database.</em></h1>
+      <p class="hero-sub">
+        A Claude skill that transforms any business description into a fully provisioned PostgreSQL database &mdash;
+        schema, seed data, analytics queries, and repository code &mdash; in one conversation.
       </p>
-      <a href="#" class="btn btn-secondary" style="font-size:0.8rem">Read the full post &rarr;</a>
+      <div class="hero-actions">
+        <a href="#setup" class="btn btn-primary">&#8595; Get started</a>
+        <a href="#how-it-works" class="btn btn-secondary">See how it works</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="terminal-title">claude &middot; business-to-data-platform</span>
+        </div>
+        <div class="terminal-body">
+          <div><span class="t-prompt">you</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">I need a
+              backend for a ride-sharing app</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Extracting entities...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;users, drivers, vehicles, rides, payments</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Designing schema (3NF)...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;8 tables &middot; 42 columns &middot; 11 indexes</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Creating database...</span></div>
+          <div><span class="t-success">&nbsp;&nbsp;&#10003; ride_sharing_db created</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Provisioning tables...</span></div>
+          <div><span class="t-success">&nbsp;&nbsp;&#10003; users</span><span class="t-out">&nbsp;&nbsp;&#10003;
+              drivers&nbsp;&nbsp;&#10003; vehicles</span></div>
+          <div><span class="t-success">&nbsp;&nbsp;&#10003; rides</span><span class="t-out">&nbsp;&nbsp;&#10003;
+              payments&nbsp;&nbsp;&#10003; ratings</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Seeding realistic data...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;83 users &middot; 41 drivers &middot; 312 rides</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Generating code...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;TypeScript &middot; C# &middot; 8 analytics queries</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-success">&#10003; Platform ready</span> <span class="t-cursor"></span></div>
+        </div>
+      </div>
     </div>
   </div>
-</section>
 
-<div style="height:4rem"></div>
-<div class="divider"></div>
+  <div class="divider"></div>
 
-<footer>
-  <div class="footer-brand">
-    <span>business-to-data-platform</span> &middot; A Claude Skill &middot; v1.1
-  </div>
-  <ul class="footer-links">
-    <li><a href="#how-it-works">How it works</a></li>
-    <li><a href="#outputs">Outputs</a></li>
-    <li><a href="#setup">Setup</a></li>
-    <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub</a></li>
-  </ul>
-</footer>
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works">
+    <div class="section-label">The pipeline</div>
+    <h2 class="section-title">Six steps from <em>idea</em> to live database</h2>
+    <p class="section-body">No SQL expertise required. Describe your product in plain English &mdash; the skill handles
+      entity design, normalization, provisioning, and code generation end-to-end.</p>
 
-<script>
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
+    <div class="pipeline reveal">
+      <div class="pipe-step">
+        <div class="pipe-num">01</div>
+        <span class="pipe-icon">&#x1F9E0;</span>
+        <h3>Entity Extraction</h3>
+        <p>Claude reads your spec and identifies every actor, resource, transaction, relationship, and event before
+          writing any SQL.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">02</div>
+        <span class="pipe-icon">&#x1F4D0;</span>
+        <h3>Schema Design</h3>
+        <p>Full PostgreSQL DDL in 3NF &mdash; UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ everywhere,
+          and indexes on every FK.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">03</div>
+        <span class="pipe-icon">&#x1F5C4;&#xFE0F;</span>
+        <h3>Database Creation</h3>
+        <p>Creates the target database automatically from the business name. Every DDL statement uses IF NOT EXISTS so
+          re-runs never crash.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">04</div>
+        <span class="pipe-icon">&#x1F331;</span>
+        <h3>Realistic Seed Data</h3>
+        <p>100&ndash;500 rows of coherent, domain-accurate data. Real names, realistic prices, valid FK references via
+          CTEs &mdash; not placeholder junk data.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">05</div>
+        <span class="pipe-icon">&#x1F4CA;</span>
+        <h3>Analytics Queries</h3>
+        <p>6&ndash;10 labeled, ready-to-run queries covering revenue, funnels, top performers, anomalies, and
+          operational monitoring.</p>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">06</div>
+        <span class="pipe-icon">&#x1F4BB;</span>
+        <h3>Repository Code</h3>
+        <p>TypeScript (pg/Prisma) and C# (Dapper/EF Core) functions for the 5 most common operations &mdash; drop them
+          straight into your API.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- WHAT YOU GET -->
+  <section id="outputs">
+    <div class="section-label">Deliverables</div>
+    <h2 class="section-title">Everything you need to <em>ship</em></h2>
+    <p class="section-body">One conversation, seven concrete artifacts you can use immediately &mdash; or export as SQL
+      files if running offline.</p>
+
+    <div class="outputs-grid reveal">
+      <div class="output-card">
+        <div class="output-icon">&#x1F3D7;&#xFE0F;</div>
+        <div>
+          <h3>Business Analysis</h3>
+          <p>Structured breakdown of entities and relationships.</p>
+          <span class="output-tag">markdown</span>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-icon">&#x1F4C4;</div>
+        <div>
+          <h3>Schema &amp; Migrations</h3>
+          <p>Full DDL schema and versioned migrations.</p>
+          <span class="output-tag">sql &middot; ts/py</span>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-icon">&#x2705;</div>
+        <div>
+          <h3>Provision &amp; Seed</h3>
+          <p>Live execution logs and realistic seed data injection.</p>
+          <span class="output-tag">auto-execute</span>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-icon">&#x26A1;</div>
+        <div>
+          <h3>Repos &amp; UI Contracts</h3>
+          <p>Typed repository code and API data contracts (no hardcoded arrays).</p>
+          <span class="output-tag">ts &middot; cs &middot; py &middot; java</span>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-icon">&#x1F50D;</div>
+        <div>
+          <h3>Cache &amp; Search</h3>
+          <p>Ready-to-use Redis and Elasticsearch configuration strategies.</p>
+          <span class="output-tag">architecture</span>
+        </div>
+      </div>
+      <div class="output-card">
+        <div class="output-icon">&#x1F4CA;</div>
+        <div>
+          <h3>Analytics Queries</h3>
+          <p>Business-ready SQL for reporting and operational dashboards.</p>
+          <span class="output-tag">queries.sql</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-section reveal">
+      <div class="code-tabs">
+        <button class="code-tab active">schema.sql</button>
+        <button class="code-tab">seed.sql</button>
+        <button class="code-tab">repository.ts</button>
+      </div>
+      <div class="code-body">
+        <span class="cm">-- &#10003; Created extension pgcrypto</span>
+        <span class="cm">-- &#10003; Created enum: ride_status</span>
+
+        <span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">users</span> (
+        id <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span
+          class="fn">gen_random_uuid</span>(),
+        email <span class="ty">TEXT</span> <span class="kw">NOT NULL UNIQUE</span>,
+        full_name <span class="ty">TEXT</span> <span class="kw">NOT NULL</span>,
+        phone <span class="ty">TEXT</span>,
+        created_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
+        updated_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
+        deleted_at <span class="ty">TIMESTAMPTZ</span>
+        );
+
+        <span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">rides</span> (
+        id <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span
+          class="fn">gen_random_uuid</span>(),
+        user_id <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span
+          class="ty">users</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+        driver_id <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span
+          class="ty">drivers</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
+        fare_amount <span class="ty">NUMERIC</span>(12,2) <span class="kw">NOT NULL</span>,
+        status <span class="ty">ride_status</span> <span class="kw">DEFAULT</span> <span class="str">'pending'</span>,
+        created_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
+        updated_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>()
+        );
+
+        <span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_user_id <span class="kw">ON</span> <span
+          class="ty">rides</span>(user_id);
+        <span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_driver_id <span class="kw">ON</span> <span
+          class="ty">rides</span>(driver_id);
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SETUP -->
+  <section id="setup">
+    <div class="req-section reveal">
+      <div class="section-label">Requirements &amp; setup</div>
+      <h2 class="section-title" style="color:var(--paper)">Connect via <em>MCP</em> in three steps</h2>
+
+      <div class="req-grid">
+        <div class="req-block">
+          <h4>Required</h4>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">Claude Desktop</strong>, <strong style="color:#e8e8e8">Cursor</strong>,
+              <strong style="color:#e8e8e8">Gemini CLI</strong>, <strong style="color:#e8e8e8">Antigravity</strong>,
+              etc. &mdash; with MCP support enabled</span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> &mdash; <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">@teckedd-code2save/datafy</code>
+              registered in your tool's MCP config files (e.g. <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">claude_desktop_config.json</code>, <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">mcp_config.json</code>, <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">settings.json</code>, or via Cursor
+              UI)</span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">PostgreSQL instance</strong> &mdash; local or remote, defined as a
+              source in your <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">dbhub.toml</code></span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">SKILL.md</strong> &mdash; placed in your Claude skills directory so the
+              skill auto-triggers</span>
+          </div>
+        </div>
+        <div class="req-block">
+          <h4>MCP tools Datafy exposes</h4>
+          <p style="font-size:0.75rem; color:#aaa; margin-top:-0.5rem; margin-bottom:0.75rem;">(where <code
+              style="color:#f09060;">&lt;id&gt;</code> is the source id from your <code>dbhub.toml</code>)</p>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">execute_sql_&lt;id&gt;</strong> &mdash; Execute DDL or DML
+              queries</span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">execute_admin_sql_&lt;id&gt;</strong> &mdash; Execute admin queries
+              (e.g. CREATE DATABASE)</span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">search_objects_&lt;id&gt;</strong> &mdash; Search and list database
+              objects (schemas, tables, columns, indexes)</span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">generate_code</strong> &mdash; Convert SQL to TypeScript or C# (Prisma,
+              Dapper, EF Core)</span>
+          </div>
+          <div class="req-item">
+            <span class="opt">&#9675;</span>
+            <span><strong style="color:#aaa">redis_command_&lt;id&gt;</strong> &mdash; Execute Redis commands on the
+              optional cache store</span>
+          </div>
+          <div class="req-item">
+            <span class="opt">&#9675;</span>
+            <span><strong style="color:#aaa">elasticsearch_search_&lt;id&gt;</strong> &mdash; Execute queries on the
+              optional analytics store</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-label">Step 1 &mdash; Add to <span style="color:#e8e8e8">MCP Configuration</span></div>
+      <div class="install-block" style="line-height:1.8;">
+        <div style="color:#555"># Example for claude_desktop_config.json or mcp_config.json</div>
+        <div style="color:#555">{</div>
+        <div style="color:#555">&nbsp;&nbsp;<span style="color:#89ddff">"mcpServers"</span>: {</div>
+        <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"datafy"</span>: {</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"command"</span>: <span
+            style="color:#c3e88d">"npx"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"args"</span>: [</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+            style="color:#c3e88d">"@teckedd-code2save/datafy@latest"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--config"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmd">"/path/to/your/dbhub.toml"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--transport"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"stdio"</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</div>
+        <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+        <div style="color:#555">&nbsp;&nbsp;}</div>
+        <div style="color:#555">}</div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># If using Cursor:</div>
+        <div style="color:#555"># Settings &rarr; Features &rarr; MCP &rarr; Add New</div>
+        <div style="color:#555"># Type: command</div>
+        <div style="color:#555"># Command: npx @teckedd-code2save/datafy@latest --config /path/to/your/dbhub.toml
+          --transport stdio</div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#28c840;font-weight:bold;"># IMPORTANT: Restart your AI assistant / editor for changes to take
+          effect.</div>
+      </div>
+
+      <div class="step-label">Step 2 &mdash; Create your <span style="color:#e8e8e8">dbhub.toml</span></div>
+      <div class="install-block" style="line-height:1.8;">
+        <div style="color:#555"># dbhub.toml &mdash; define all your data sources</div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># PostgreSQL (required)</div>
+        <div><span style="color:#c792ea">[[sources]]</span></div>
+        <div><span style="color:#89ddff">id</span> = <span style="color:#c3e88d">"pet_market"</span> <span
+            style="color:#555"># &rarr; execute_sql_pet_market, search_objects_pet_market</span></div>
+        <div><span style="color:#89ddff">type</span> = <span style="color:#c3e88d">"postgres"</span></div>
+        <div><span style="color:#89ddff">host</span> = <span style="color:#c3e88d">"localhost"</span></div>
+        <div><span style="color:#89ddff">port</span> = <span style="color:#f09060">5432</span></div>
+        <div><span style="color:#89ddff">database</span> = <span style="color:#c3e88d">"petty"</span></div>
+        <div><span style="color:#89ddff">user</span> = <span style="color:#c3e88d">"postgres"</span></div>
+        <div><span style="color:#89ddff">password</span> = <span style="color:#c3e88d">"postgres"</span></div>
+        <div><span style="color:#89ddff">lazy</span> = <span style="color:#f09060">true</span></div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># Redis &mdash; session / cache (optional)</div>
+        <div><span style="color:#c792ea">[[sources]]</span></div>
+        <div><span style="color:#89ddff">id</span> = <span style="color:#c3e88d">"session_storage"</span> <span
+            style="color:#555"># &rarr; redis_command_session_storage</span></div>
+        <div><span style="color:#89ddff">type</span> = <span style="color:#c3e88d">"redis"</span></div>
+        <div><span style="color:#89ddff">host</span> = <span style="color:#c3e88d">"localhost"</span></div>
+        <div><span style="color:#89ddff">port</span> = <span style="color:#f09060">6379</span></div>
+        <div><span style="color:#89ddff">database</span> = <span style="color:#c3e88d">"0"</span></div>
+        <div><span style="color:#89ddff">lazy</span> = <span style="color:#f09060">true</span></div>
+        <div><span style="color:#89ddff">description</span> = <span style="color:#c3e88d">"Redis for session
+            storage"</span></div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># Elasticsearch &mdash; logs &amp; analytics (optional)</div>
+        <div><span style="color:#c792ea">[[sources]]</span></div>
+        <div><span style="color:#89ddff">id</span> = <span style="color:#c3e88d">"logs_and_analytics"</span> <span
+            style="color:#555"># &rarr; elasticsearch_search_logs_and_analytics</span></div>
+        <div><span style="color:#89ddff">type</span> = <span style="color:#c3e88d">"elasticsearch"</span></div>
+        <div><span style="color:#89ddff">host</span> = <span style="color:#c3e88d">"localhost"</span></div>
+        <div><span style="color:#89ddff">port</span> = <span style="color:#f09060">9200</span></div>
+        <div><span style="color:#89ddff">lazy</span> = <span style="color:#f09060">true</span></div>
+        <div><span style="color:#89ddff">description</span> = <span style="color:#c3e88d">"Elasticsearch for logs and
+            analytics"</span></div>
+      </div>
+      <div class="toml-tip">
+        &#x1F4A1; Each <span style="color:#c792ea">[[sources]]</span> <span style="color:#89ddff">id</span> becomes the
+        MCP tool suffix &mdash;
+        so <span style="color:#c3e88d">"pet_market"</span> automatically exposes
+        <span style="color:#f09060">execute_sql_pet_market</span> and <span
+          style="color:#f09060">search_objects_pet_market</span> to Claude.
+      </div>
+
+      <div class="step-label">Then just talk to your AI assistant</div>
+      <div class="install-block">
+        <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build a database for a subscription meal-kit
+            service</span></div>
+        <div style="height:0.25rem"></div>
+        <div style="color:#555"># AI detects the skill, calls execute_sql_pet_market,</div>
+        <div style="color:#555"># creates the DB, seeds data, and generates analytics queries.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- BLOG SECTION HIDDEN TEMPORARILY -->
+
+  <div style="height:4rem"></div>
+  <div class="divider"></div>
+
+  <footer>
+    <div class="footer-brand">
+      <span>business-to-data-platform</span> &middot; A Claude Skill &middot; v1.1
+    </div>
+    <ul class="footer-links">
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#outputs">Outputs</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    document.querySelectorAll('.code-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
     });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
-
-  document.querySelectorAll('.code-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-    });
-  });
-</script>
+  </script>
 </body>
+
 </html>
