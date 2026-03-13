@@ -121,3 +121,19 @@ If you want to use this skill, ensure the `business-to-data-platform/SKILL.md` f
 - **Cursor**: Embed skill logic inside `.cursorrules` or project-specific system prompts.
 - **Gemini CLI**: Place skills in `~/.gemini/skills/`
 - **Antigravity**: Place skills in `~/.gemini/antigravity/skills/` or `.agent/workflows/` in your workspace.
+
+## Full Dependency Stack (The Orchestrator Ecosystem)
+
+The `business-to-data-platform` skill acts as an **Orchestrator**. To achieve the full production-grade workflow (automated design, testing, UI generation, and IaC provisioning), you should also include the following sibling skills and MCP servers:
+
+### Mandatory Sibling Skills
+- **cloud-solution-architect**: Designs the Docker/K8s + GitHub Actions stack.
+- **api-test-generator**: Generates comprehensive integration tests for the scaffolded backend.
+- **frontend-data-consumer**: Scaffolds Vite/Next.js components using Tailwind CSS and Shadcn/UI for the frontend.
+- **infrastructure-as-code-architect**: Generates Dockerfiles, K8s manifests, and GitHub Actions workflows.
+
+### Integrated MCP Servers
+- **Datafy MCP** (`@teckedd-code2save/datafy`): Required for all database operations and code generation.
+- **Context7 MCP**: (Optional) Fetches latest best practices and patterns for the chosen stack.
+- **Prisma MCP**: (Optional) For migrations and database exploration if using Prisma.
+- **GitHub MCP**: (Optional) For repository discovery and CI/CD setup.

@@ -847,7 +847,7 @@
     <div class="hero-decor"></div>
     <div class="hero-decor-dots"></div>
     <div class="hero-left">
-      <div class="hero-badge">Agent Skill &middot; v1.1</div>
+      <div class="hero-badge">Agent Skill &middot; v1.2</div>
       <h1>Describe a business.<br><em>Get a database.</em></h1>
       <p class="hero-sub">
         An Agent skill that transforms any business description into a fully provisioned PostgreSQL database &mdash;
@@ -1090,6 +1090,14 @@
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
+            <span><strong style="color:#e8e8e8">Sibling Skills</strong> &mdash; <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">cloud-solution-architect</code>, <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">api-test-generator</code>, <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">frontend-data-consumer</code>, <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">infrastructure-as-code-architect</code> &mdash; for the full Design &rarr; Test &rarr; UI &rarr; IaC workflow</span>
+          </div>
+          <div class="req-item">
+            <span class="check">&#10003;</span>
             <span><strong style="color:#e8e8e8">SKILL.md</strong> &mdash; placed in your agent skills directory so the
               skill auto-triggers</span>
           </div>
@@ -1120,13 +1128,27 @@
           </div>
           <div class="req-item">
             <span class="opt">&#9675;</span>
-            <span><strong style="color:#aaa">redis_command_&lt;id&gt;</strong> &mdash; Execute Redis commands on the
-              optional cache store</span>
+            <span><strong style="color:#e8e8e8">github-mcp-server</strong> &mdash; For repository discovery and CI/CD
+              setup</span>
           </div>
           <div class="req-item">
             <span class="opt">&#9675;</span>
-            <span><strong style="color:#aaa">elasticsearch_search_&lt;id&gt;</strong> &mdash; Execute queries on the
-              optional analytics store</span>
+            <span><strong style="color:#e8e8e8">context7-mcp</strong> &mdash; Fetches latest best practices and
+              patterns</span>
+          </div>
+          <div class="req-item">
+            <span class="opt">&#9675;</span>
+            <span><strong style="color:#e8e8e8">prisma-mcp-server</strong> &mdash; For migrations and database
+              exploration</span>
+          </div>
+          <div class="req-item">
+            <span class="opt">&#9675;</span>
+            <span><strong style="color:#aaa">redis_command_&lt;id&gt;</strong> &mdash; Execute Redis commands</span>
+          </div>
+          <div class="req-item">
+            <span class="opt">&#9675;</span>
+            <span><strong style="color:#aaa">elasticsearch_search_&lt;id&gt;</strong> &mdash; Execute analytic
+              queries</span>
           </div>
         </div>
       </div>
@@ -1228,7 +1250,7 @@
 
   <footer>
     <div class="footer-brand">
-      <span>business-to-data-platform</span> &middot; An Agent Skill &middot; v1.1
+      <span>business-to-data-platform</span> &middot; An Agent Skill &middot; v1.2
     </div>
     <ul class="footer-links">
       <li><a href="#how-it-works">How it works</a></li>
