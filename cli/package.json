@@ -2,6 +2,10 @@
   "name": "@teckedd-code2save/b2dp",
   "version": "1.0.1",
   "description": "b2dp CLI — One-command setup for the Business-to-Data-Platform skill ecosystem",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teckedd-code2save/ai-build-tools.git"
+  },
   "type": "module",
   "bin": {
     "b2dp": "dist/index.js"
