@@ -1,13 +1,15 @@
 {
-  "name": "b2dp",
+  "name": "@teckedd-code2save/b2dp",
   "version": "1.0.0",
   "description": "b2dp CLI — One-command setup for the Business-to-Data-Platform skill ecosystem",
   "type": "module",
   "bin": {
-    "b2dp": "./dist/index.js"
+    "b2dp": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
