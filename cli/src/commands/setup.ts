@@ -286,15 +286,24 @@ async function setupCommand(options: SetupOptions): Promise<void> {
     await setupAgent(agentName, scope, selectedSkills, selectedMcps, env);
   }
 
-  log.success(pc.bold("b2dp setup complete! 🚀"));
+  log.success(pc.bold(pc.green("b2dp setup complete! 🚀")));
   log.blank();
-  log.dim("Next steps:");
-  log.dim("  1. Edit your MCP config(s) to fill in the Datafy dbhub.toml path");
-  log.dim("     (usually ~/Documents/.../datafy/dbhub.toml)");
-  log.dim("  2. Restart your AI agent to pick up the new skills and MCP servers.");
-  log.dim(
-    '  3. Try: "Build me a SaaS platform for team task management" in your agent.'
-  );
+  
+  log.info(pc.bold("NEXT STEPS (ACTION REQUIRED):"));
+  log.info(pc.bold("  1. Configure Datafy:"));
+  log.info("     Create or update your " + pc.cyan("dbhub.toml") + " file to define your databases.");
+  log.info("     Then, find the " + pc.yellow("datafy") + " entry in your agent's MCP config and update the ");
+  log.info("     " + pc.cyan("--config") + " path to point to your " + pc.cyan("dbhub.toml") + ".");
+  log.blank();
+  log.info(pc.bold("  2. Restart Your Agent:"));
+  log.info("     Restart your AI coding agent to pick up the new skills and MCP servers.");
+  log.blank();
+  log.info(pc.bold("  3. Start Building:"));
+  log.info(pc.italic("     Try: \"Build me a SaaS platform for team task management\""));
+  log.blank();
+
+  log.info(pc.dim("Sample dbhub.toml can be found at:"));
+  log.info(pc.blue("https://github.com/teckedd-code2save/ai-build-tools/blob/main/samples/dbhub.toml"));
   log.blank();
   log.dim("Run `b2dp check` to verify your MCP configuration at any time.");
 }

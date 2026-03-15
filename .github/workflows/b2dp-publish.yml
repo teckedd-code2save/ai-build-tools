@@ -109,10 +109,9 @@ jobs:
             
             # Step 2: Configure which files to include in the published package
             echo "Setting files to include in the npm package..."
-            # Note: LICENSE and README.md are pulled from the root
+            # LICENSE is pulled from the root, README.md is already in the cli folder
             cp ../LICENSE .
-            cp ../README.md .
-            jq '.files = ["dist/**/*", "LICENSE", "README.md"]' package.json > package.json.tmp
+            jq '.files = ["dist/**/*", "skills/**/*", "LICENSE", "README.md"]' package.json > package.json.tmp
             mv package.json.tmp package.json
 
             # Step 3: Add binary entry for CLI usage
