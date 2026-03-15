@@ -1,13 +1,28 @@
 import { readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureDir, pathExists } from "../utils/fs.js";
 import { type SkillName, ALL_SKILLS } from "../constants.js";
 
-// After tsup bundles src/ → dist/index.js, __dirname === cli/dist/
-// The skills/ directory lives at cli/../skills (one level up from cli/)
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILLS_REPO_DIR = resolve(__dirname, "..", "..", "skills");
+
+/**
+ * Resolve the package root by looking for package.json
+ */
+function findPackageRoot(startDir: string): string {
+  let current = startDir;
+  while (current !== dirname(current)) {
+    if (existsSync(join(current, "package.json"))) {
+      return current;
+    }
+    current = dirname(current);
+  }
+  return startDir; // Fallback to startDir if not found
+}
+
+const PACKAGE_ROOT = findPackageRoot(__dirname);
+const SKILLS_REPO_DIR = resolve(PACKAGE_ROOT, "skills");
 
 export interface InstallResult {
   skill: SkillName;
