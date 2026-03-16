@@ -72,7 +72,7 @@ ${prompt}
       break;
     case "gemini":
       cmd = "gemini"; // Assuming gemini CLI is installed globally
-      args = ["-p", "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.", "--yolo"];
+      args = ["-p", "'Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.'", "--yolo"];
       break;
     case "cursor":
       log.error("Cursor does not currently support headless CLI generation.");
