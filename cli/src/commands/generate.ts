@@ -38,30 +38,15 @@ async function generateCommand(prompt: string, options: GenerateOptions): Promis
     // Write the prompt to a planning document
     const systemPrompt = `
 # b2dp Orchestrator Task
-You are the **Business-to-Data-Platform (b2dp) Orchestrator**. You are an autonomous AI coding agent with full shell access and a powerful ecosystem of MCP servers.
+You are the **Business-to-Data-Platform (b2dp) Orchestrator**. 
 
 ## Goal
 ${prompt}
 
-## Mandates & Workflow
-1. **Cloud Solution Architect & Infrastructure**: 
-   - Design the data model and infrastructure.
-   - If you require infrastructure (like PostgreSQL or Redis), write a \`docker-compose.yml\` and actively run \`docker-compose up -d\` using your shell tools to spin it up.
-   - IMPORTANT: Leverage the \`datafy\` MCP server. Datafy supports SQL databases (PostgreSQL, MySQL, SQLite, etc.), Redis, and Elasticsearch. Datafy can even CREATE databases if they don't exist. Use it to provision and inspect your data stores.
-   - Use the \`prisma-mcp-server\` if using Prisma for ORM.
-2. **Database & API Generation**:
-   - Create the actual database schemas and migration scripts. Run the necessary shell commands (like \`npx prisma db push\`) to apply them.
-   - Generate fully functional backend APIs. DO NOT leave boilerplate.
-3. **Frontend Data Consumer**:
-   - Build the actual frontend UI components to consume the APIs. 
-   - Implement real application logic (e.g., actual stateful "Add to Cart" functionality, functional login forms).
-   - DO NOT leave default framework boilerplate.
-4. **Context & Tracking**:
-   - Use the \`context7\` MCP server to document your progress, architectural decisions, and current state.
-5. **Completion Criteria**:
-   - You MUST actively verify that your infrastructure is running, your database is connected, your APIs return data, and your frontend builds successfully without TypeScript errors.
-   - If you get stuck on infrastructure, prompt for human intervention.
-   - Do NOT exit until the full stack is implemented, connected, and verified.
+## Workflow
+1. Find and use the **business-to-data-platform** skill to fulfill this goal.
+2. You have full shell access and a powerful ecosystem of MCP servers (Datafy, Prisma, Context7, GitHub, etc.).
+3. Do NOT exit until the full stack is implemented, connected, and verified.
 `;
     await writeFile(join(targetDir, "SYSTEM_PROMPT.md"), systemPrompt, "utf-8");
     spinner.succeed("Workspace ready.");
