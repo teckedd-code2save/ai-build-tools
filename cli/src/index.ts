@@ -6,6 +6,7 @@ import { VERSION } from "./constants.js";
 import { registerSetupCommand } from "./commands/setup.js";
 import { registerCheckCommand } from "./commands/check.js";
 import { registerSkillsCommand } from "./commands/skills.js";
+import { registerGenerateCommand } from "./commands/generate.js";
 
 function printBanner(): void {
   const banner = figlet.textSync("b2dp", {
@@ -34,5 +35,6 @@ program
 registerSetupCommand(program);
 registerCheckCommand(program);
 registerSkillsCommand(program);
+registerGenerateCommand(program);
 
 program.parse(process.argv);
