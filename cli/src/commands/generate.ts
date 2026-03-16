@@ -38,17 +38,27 @@ async function generateCommand(prompt: string, options: GenerateOptions): Promis
     // Write the prompt to a planning document
     const systemPrompt = `
 # b2dp Orchestrator Task
-You are powered by the business-to-data-platform skill ecosystem.
+You are the **Business-to-Data-Platform (b2dp) Orchestrator**. You have access to a powerful skill ecosystem and connected MCP servers.
 
 ## Goal
 ${prompt}
 
-## Instructions
-1. Act as the Cloud Solution Architect first to design the data model.
-2. Generate the necessary database schema and backend APIs.
-3. Build the frontend data consumer components.
-4. Ensure all code is production-ready.
-5. Exit automatically when the system is complete and ready for deployment.
+## Mandates & Workflow
+1. **Cloud Solution Architect**: Design the data model and infrastructure.
+   - IMPORTANT: Leverage the \`datafy\` MCP server. Note that Datafy supports SQL databases (PostgreSQL, MySQL, SQLite, etc.), Redis, and Elasticsearch. Provision or connect to these as needed.
+   - Use the \`prisma-mcp-server\` if using Prisma for ORM.
+2. **Database & API Generation**:
+   - Create the actual database schemas and migration scripts.
+   - Generate fully functional backend APIs. DO NOT leave boilerplate.
+3. **Frontend Data Consumer**:
+   - Build the actual frontend UI components to consume the APIs. DO NOT leave default framework boilerplate (e.g., default index or page files).
+   - Ensure the UI is fully connected to the backend APIs.
+4. **Context & Tracking**:
+   - Use the \`context7\` MCP server to document your progress and architectural decisions.
+5. **Completion Criteria**:
+   - You MUST write the actual application logic, database schemas, API routes, and UI components.
+   - Do NOT exit until the full stack is implemented, connected, and verified.
+   - Once everything is production-ready and fully written, exit automatically.
 `;
     await writeFile(join(targetDir, "SYSTEM_PROMPT.md"), systemPrompt, "utf-8");
     spinner.succeed("Workspace ready.");
