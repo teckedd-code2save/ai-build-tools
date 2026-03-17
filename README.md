@@ -73,12 +73,6 @@ description = "Elasticsearch for logs and analytics"
 ```
 4. Restart Claude Desktop.
 
-### Adding to Cursor
-
-1. Open Cursor Settings -> Features -> MCP
-2. Click "+ Add New MCP Server"
-3. Name: `datafy`
-4. Type: `command`
 5. Command: `npx @teckedd-code2save/datafy@latest --config /path/to/your/dbhub.toml --transport stdio`
 6. Click Save and reload the window (or restart Cursor).
 
@@ -112,15 +106,26 @@ For command-line tools and agents that support `mcp_config.json` (like Antigravi
 }
 ```
 
+### Adding to Codex
+
+1. **CLI**: Use `codex mcp` to add and manage servers.
+2. **Config**: Update `~/.codex/config.toml` (global).
+3. **TOML Configuration**:
+```toml
+[mcp_servers.datafy]
+command = "npx"
+args = ["@teckedd-code2save/datafy@latest", "--config", "/path/to/your/dbhub.toml", "--transport", "stdio"]
+```
+
 ## Including the `business-to-data-platform` Skill
 
 The `business-to-data-platform` skill transforms any business description into a production-grade database, schema, repository code, and data seeded through Datafy.
 
 If you want to use this skill, ensure the `business-to-data-platform/SKILL.md` file is placed in the specific directory monitored by your AI assistants:
 - **Claude**: Place skills in `~/.claude/skills/`
-- **Cursor**: Embed skill logic inside `.cursorrules` or project-specific system prompts.
 - **Gemini CLI**: Place skills in `~/.gemini/skills/`
 - **Antigravity**: Place skills in `~/.gemini/antigravity/skills/` or `.agent/workflows/` in your workspace.
+- **Codex**: Place skills in `~/.agents/skills/` (global) or `.agents/skills/` (project).
 
 ## Full Dependency Stack (The Orchestrator Ecosystem)
 

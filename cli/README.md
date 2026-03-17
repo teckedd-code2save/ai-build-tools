@@ -10,7 +10,7 @@ The `b2dp` CLI tool automates the installation and configuration of this entire 
 
 ## Key Capabilities
 
-- **Multi-Agent Support**: Automatically detects and configures [Antigravity](https://github.com), [Claude Code](https://claude.ai), [Cursor](https://cursor.com), [VS Code (Copilot)](https://code.visualstudio.com), and [Gemini CLI](https://github.com).
+- **Multi-Agent Support**: Automatically detects and configures [Antigravity](https://github.com), [Claude Code](https://claude.ai), [VS Code (Copilot)](https://code.visualstudio.com), [Gemini CLI](https://github.com), and [Codex](https://openai.com).
 - **Skill Installation**: Provisions the core `business-to-data-platform` orchestrator along with mandatory sibling skills:
     - `cloud-solution-architect`
     - `api-test-generator`
@@ -47,13 +47,17 @@ b2dp setup --yes
 ### `setup`
 Provision skills, configure MCP servers, and write agent rules.
 - `--project`: Configure for the current directory only.
-- `--claude`, `--cursor`, etc.: Force setup for a specific agent.
+- `--claude`, `--gemini`, `--codex`, etc.: Force setup for a specific agent.
+
+### `generate`
+Autonomously generate an application using the b2dp orchestrator.
+- `--agent <agent>`: Which agent to spawn (`claude`, `gemini`, `codex`).
+- `--deploy <target>`: Deploy the result (e.g., `vercel`).
 
 ### `check`
 Verify that your AI agents are correctly configured with b2dp skills and MCP servers.
 - `--project`: Check project-level configuration.
 
-### `skills`
 Manage and explore the available b2dp skills.
 - `skills list`: Show all available skills and their descriptions.
 - `skills info <name>`: View details and content of a specific skill.

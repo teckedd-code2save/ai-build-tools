@@ -94,79 +94,48 @@ Present for approval before executing.
 
 ---
 
-### Step 4 — Verify or Provision the Target Database
+### Step 4 — Provision Environment & Infrastructure (infrastructure-as-code-architect)
 
-1. **Check for existing connections**: Use `tool_search` or `list_mcp_tools` to find available
-   `execute_admin_sql_<id>` or `execute_sql_<id>` tools.
-2. **Provision Database**: If the target database doesn't exist, use an available
-   `execute_admin_sql_<id>` tool (e.g., `pet_market` or `ride_sharing` which often have admin access)
-   to run:
-   ```sql
-   CREATE DATABASE <name>;
-   ```
-3. **Verify Success**: **ALWAYS read the command output** to confirm the database was created.
-   If the tool returns an error, do not proceed to provisioning tables.
-4. **Update dbhub.toml**: If a new host/connection is required, modify `dbhub.toml`
-   using file edit tools and **PROMPT the user to restart their MCP server** (e.g., Cursor/Claude)
-   to pick up the new tool IDs.
+**MANDATORY:** Trigger `infrastructure-as-code-architect` to:
+1. **Analyze Dependencies**: Check for Postgres, Redis, Elasticsearch, and other required services.
+2. **Generate Dockerfiles**: Create production-ready `Dockerfile`s for all components.
+3. **Provision Infrastructure**: 
+   - Generate **Kubernetes (K8s) manifests/Helm charts** for the cluster.
+   - (Optional) Generate **Terraform/Bicep** if deploying to managed cloud services.
+4. **Setup CI/CD**: Generate **GitHub Actions deployment workflows**.
+5. **Verify Connections**: Ensure that the infrastructure provides the necessary connection details for the application.
 
-> **CRITICAL:** Avoid killing processes manually unless requested. Prompting the user for a restart
-> is the safest path to avoid connection instability.
+### Step 5 — Verify or Provision the Target Database (Datafy MCP)
 
----
+1. **Check for existing connections**: Use `tool_search` or `list_mcp_tools` to find available `execute_admin_sql_<id>` tools.
+2. **Provision Database**: If the target database doesn't exist, use an available `execute_admin_sql_<id>` tool to run `CREATE DATABASE <name>;`.
+3. **Verify Success**: Confirm the database was created before proceeding.
+4. **Update dbhub.toml**: If a new connection is required, modify `dbhub.toml` and prompt the user to restart their MCP server.
 
-### Step 5 — Provision via Datafy MCP (with Rollback)
+### Step 6 — Provision Tables & Logic (with Rollback)
 
 Execute schema via Datafy in dependency order inside a `BEGIN; ... COMMIT;` block.
-Report each as ✅ created or ⚠️ already exists.
 
----
+### Step 7 — Migrations (Not Raw DDL)
 
-### Step 6 — Migrations (Not Raw DDL)
+Generate versioned migrations for any change after initial setup.
 
-Generate versioned migrations for any change after initial setup (Prisma, Alembic, Flyway, EF Core).
-
----
-
-### Step 7 — Seed Realistic Data
+### Step 8 — Seed Realistic Data
 
 Use safe `DO $$ ... $$` blocks with declared UUID variables for FK chain safety.
 
----
-
-### Step 8 — ORM Setup & Repository Code (prisma-mcp-server)
+### Step 9 — ORM Setup & Repository Code (prisma-mcp-server)
 
 Generate repository code (Prisma, SQLAlchemy, JPA, EF Core).
-**Prisma Integration:** If using Prisma, use `prisma-mcp-server` to validate the schema and explore the database structure.
-Use environment variables for connection strings.
+**Prisma Integration:** If using Prisma, use `prisma-mcp-server` to validate the schema.
 
----
+### Step 10 — Generate Integration Tests (api-test-generator)
 
-### Step 9 — Generate Integration Tests (api-test-generator)
+**MANDATORY:** Invoke the `api-test-generator` skill to validate the scaffolded backend.
 
-**MANDATORY:** Once the backend is scaffolded, invoke the `api-test-generator` skill.
-1. Analyze the new controllers and routes.
-2. Generate comprehensive integration tests (e.g., Vitest/Supertest for Node).
-3. Ensure tests run against a test database environment.
+### Step 11 — Scaffold Frontend Features (frontend-data-consumer)
 
----
-
-### Step 10 — Scaffold Frontend Features (frontend-data-consumer)
-
-**MANDATORY:** Trigger `frontend-data-consumer` to:
-1. Ingest the new API contracts.
-2. Scaffold **Vite/Next.js** components (Data Tables, Forms) using **Tailwind CSS** and **Shadcn/UI**.
-3. Wire up real API hooks (React Query/SWR) — **NO HARDCODING.**
-
----
-
-### Step 11 — Provision Infrastructure (infrastructure-as-code-architect)
-
-**MANDATORY:** Trigger `infrastructure-as-code-architect` to:
-1. Analyze the dependency tree (Postgres, Redis, ES).
-2. Generate **Dockerfiles** for all services.
-3. Provision **Kubernetes (K8s) manifests/Helm charts**.
-4. Generate **GitHub Actions deployment workflows** for staging and production.
+**MANDATORY:** Trigger `frontend-data-consumer` to build the UI with Tailwind and Shadcn/UI.
 
 ---
 
@@ -186,7 +155,7 @@ Sequence:
 1. **CALL `cloud-solution-architect` to design the Docker/K8s + GitHub Actions stack.**
 2. Clarify ambiguities and cloud preferences.
 3. Extract entities and relationships.
-4. Design 3NF schema; get approval.
+4. **CALL `infrastructure-as-code-architect` to provision the environment (Docker, K8s, GitHub Actions).**
 5. Provision DB using `execute_admin_sql`; verify output carefully.
 6. If modifying `dbhub.toml`, prompt user for MCP restart.
 7. Provision tables via Datafy inside transactions.
@@ -195,8 +164,7 @@ Sequence:
 10. Generate ORM-based repository code.
 11. CALL `api-test-generator` to validate everything.
 12. **CALL `frontend-data-consumer` to build the UI with Tailwind + Shadcn/UI.**
-13. **CALL `infrastructure-as-code-architect` for Docker, K8s, and GitHub Actions.**
-14. Generate analytics queries.
+13. Generate analytics queries.
 
 Hard rules:
 - **NEVER use raw psql in the terminal.** Use Datafy MCP tools.

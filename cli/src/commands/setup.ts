@@ -33,9 +33,9 @@ import { RULE_CONTENT } from "../setup/templates.js";
 interface SetupOptions {
   antigravity?: boolean;
   claude?: boolean;
-  cursor?: boolean;
   vscode?: boolean;
   gemini?: boolean;
+  codex?: boolean;
   project?: boolean;
   yes?: boolean;
 }
@@ -46,9 +46,9 @@ export function registerSetupCommand(program: Command): void {
     .description("Set up the b2dp skill ecosystem for your AI coding agent")
     .option("--antigravity", "Set up for Antigravity / Gemini CLI")
     .option("--claude", "Set up for Claude Code")
-    .option("--cursor", "Set up for Cursor")
     .option("--vscode", "Set up for VS Code (Copilot)")
     .option("--gemini", "Set up for Gemini CLI")
+    .option("--codex", "Set up for Codex")
     .option(
       "-p, --project",
       "Configure for current project only (default: global)"
@@ -63,9 +63,9 @@ function getSelectedAgentsFromOptions(options: SetupOptions): AgentName[] {
   const agents: AgentName[] = [];
   if (options.antigravity) agents.push("antigravity");
   if (options.claude) agents.push("claude");
-  if (options.cursor) agents.push("cursor");
   if (options.vscode) agents.push("vscode");
   if (options.gemini) agents.push("gemini");
+  if (options.codex) agents.push("codex");
   return agents;
 }
 

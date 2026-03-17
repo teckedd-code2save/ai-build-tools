@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
+import { dirname, extname } from "node:path";
+import * as toml from "smol-toml";
 
 export async function readJsonConfig(
   filePath: string
@@ -12,6 +13,16 @@ export async function readJsonConfig(
   }
   raw = raw.trim();
   if (!raw) return {};
+
+  if (extname(filePath) === ".toml") {
+    try {
+      return toml.parse(raw) as Record<string, unknown>;
+    } catch (err) {
+      console.error(`Failed to parse TOML at ${filePath}:`, err);
+      return {};
+    }
+  }
+
   return JSON.parse(raw) as Record<string, unknown>;
 }
 
@@ -68,7 +79,11 @@ export async function writeJsonConfig(
   config: Record<string, unknown>
 ): Promise<void> {
   await mkdir(dirname(filePath), { recursive: true });
-  await writeFile(filePath, JSON.stringify(config, null, 2) + "\n", "utf-8");
+  const content =
+    extname(filePath) === ".toml"
+      ? toml.stringify(config)
+      : JSON.stringify(config, null, 2) + "\n";
+  await writeFile(filePath, content, "utf-8");
 }
 
 /** MCP server entries for the b2dp ecosystem */

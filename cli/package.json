@@ -28,7 +28,8 @@
     "commander": "^13.1.0",
     "figlet": "^1.9.4",
     "ora": "^9.0.0",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "smol-toml": "^1.6.0"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0",

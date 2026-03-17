@@ -2,14 +2,14 @@ import { Command } from "commander";
 import pc from "picocolors";
 import ora from "ora";
 import { spawn } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { randomBytes } from "node:crypto";
 import { log } from "../utils/logger.js";
 import { ensureDir } from "../utils/fs.js";
 
 interface GenerateOptions {
-  agent: "claude" | "gemini" | "cursor";
+  agent: "claude" | "gemini" | "codex";
   deploy?: string;
 }
 
@@ -17,7 +17,7 @@ export function registerGenerateCommand(program: Command): void {
   program
     .command("generate <prompt>")
     .description("Autonomously generate an application using b2dp orchestrator")
-    .option("--agent <agent>", "Which agent to spawn (claude, gemini, cursor)", "claude")
+    .option("--agent <agent>", "Which agent to spawn (claude, gemini, codex)", "claude")
     .option("--deploy <target>", "Where to deploy after generation (e.g., vercel)")
     .action(async (prompt: string, options: GenerateOptions) => {
       await generateCommand(prompt, options);
@@ -72,9 +72,10 @@ ${prompt}
       cmd = "gemini"; // Assuming gemini CLI is installed globally
       args = ["-p", "'Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.'", "--yolo"];
       break;
-    case "cursor":
-      log.error("Cursor does not currently support headless CLI generation.");
-      return;
+    case "codex":
+      cmd = "codex";
+      args = ["'Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.'"];
+      break;
     default:
       log.error(`Unsupported agent: ${options.agent}`);
       return;
