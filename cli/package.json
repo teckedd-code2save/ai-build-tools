@@ -1,6 +1,6 @@
 {
   "name": "@teckedd-code2save/b2dp",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "b2dp CLI — One-command setup for the Business-to-Data-Platform skill ecosystem",
   "repository": {
     "type": "git",

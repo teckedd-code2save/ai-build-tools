@@ -2,7 +2,7 @@ import { Command } from "commander";
 import pc from "picocolors";
 import { spawn, type ChildProcess } from "node:child_process";
 import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { randomBytes } from "node:crypto";
 import readline from "node:readline";
 import { log } from "../utils/logger.js";
@@ -18,6 +18,38 @@ interface AgentInvocation {
   args: string[];
 }
 
+function slugifyWorkspacePrompt(prompt: string): string {
+  const stopWords = new Set([
+    "a",
+    "an",
+    "and",
+    "app",
+    "application",
+    "backend",
+    "build",
+    "create",
+    "for",
+    "me",
+    "platform",
+    "system",
+    "the",
+    "to",
+  ]);
+
+  const parts = prompt
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/[\s-]+/)
+    .filter((part) => part.length > 0 && !stopWords.has(part));
+
+  const chosen = parts.slice(0, 4);
+  return chosen.length > 0 ? chosen.join("-") : "project";
+}
+
+export function buildWorkspaceName(prompt: string, runId: string): string {
+  return `b2dp-${slugifyWorkspacePrompt(prompt)}-${runId}`;
+}
+
 const PHASE_PATTERNS: Array<{ pattern: RegExp; label: string; emoji: string }> = [
   { pattern: /analyz|understand|reading|planning|architect/i, label: "Analyzing requirements", emoji: "🔍" },
   { pattern: /schema|database|table|model|migration/i, label: "Designing database schema", emoji: "🗄️ " },
@@ -30,16 +62,29 @@ const PHASE_PATTERNS: Array<{ pattern: RegExp; label: string; emoji: string }> =
   { pattern: /complete|done|finished|success/i, label: "Wrapping up", emoji: "✅" },
 ];
 
-function renderHeader(runId: string, phase: string, elapsed: string) {
+function renderHeader(
+  runId: string,
+  agent: GenerateOptions["agent"],
+  workspace: string,
+  phase: string,
+  elapsed: string
+) {
   const width = 64;
   const bar = "─".repeat(width);
   process.stdout.write("\x1b[1A\x1b[2K");
   process.stdout.write("\x1b[1A\x1b[2K");
   process.stdout.write("\x1b[1A\x1b[2K");
+  process.stdout.write("\x1b[1A\x1b[2K");
   const title = pc.bold(pc.cyan("⚡ b2dp generate")) + pc.dim(` — run ${pc.white(runId)}`);
   const timer = pc.dim(`⏱  ${elapsed}`);
+  const meta =
+    pc.dim("agent ") +
+    pc.green(agent) +
+    pc.dim("  workspace ") +
+    pc.white(workspace);
   const status = pc.yellow(phase);
   console.log(title + "  " + timer);
+  console.log(meta);
   console.log(pc.dim(bar));
   console.log(status);
 }
@@ -150,15 +195,17 @@ export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvo
 
 async function generateCommand(prompt: string, options: GenerateOptions): Promise<void> {
   const runId = randomBytes(4).toString("hex");
-  const targetDir = join(process.cwd(), `b2dp-app-${runId}`);
+  const targetDir = join(process.cwd(), buildWorkspaceName(prompt, runId));
   const startMs = Date.now();
 
   console.log("");
   console.log("");
   console.log("");
+  console.log("");
 
   let currentPhase = `🤖 Spawning ${pc.green(options.agent)} agent...`;
-  const updateHeader = () => renderHeader(runId, currentPhase, formatElapsed(startMs));
+  const updateHeader = () =>
+    renderHeader(runId, options.agent, basename(targetDir), currentPhase, formatElapsed(startMs));
   updateHeader();
 
   try {
@@ -172,8 +219,10 @@ ${prompt}
 
 ## Workflow
 1. Find and use the **business-to-data-platform** skill to fulfill this goal.
-2. You have full shell access and a powerful ecosystem of MCP servers (Datafy, Prisma, Context7, GitHub, etc.).
-3. Do NOT exit until the full stack is implemented, connected, and verified.
+2. Respect any explicit stack, framework, cloud, database version, ORM, or UI instructions in the goal. Do not silently default to TypeScript or another stack if the goal specified something else.
+3. Implement all major product surfaces implied by the business, not just a single dashboard view.
+4. You have full shell access and a powerful ecosystem of MCP servers (Datafy, Prisma, Context7, GitHub, etc.).
+5. Do NOT exit until the full stack is implemented, connected, and verified.
 `;
     await writeFile(join(targetDir, "SYSTEM_PROMPT.md"), systemPrompt, "utf-8");
     currentPhase = `📂 Workspace ready — ${pc.dim(targetDir)}`;

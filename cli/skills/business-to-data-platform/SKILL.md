@@ -1,14 +1,15 @@
 ---
 name: business-to-data-platform
 description: >
-  Converts any business specification into a fully provisioned, production-grade data platform.
-  Trigger whenever a user describes a business system, app, or backend need — even casually.
-  Covers: schema design, database provisioning, migrations, ORM setup, Redis/Elasticsearch
-  integration, UI data contracts, project scaffolding, and repository code following FAANG-grade
-  directory structures and industry design patterns. Use for phrases like "build a system for",
+  Converts any business specification into a fully provisioned, production-grade data platform and
+  full-stack product implementation. Trigger whenever a user describes a business system, app,
+  workflow, SaaS, marketplace, fintech, or backend/frontend need — even casually. Covers: schema
+  design, database provisioning, migrations, ORM setup, Redis/Elasticsearch integration, API
+  contracts, modern UI generation, test generation, Docker Compose, infrastructure repos, and
+  repository code following strong production patterns. Use for phrases like "build a system for",
   "I need a backend", "design a database", "create schema", "bootstrap an app", "add a feature",
-  "update the data model", or any business domain description (e-commerce, SaaS, fintech, etc.).
-  Always use this skill — never hardcode data, never guess at structure.
+  "build the UI", or "update the data model". Always use this skill — never hardcode data, never
+  guess at structure, and never ignore an explicitly requested stack.
 compatibility:
   requires:
     - Datafy MCP Server (@teckedd-code2save/datafy) connected and available as MCP tool
@@ -23,152 +24,242 @@ compatibility:
 
 # Business → Data Platform Skill
 
-Turn any business description into a **production-grade data platform** — schema, migrations, ORM
-code, API contracts, caching strategy, search layer, and scaffolded project — following industry
-standards used at scale.
+Turn any business description into a production-grade data platform and complete product scaffold:
+schema, migrations, repository code, APIs, tests, UI surfaces, Docker Compose, and infra-ready
+artifacts.
 
----
+## Core Principles
 
-## Core Principles (Never Violate These)
+1. Respect the user's explicit stack. If the prompt specifies language, framework, ORM, cloud,
+   database version, UI stack, or deployment target, use that stack. Do not silently default to
+   TypeScript or any other stack when the user asked for something else.
+2. Build all implied product surfaces, not just a dashboard. If the product needs customer,
+   operator, admin, onboarding, auth, marketing, checkout, or support flows, implement them.
+   Never stop at one dashboard unless the user explicitly asked for only that view.
+3. Never hardcode UI data. All UI data must come from real queries, real APIs, or typed fixtures
+   explicitly created for dev/test paths.
+4. Use real ORMs and live database connections. Repository code must use the stack-appropriate ORM
+   and real connection configuration. Prefer Datafy MCP tools for schema and DB operations.
+5. Every schema change must be migration-driven. Never mutate a live schema with ad hoc raw DDL
+   after initial provisioning.
+6. Use strong project structure. Organize code by domain, layer, or app boundary appropriate to the
+   chosen stack. No flat dumps.
+7. Proactively orchestrate sibling skills. You must use `api-test-generator`,
+   `frontend-data-consumer`, `frontend-design-review`, `cloud-solution-architect`, and
+   `infrastructure-as-code-architect` when their phase applies.
+8. Tailwind and Shadcn are implementation tools, not the design itself. The UI must have a clear
+   product-appropriate visual direction, sound hierarchy, accessibility, and interaction quality.
+9. Default infra choices only when the user did not specify them:
+   - Terraform provider: `gcp`
+   - Docker Compose Postgres image: `postgres:18-alpine`
+   - Include Docker Compose in the infra repo as well as app-local setup when useful
 
-1. **Never hardcode data in UIs.** All data displayed in any UI component must come from a real
-   DB query or API endpoint. No static arrays, no mock objects inline in components.
+## Clarification Rules
 
-2. **Always use real ORMs and live DB connections.** Repository code must use the stack-appropriate
-   ORM with a real connection string. **Never write raw psql/pg/sqlite calls in the terminal or code.**
-   Always use Datafy MCP tools if available.
+Before building, resolve or infer:
 
-3. **Follow FAANG-grade project structure.** Every scaffolded project must use the widely accepted
-   directory layout for its stack. No flat file dumps.
+- preferred stack
+- product surfaces and user roles
+- auth model
+- deployment target
+- cloud provider
+- monorepo vs single app
 
-4. **Use approved design patterns.** Repository pattern, Service layer, Dependency Injection,
-   CQRS, Event-driven where appropriate.
+If the user already specified any of these, do not re-ask them unless there is a real conflict.
+When the prompt is specific, proceed with that stack.
 
-5. **Migrations for every schema change.** Every change must be expressed as a versioned migration.
-   Never mutate a live schema with raw DDL after initial provisioning.
+## Workflow
 
-6. **Proactively leverage other skills.** This skill is the "Orchestrator". When finishing the
-   backend, you MUST trigger testing, frontend, and infra phases using `api-test-generator`,
-   `frontend-data-consumer`, and `infrastructure-as-code-architect`.
+### Step 0 — Architecture and Repo Strategy
 
-7. **Proactively suggest Redis, Elasticsearch, and streaming solutions.** Identify where caching,
-   search, or streaming would benefit the design and propose integration.
+Use `cloud-solution-architect` first.
 
----
+1. Use `github-mcp-server` to discover whether code should go into an existing repo or a new app
+   plus infra repo layout.
+2. Choose architecture style that matches the product and scale.
+3. Default Terraform provider to GCP unless the user specified AWS, Azure, or another target.
+4. Ensure there is an infra home for deployment assets. Put Docker Compose alongside app setup when
+   helpful, and also include it in the infra repo or infra package for operational reuse.
 
-## Step-by-Step Workflow
+### Step 1 — Honor the Requested Stack
 
-### Step 0 — Architecture Design (cloud-solution-architect & github-mcp-server)
+If the user says Laravel, Go, .NET, FastAPI, Next.js, Nuxt, Django, Rails, Kotlin, etc., use it.
+Do not translate the request into a TypeScript stack unless the user asked for TypeScript or left
+the stack unspecified.
 
-**MANDATORY:** Before any coding, invoke the `cloud-solution-architect` skill to design the platform.
-1. **Repo Discovery:** Use `github-mcp-server` to search for existing repositories or identify where the new code should live.
-2. Define the architecture style (Microservices for K8s, Web-Queue-Worker for simpler apps).
-3. Select the technology stack focusing on **Docker** for containerization and **Kubernetes (K8s)** for orchestration.
-4. Design the CI/CD pipeline leveraging **GitHub Actions**.
-5. Document Architecture Decision Records (ADRs) for these choices.
+Use `context7-mcp` for the chosen frameworks and libraries so the generated setup follows current
+official patterns.
 
----
+### Step 2 — Model the Business
 
-### Step 1 — Clarify Before Building (context7-mcp)
+Extract:
 
-Check for ambiguity: Stack, Scale, Existing schema, Auth model, Deployment target.
-**Mandatory Question**: "What is your preferred technology stack (e.g., Next.js, FastAPI, Go)? Do you have a preferred Cloud provider and instance size for the K8s cluster?"
+- actors
+- roles
+- workflows
+- transactions
+- entities
+- state transitions
+- operational views
 
-**Intelligence Layer:** Use `context7-mcp` to fetch the latest best practices and patterns for the chosen stack.
-1. Call `resolve-library-id` for the main frameworks.
-2. Call `query-docs` to ensure the proposed design follows up-to-date industry standards.
+Explicitly enumerate the UI surfaces implied by the product. Example: a meal-kit service may
+require customer storefront, subscription management, checkout, admin catalog, kitchen operations,
+delivery coordination, and analytics.
 
----
+### Step 3 — Design the Data Layer
 
-### Step 2 — Extract Entities
+Generate PostgreSQL schema in 3NF unless the stack demands otherwise. Use:
 
-Identify core actors, resources, transactions, relationships, and state/events.
-Flag candidates for Redis (hot reads), Elasticsearch (search), and Streaming (audit trails).
+- UUID primary keys where appropriate
+- explicit foreign key policies
+- timestamp columns
+- proper indexes
+- money-safe decimal types
 
----
+Present schema for approval before execution when the user is in a planning mode; otherwise proceed.
 
-### Step 3 — Design the Schema
+### Step 4 — Prisma 7 + PostgreSQL Playbook
 
-Generate 3NF PostgreSQL schema. UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ.
-Present for approval before executing.
+When using Prisma 7 with PostgreSQL, follow this pattern.
 
----
+1. Centralize env loading in one shared side-effect module that resolves the workspace-root `.env`
+   by absolute path.
+2. Reuse that env loader everywhere:
+   - app runtime
+   - `prisma.config.ts`
+   - seed scripts
+   - background workers
+3. Centralize Prisma client options in one helper.
+4. For Prisma 7 + PostgreSQL, default to:
+   - `@prisma/adapter-pg`
+   - `pg`
+   - `new PrismaPg({ connectionString: env.DATABASE_URL })`
+   - `new PrismaClient({ adapter })`
+5. For money-like PostgreSQL columns, emit:
 
-### Step 4 — Provision Environment & Infrastructure (infrastructure-as-code-architect)
+```prisma
+amount Decimal @db.Decimal(10, 2)
+```
 
-**MANDATORY:** Trigger `infrastructure-as-code-architect` to:
-1. **Analyze Dependencies**: Check for Postgres, Redis, Elasticsearch, and other required services.
-2. **Generate Dockerfiles**: Create production-ready `Dockerfile`s for all components.
-3. **Provision Infrastructure**: 
-   - Generate **Kubernetes (K8s) manifests/Helm charts** for the cluster.
-   - (Optional) Generate **Terraform/Bicep** if deploying to managed cloud services.
-4. **Setup CI/CD**: Generate **GitHub Actions deployment workflows**.
-5. **Verify Connections**: Ensure that the infrastructure provides the necessary connection details for the application.
+Do not emit `@db.Numeric(...)` for this Prisma 7 setup.
 
-### Step 5 — Verify or Provision the Target Database (Datafy MCP)
+6. Make `prisma.config.ts` cwd-independent by importing the shared env loader.
+7. Reuse the same env/runtime path in `prisma/seed.ts`; do not duplicate dotenv path math.
+8. In monorepos, assume `.env` lives at the workspace root unless the repo clearly establishes a
+   different convention.
+9. Verify these commands from the package directory, not only repo root:
+   - `pnpm install`
+   - `pnpm db:generate`
+   - `pnpm db:migrate`
+   - `pnpm db:seed`
 
-1. **Check for existing connections**: Use `tool_search` or `list_mcp_tools` to find available `execute_admin_sql_<id>` tools.
-2. **Provision Database**: If the target database doesn't exist, use an available `execute_admin_sql_<id>` tool to run `CREATE DATABASE <name>;`.
-3. **Verify Success**: Confirm the database was created before proceeding.
-4. **Update dbhub.toml**: If a new connection is required, modify `dbhub.toml` and prompt the user to restart their MCP server.
+Recommended layout:
 
-### Step 6 — Provision Tables & Logic (with Rollback)
+```text
+apps/api/
+  prisma.config.ts
+  prisma/
+    schema.prisma
+    seed.ts
+  src/
+    config/
+      load-env.ts
+      env.ts
+    db/
+      prisma-options.ts
+      prisma.ts
+```
 
-Execute schema via Datafy in dependency order inside a `BEGIN; ... COMMIT;` block.
+Required dependencies for Prisma 7 + PostgreSQL:
 
-### Step 7 — Migrations (Not Raw DDL)
+```json
+{
+  "@prisma/adapter-pg": "^7.x",
+  "@prisma/client": "^7.x",
+  "pg": "^8.x",
+  "prisma": "^7.x"
+}
+```
 
-Generate versioned migrations for any change after initial setup.
+### Step 5 — Provision Environment and Infra
 
-### Step 8 — Seed Realistic Data
+Use `infrastructure-as-code-architect`.
 
-Use safe `DO $$ ... $$` blocks with declared UUID variables for FK chain safety.
+1. Generate production-ready Dockerfiles.
+2. Generate Docker Compose for local development.
+3. Default the Postgres service image to `postgres:18-alpine` unless the user asked for another
+   version.
+4. Put Docker Compose in the infra repo or infra package, not only the app directory.
+5. Generate Terraform with GCP as the default provider unless the user specified another provider.
+6. Generate CI/CD and deployment assets.
 
-### Step 9 — ORM Setup & Repository Code (prisma-mcp-server)
+### Step 6 — Provision Database via Datafy
 
-Generate repository code (Prisma, SQLAlchemy, JPA, EF Core).
-**Prisma Integration:** If using Prisma, use `prisma-mcp-server` to validate the schema.
+Use available `execute_admin_sql_<id>` and `execute_sql_<id>` tools.
 
-### Step 10 — Generate Integration Tests (api-test-generator)
+1. Verify or create the target database.
+2. Apply schema in dependency order.
+3. Keep execution safe and repeatable.
+4. If `dbhub.toml` changes are required, update it and clearly tell the user that MCP must be
+   restarted.
 
-**MANDATORY:** Invoke the `api-test-generator` skill to validate the scaffolded backend.
+### Step 7 — Repository Code and Services
 
-### Step 11 — Scaffold Frontend Features (frontend-data-consumer)
+Generate stack-appropriate repository code, services, routes, handlers, and DTO/contracts. Keep
+code idiomatic for the requested stack.
 
-**MANDATORY:** Trigger `frontend-data-consumer` to build the UI with Tailwind and Shadcn/UI.
+### Step 8 — Frontend Generation Standards
 
----
+Use both `frontend-data-consumer` and `frontend-design-review`.
 
-### Step 12 — Local Verification & Troubleshooting
+Rules:
 
-1. **Test Locally**: Provide the command to start the dev server (`npm run dev`) and run tests.
-2. **Troubleshooting Connectors**: If Datafy tools aren't showing up, use:
-   `ps aux | grep dbhub.toml`
-   to check the running process. Note the config path and version.
-3. **Analytics Queries**: Provide 6–10 ready-to-run business impact queries.
+1. Build modern, near-best-in-class UI quality for the product category.
+2. Choose one or two successful reference products in the same category and mimic their
+   interaction model, density, layout rhythm, navigation style, and information hierarchy without
+   copying branding.
+3. Consult current design guidance before locking the UI direction. Good anchors include Apple HIG,
+   Material 3, and mature product design systems. Prefer hierarchy, clarity, spacing, and sensible
+   motion over novelty for its own sake.
+4. Do not ship generic “Tailwind + shadcn demo dashboard” output.
+5. Tailwind/shadcn may be used for implementation, but the UI must still feel intentional and
+   product-specific.
+6. Build all required UI surfaces, not just the dashboard.
+7. Ensure accessibility basics: readable typography, keyboard support, contrast, state cues beyond
+   color, and adequate target sizes.
 
----
+### Step 9 — Tests and Verification
 
-## Internal Agent Prompt
+Use `api-test-generator` and verify the generated repo actually works.
 
-Sequence:
-1. **CALL `cloud-solution-architect` to design the Docker/K8s + GitHub Actions stack.**
-2. Clarify ambiguities and cloud preferences.
-3. Extract entities and relationships.
-4. **CALL `infrastructure-as-code-architect` to provision the environment (Docker, K8s, GitHub Actions).**
-5. Provision DB using `execute_admin_sql`; verify output carefully.
-6. If modifying `dbhub.toml`, prompt user for MCP restart.
-7. Provision tables via Datafy inside transactions.
-8. Generate migrations for updates.
-9. Seed realistic data using `DO $$` blocks.
-10. Generate ORM-based repository code.
-11. CALL `api-test-generator` to validate everything.
-12. **CALL `frontend-data-consumer` to build the UI with Tailwind + Shadcn/UI.**
-13. Generate analytics queries.
+At minimum validate:
+
+- install
+- schema generation
+- migrations
+- seeding
+- app boot
+- tests
+
+If Prisma is involved, explicitly validate the Prisma commands from the package directory.
+
+## Internal Orchestrator Prompt Rules
+
+When acting as the orchestrator:
+
+1. Use the `business-to-data-platform` skill immediately.
+2. Respect the exact stack named in the user's goal.
+3. Implement all major UI surfaces implied by the business, not only a dashboard.
+4. Use current official docs and patterns for the selected stack.
+5. Default Terraform to GCP if the user did not specify a cloud.
+6. Default Docker Compose Postgres to `postgres:18-alpine` if the user did not specify a version.
+7. Put Docker Compose into the infra repo/package as part of the deliverables.
+8. If using Prisma 7 + PostgreSQL, follow the Prisma playbook above exactly.
 
 Hard rules:
-- **NEVER use raw psql in the terminal.** Use Datafy MCP tools.
-- **NEVER hardcode data in UI components.** Use real API hooks.
-- **ALWAYS mandate Tailwind CSS and Shadcn/UI for frontend.**
-- **ALWAYS provide Docker and Kubernetes configurations.**
-- **ALWAYS include GitHub Actions CI/CD workflows.**
+
+- Never hardcode business data in the UI.
+- Never ignore an explicitly requested stack.
+- Never emit only one UI view when the business clearly needs several.
+- Never rely on cwd-sensitive env loading for Prisma monorepos.
+- Never default to `@db.Numeric(...)` for Prisma 7 PostgreSQL money fields in this setup.
