@@ -13,6 +13,11 @@ interface GenerateOptions {
   deploy?: string;
 }
 
+interface AgentInvocation {
+  cmd: string;
+  args: string[];
+}
+
 // ─── Phase detection from agent output ───────────────────────────────────────
 const PHASE_PATTERNS: Array<{ pattern: RegExp; label: string; emoji: string }> = [
   { pattern: /analyz|understand|reading|planning|architect/i,  label: "Analyzing requirements",      emoji: "🔍" },
@@ -112,6 +117,43 @@ export function registerGenerateCommand(program: Command): void {
     });
 }
 
+export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvocation {
+  switch (agent) {
+    case "claude":
+      return {
+        cmd: "npx",
+        args: [
+          "@anthropic-ai/claude-code",
+          "--print",
+          "--permission-mode",
+          "bypassPermissions",
+          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+        ],
+      };
+    case "gemini":
+      return {
+        cmd: "gemini",
+        args: [
+          "-p",
+          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+          "--yolo",
+        ],
+      };
+    case "codex":
+      return {
+        cmd: "codex",
+        args: [
+          "exec",
+          "--skip-git-repo-check",
+          "--full-auto",
+          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+        ],
+      };
+    default:
+      throw new Error(`Unsupported agent: ${agent satisfies never}`);
+  }
+}
+
 async function generateCommand(prompt: string, options: GenerateOptions): Promise<void> {
   const runId = randomBytes(4).toString("hex");
   const targetDir = join(process.cwd(), `b2dp-app-${runId}`);
@@ -151,33 +193,19 @@ ${prompt}
   }
 
   // ── Resolve agent command
-  let cmd = "";
-  let args: string[] = [];
-
-  switch (options.agent) {
-    case "claude":
-      cmd = "npx";
-      args = ["@anthropic-ai/claude-code", "--print", "--permission-mode", "bypassPermissions",
-        "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done."];
-      break;
-    case "gemini":
-      cmd = "gemini";
-      args = ["-p", "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.", "--yolo"];
-      break;
-    case "codex":
-      cmd = "codex";
-      args = ["Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done."];
-      break;
-    default:
-      log.error(`Unsupported agent: ${options.agent}`);
-      return;
-  }
+  const { cmd, args } = buildAgentInvocation(options.agent);
 
   // ── Spawn agent with piped stdio for live parsing
   const agentProcess = spawn(cmd, args, {
     cwd: targetDir,
     stdio: ["inherit", "pipe", "pipe"],
-    shell: true,
+    shell: false,
+  });
+
+  agentProcess.on("error", (err) => {
+    clearInterval(headerTick);
+    console.log("");
+    log.error(`Failed to start ${options.agent}: ${err.message}`);
   });
 
   // ── Tick header every second

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
-import { getAgent, detectAgents, ALL_AGENT_NAMES } from "@/setup/agents.js";
-import { pathExists } from "@/utils/fs.js";
+import { getAgent, detectAgents, ALL_AGENT_NAMES } from "../setup/agents.js";
+import { pathExists } from "../utils/fs.js";
 
-vi.mock("@/utils/fs.js", () => ({
+vi.mock("../utils/fs.js", () => ({
   pathExists: vi.fn(),
 }));
 
