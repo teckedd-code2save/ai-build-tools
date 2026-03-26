@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mergeServerEntry } from "@/setup/mcp-writer.js";
+import { mergeServerEntry } from "../setup/mcp-writer.js";
 
 describe("mcp-writer.ts", () => {
   describe("mergeServerEntry", () => {
