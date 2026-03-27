@@ -655,6 +655,70 @@
       align-items: center;
     }
 
+    .use-cases-grid {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .use-case-card {
+      background: #faf7f0;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      padding: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .use-case-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .use-case-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .use-case-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .cta-panel {
+      margin-top: 4rem;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 12px;
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .cta-panel h3 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .cta-panel p {
+      color: rgba(245, 240, 232, 0.78);
+      line-height: 1.8;
+      max-width: 52ch;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
     .blog-tag {
       font-family: var(--mono);
       font-size: 0.7rem;
@@ -810,6 +874,11 @@
         grid-template-columns: 1fr;
       }
 
+      .use-cases-grid,
+      .cta-panel {
+        grid-template-columns: 1fr;
+      }
+
       nav {
         padding: 1rem 1.5rem;
       }
@@ -839,7 +908,7 @@
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#outputs">What you get</a></li>
       <li><a href="#setup">Setup</a></li>
-      <li><a href="#blog">Blog post</a></li>
+      <li><a href="#use-cases">Use cases</a></li>
     </ul>
   </nav>
 
@@ -1015,7 +1084,7 @@
 
       <div class="req-grid">
         <div class="req-block">
-          <h4>Required</h4>
+          <h4>What b2dp needs</h4>
           <div class="req-item">
             <span class="check">&#10003;</span>
             <span><strong style="color:#e8e8e8">Claude Code</strong>, <strong style="color:#e8e8e8">Codex</strong>,
@@ -1036,11 +1105,11 @@
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">Sibling Skills</strong> &mdash; <code
+            <span><strong style="color:#e8e8e8">The b2dp sibling skills</strong> &mdash; <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">cloud-solution-architect</code>, <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">api-test-generator</code>, <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">frontend-data-consumer</code>, <code
-                style="color:#f09060;font-family:var(--mono);font-size:0.8em">infrastructure-as-code-architect</code> &mdash; for the full Design &rarr; Test &rarr; UI &rarr; IaC workflow</span>
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">infrastructure-as-code-architect</code> &mdash; installed by the CLI for the full design &rarr; test &rarr; UI &rarr; IaC workflow</span>
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
@@ -1048,7 +1117,7 @@
           </div>
         </div>
         <div class="req-block">
-          <h4>MCP tools Datafy exposes</h4>
+          <h4>What the ecosystem exposes</h4>
           <p style="font-size:0.75rem; color:#aaa; margin-top:-0.5rem; margin-bottom:0.75rem;">(where <code
               style="color:#f09060;">&lt;id&gt;</code> is the source id from your <code>dbhub.toml</code>)</p>
           <div class="req-item">
@@ -1204,9 +1273,38 @@
 
   <div class="divider"></div>
 
-  <!-- BLOG SECTION HIDDEN TEMPORARILY -->
+  <section id="use-cases">
+    <div class="section-label">Use cases</div>
+    <h2 class="section-title">Who this is <em>actually for</em></h2>
+    <p class="section-body">b2dp is strongest when you already know the product shape and want your agents to stop wasting time on repetitive backend setup, wiring, and structural drift.</p>
 
-  <div style="height:4rem"></div>
+    <div class="use-cases-grid reveal">
+      <div class="use-case-card">
+        <h3>Indie SaaS builders</h3>
+        <p>Go from a product idea to a credible backend foundation faster, without hand-assembling schema, repos, tests, and infra prompts every single time.</p>
+      </div>
+      <div class="use-case-card">
+        <h3>Agencies and consultants</h3>
+        <p>Standardize how client backends get scaffolded so every new engagement starts from a more repeatable architecture and delivery workflow.</p>
+      </div>
+      <div class="use-case-card">
+        <h3>Startup engineers</h3>
+        <p>Turn messy requirement docs into structured backend artifacts and reduce drift between product language, schema design, and implementation plans.</p>
+      </div>
+    </div>
+
+    <div class="cta-panel reveal">
+      <div>
+        <h3>Stop rebuilding backend setup from scratch.</h3>
+        <p>Install b2dp, wire your agents once, and let the ecosystem handle the boring part: getting from product intent to a usable backend delivery workflow.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="#setup" class="btn btn-primary">Install b2dp</a>
+        <a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank" class="btn btn-secondary" style="color:var(--paper); border-color:rgba(245,240,232,0.4)">View GitHub</a>
+      </div>
+    </div>
+  </section>
+
   <div class="divider"></div>
 
   <footer>
@@ -1217,7 +1315,8 @@
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#outputs">Outputs</a></li>
       <li><a href="#setup">Setup</a></li>
-      <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub</a></li>
+      <li><a href="#use-cases">Use cases</a></li>
+      <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub repo</a></li>
     </ul>
   </footer>
 
