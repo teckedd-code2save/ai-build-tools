@@ -90,18 +90,8 @@ b2dp skills list
 b2dp skills info business-to-data-platform
 ```
 
-## Core commands
-
-### `b2dp setup`
-Installs skills, configures MCP servers, and writes agent rules.
-
-Useful flags:
-- `--yes` — accept detected defaults
-- `--project` — configure only the current repository
-- agent-specific flags such as `--claude`, `--cursor`, etc.
-
-### `b2dp check`
-Checks whether your agents, skills, and MCP integrations are configured correctly.
+5. Command: `npx @teckedd-code2save/datafy@latest --config /path/to/your/dbhub.toml --transport stdio`
+6. Click Save and reload the window (or restart Cursor).
 
 ### `b2dp skills`
 Inspect available skills and view skill details.
@@ -129,50 +119,26 @@ Example MCP config:
 }
 ```
 
-## Example `dbhub.toml`
+### Adding to Codex
 
+1. **CLI**: Use `codex mcp` to add and manage servers.
+2. **Config**: Update `~/.codex/config.toml` (global).
+3. **TOML Configuration**:
 ```toml
-[sources.pet_market]
-type = "postgres"
-url = "postgres://user:pass@localhost:5432/pet_market"
-description = "Pet market database"
-
-[sources.session_storage]
-type = "redis"
-url = "redis://localhost:6379"
-description = "Redis for session storage"
-
-[sources.logs_and_analytics]
-type = "elasticsearch"
-host = "localhost"
-port = 9200
-lazy = true
-description = "Elasticsearch for logs and analytics"
+[mcp_servers.datafy]
+command = "npx"
+args = ["@teckedd-code2save/datafy@latest", "--config", "/path/to/your/dbhub.toml", "--transport", "stdio"]
 ```
 
-## The skill ecosystem
-
-The `business-to-data-platform` skill acts as the orchestrator, but the full workflow is broader than one skill.
-
-### Core sibling skills
-- `cloud-solution-architect`
-- `api-test-generator`
-- `frontend-data-consumer`
-- `infrastructure-as-code-architect`
-
-### MCP integrations
-- `@teckedd-code2save/datafy` — required for database operations and code generation
-- Context7 MCP — optional for current documentation/patterns
-- Prisma MCP — optional for migrations and DB exploration
-- GitHub MCP — optional for repository discovery and CI/CD setup
-
-## Positioning
-
-The shortest version:
+## Including the `business-to-data-platform` Skill
 
 > **b2dp turns product requirements into backend delivery workflows.**
 
-Not by pretending one package does everything alone — but by installing and coordinating the skills and MCP tooling your AI agents need to do the work properly.
+If you want to use this skill, ensure the `business-to-data-platform/SKILL.md` file is placed in the specific directory monitored by your AI assistants:
+- **Claude**: Place skills in `~/.claude/skills/`
+- **Gemini CLI**: Place skills in `~/.gemini/skills/`
+- **Antigravity**: Place skills in `~/.gemini/antigravity/skills/` or `.agent/workflows/` in your workspace.
+- **Codex**: Place skills in `~/.agents/skills/` (global) or `.agents/skills/` (project).
 
 ## Repository
 

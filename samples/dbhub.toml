@@ -1,14 +1,29 @@
 # Datafy DBHub Configuration (dbhub.toml)
 # This file connects Datafy to your database instances
 
-[databases.pet_market]
+[[sources]]
+id = "pet_market" # → execute_sql_pet_market, search_objects_pet_market
 type = "postgres"
-url = "postgresql://user:pass@localhost:5432/pet_market"
-
-[databases.ride_sharing]
-type = "postgres"
-url = "postgresql://user:pass@localhost:5432/ride_sharing"
-
-[databases.session_storage]
+host = "localhost"
+port = 5432
+database = "petty"
+user = "postgres"
+password = "postgres"
+lazy = true
+# Redis — session / cache (optional)
+[[sources]]
+id = "session_storage" # → redis_command_session_storage
 type = "redis"
-url = "redis://localhost:6379"
+host = "localhost"
+port = 6379
+database = "0"
+lazy = true
+description = "Redis for session storage"
+# Elasticsearch — logs & analytics (optional)
+[[sources]]
+id = "logs_and_analytics" # → elasticsearch_search_logs_and_analytics
+type = "elasticsearch"
+host = "localhost"
+port = 9200
+lazy = true
+description = "Elasticsearch for logs and analytics"

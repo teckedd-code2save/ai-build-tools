@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>b2dp &middot; AI backend scaffolding ecosystem</title>
+  <title>b2dp &middot; Business-to-Data-Platform Orchestrator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap"
@@ -903,7 +903,7 @@
 <body>
 
   <nav>
-    <a class="nav-logo" href="#">&#x2B21; b2dp</a>
+    <a class="nav-logo" href="#">&#x2B21; b2dp orchestrator</a>
     <ul class="nav-links">
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#outputs">What you get</a></li>
@@ -916,11 +916,11 @@
     <div class="hero-decor"></div>
     <div class="hero-decor-dots"></div>
     <div class="hero-left">
-      <div class="hero-badge">CLI &middot; Skill ecosystem &middot; v1.2</div>
-      <h1>Describe a product.<br><em>Get the backend foundation.</em></h1>
+      <div class="hero-badge">AI Build System &middot; v1.2.2</div>
+      <h1>Describe the business.<br><em>Get the platform.</em></h1>
       <p class="hero-sub">
-        b2dp is a CLI and agent-skill ecosystem that turns plain-English product requirements into a production-minded backend foundation &mdash;
-        schema, migrations, repositories, tests, frontend contracts, and infrastructure scaffolding wired into your AI coding tools.
+        b2dp is a business-to-data-platform orchestrator for AI coding agents. It turns plain-English product ideas
+        into schemas, backend code, UI contracts, tests, MCP setup, and infrastructure-ready output.
       </p>
       <div class="hero-actions">
         <a href="#setup" class="btn btn-primary">&#8595; Get started</a>
@@ -934,27 +934,31 @@
           <div class="dot dot-r"></div>
           <div class="dot dot-y"></div>
           <div class="dot dot-g"></div>
-          <span class="terminal-title">b2dp &middot; setup + orchestrator ecosystem</span>
+          <span class="terminal-title">b2dp &middot; setup or generate</span>
         </div>
         <div class="terminal-body">
-          <div><span class="t-prompt">$</span><span class="t-out"> </span><span class="t-cmd">npm i -g @teckedd-code2save/b2dp</span></div>
-          <div><span class="t-prompt">$</span><span class="t-out"> </span><span class="t-cmd">b2dp setup --yes</span></div>
+          <div><span class="t-prompt">$</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">b2dp setup</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Detecting AI agents...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;Claude Code &middot; Cursor &middot; Gemini CLI</span></div>
+          <div><span class="t-success">&#10003; </span><span class="t-out">skills installed for Codex, Claude, Gemini</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Installing orchestrator skills...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;b2dp &middot; cloud-solution-architect &middot; api-test-generator</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;frontend-data-consumer &middot; infrastructure-as-code-architect</span></div>
+          <div><span class="t-success">&#10003; </span><span class="t-out">MCP servers written to agent config</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Configuring MCP servers...</span></div>
-          <div><span class="t-success">&nbsp;&nbsp;&#10003; datafy configured</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;&#9675; context7 optional &middot; github optional</span></div>
+          <div><span class="t-prompt">you</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">Build a platform for a ride-sharing startup</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Ready for prompt-driven delivery...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;schema &middot; repos &middot; tests &middot; UI contracts &middot; IaC</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;your preferred agent now uses b2dp skills + MCP tools directly</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-success">&#10003; Ecosystem ready</span> <span class="t-cursor"></span></div>
+          <div><span class="t-prompt">$</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">b2dp generate "Build a platform for a ride-sharing startup" --agent codex</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Spawning offloaded agent run...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;live progress &middot; phase updates &middot; interrupt support</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Analyzing business requirements...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;passengers, drivers, vehicles, rides, payouts, ratings</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-accent">&#9658; Generating backend, data layer, tests, and infrastructure...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;TypeScript &middot; SQL &middot; vitest &middot; docker &middot; UI data models</span></div>
+          <div style="height:0.5rem"></div>
+          <div><span class="t-success">&#10003; Platform ready</span> <span class="t-cursor"></span></div>
         </div>
       </div>
     </div>
@@ -964,46 +968,47 @@
 
   <!-- HOW IT WORKS -->
   <section id="how-it-works">
-    <div class="section-label">How it works</div>
-    <h2 class="section-title">Six steps from <em>idea</em> to a backend-ready workflow</h2>
-    <p class="section-body">b2dp does two things: it installs the right skills and MCP tooling into your AI agents, then those agents can turn product requirements into backend artifacts with far less boilerplate and setup friction.</p>
+    <div class="section-label">The pipeline</div>
+    <h2 class="section-title">Two ways to use <em>b2dp</em></h2>
+    <p class="section-body">You can either install b2dp into your preferred coding agent and prompt that agent directly,
+      or you can use <code>b2dp generate</code> to offload the whole job to a spawned agent run with live progress output.</p>
 
     <div class="pipeline reveal">
       <div class="pipe-step">
         <div class="pipe-num">01</div>
         <span class="pipe-icon">&#x1F9E0;</span>
-        <h3>Agent Detection</h3>
-        <p>The CLI detects supported AI environments like Claude Code, Cursor, VS Code/Copilot, Gemini CLI, and Antigravity so setup starts from your real toolchain.</p>
+        <h3>Install Once</h3>
+        <p>Run <code>b2dp setup</code> to install the orchestrator skill set, write rules, and configure MCP servers for your chosen agents.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">02</div>
         <span class="pipe-icon">&#x1F4D0;</span>
-        <h3>Skill Installation</h3>
-        <p>b2dp installs the core orchestrator plus the sibling skills needed for architecture, testing, frontend data consumption, and infrastructure generation.</p>
+        <h3>Prompt Your Agent</h3>
+        <p>After setup, talk to Codex, Claude, Gemini, VS Code, or Antigravity normally and let that agent invoke b2dp skills and MCP tools.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">03</div>
         <span class="pipe-icon">&#x1F5C4;&#xFE0F;</span>
-        <h3>MCP Configuration</h3>
-        <p>It wires in required MCP servers like Datafy for database operations, with optional Context7 and GitHub integrations for docs and repo-aware workflows.</p>
+        <h3>Or Offload Generation</h3>
+        <p>Use <code>b2dp generate</code> when you want the CLI itself to spawn an agent run, stream progress logs, and keep generation isolated in its own workspace.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">04</div>
         <span class="pipe-icon">&#x1F331;</span>
-        <h3>Prompt-Driven Modeling</h3>
-        <p>Once installed, the orchestrator skill can extract entities, relationships, and operational flows from plain-English product specs before any implementation begins.</p>
+        <h3>Model The Business</h3>
+        <p>Whichever path you choose, b2dp translates the product idea into entities, workflows, service boundaries, and data relationships.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">05</div>
         <span class="pipe-icon">&#x1F4CA;</span>
-        <h3>Artifact Generation</h3>
-        <p>The ecosystem can produce schema proposals, migrations, repository code, tests, frontend contracts, and deployment scaffolding instead of isolated code snippets.</p>
+        <h3>Generate The Stack</h3>
+        <p>The orchestrator can produce schemas, seed data, repositories, analytics queries, tests, UI contracts, and deployment scaffolding.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">06</div>
         <span class="pipe-icon">&#x1F4BB;</span>
-        <h3>Health Checks & Reuse</h3>
-        <p>Use the CLI to verify what is configured, reuse the setup globally or per project, and keep your agents aligned across multiple repositories.</p>
+        <h3>See Progress Clearly</h3>
+        <p>In generate mode, the CLI shows agent logs, phase updates, and interrupt options so long-running builds stay understandable.</p>
       </div>
     </div>
   </section>
@@ -1012,87 +1017,61 @@
 
   <!-- WHAT YOU GET -->
   <section id="outputs">
-    <div class="section-label">What you get</div>
-    <h2 class="section-title">Everything you need to <em>go from idea to implementation</em></h2>
-    <p class="section-body">The package itself gives you setup, configuration, and validation. The installed skill ecosystem then gives your AI agents the context and tooling to generate real backend deliverables.</p>
+    <div class="section-label">Deliverables</div>
+    <h2 class="section-title">Everything needed to <em>start building</em></h2>
+    <p class="section-body">The output is shaped for real implementation work: data model, executable setup, code scaffolding, contracts, and operational context.</p>
 
     <div class="outputs-grid reveal">
       <div class="output-card">
         <div class="output-icon">&#x1F3D7;&#xFE0F;</div>
         <div>
-          <h3>One-Command Setup</h3>
-          <p>Install and configure the b2dp ecosystem with a single CLI entry point instead of manually wiring every skill and MCP server by hand.</p>
-          <span class="output-tag">cli</span>
+          <h3>Business Analysis</h3>
+          <p>Structured breakdown of product concepts, workflows, actors, and domain assumptions.</p>
+          <span class="output-tag">markdown</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x1F4C4;</div>
         <div>
-          <h3>Multi-Agent Support</h3>
-          <p>Works across supported coding agents and editors so the same backend workflow can follow you between local tools and projects.</p>
-          <span class="output-tag">claude &middot; cursor &middot; gemini</span>
+          <h3>Schema &amp; Migrations</h3>
+          <p>Tables, indexes, migration-ready SQL, and conventions your team can extend.</p>
+          <span class="output-tag">sql &middot; ts/py</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x2705;</div>
         <div>
-          <h3>Datafy Integration</h3>
-          <p>Database-aware agent workflows via Datafy MCP so your assistant can inspect sources, execute SQL, and generate code from real schemas.</p>
-          <span class="output-tag">mcp</span>
+          <h3>Provision &amp; Seed</h3>
+          <p>Database creation, execution logs, and realistic sample data for local iteration.</p>
+          <span class="output-tag">auto-execute</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x26A1;</div>
         <div>
-          <h3>Orchestrator Skills</h3>
-          <p>Installs the business-to-data-platform orchestrator plus sibling skills for architecture, testing, frontend generation, and infrastructure.</p>
-          <span class="output-tag">skills</span>
+          <h3>Repos &amp; UI Contracts</h3>
+          <p>Repository scaffolds, API shapes, and frontend-friendly data contracts instead of throwaway mock arrays.</p>
+          <span class="output-tag">ts &middot; cs &middot; py &middot; java</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x1F50D;</div>
         <div>
-          <h3>Backend Deliverables</h3>
-          <p>When used through a configured agent, the ecosystem can generate schema designs, repos, tests, analytics queries, and frontend data contracts.</p>
-          <span class="output-tag">artifacts</span>
+          <h3>Cache &amp; Search</h3>
+          <p>Paths for Redis, Elasticsearch, and adjacent data services when the system needs more than Postgres.</p>
+          <span class="output-tag">architecture</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x1F4CA;</div>
         <div>
-          <h3>Health Checks</h3>
-          <p>Verify which agents, skills, and MCP servers are configured so onboarding and troubleshooting are faster.</p>
-          <span class="output-tag">check</span>
+          <h3>Analytics Queries</h3>
+          <p>Queries that help teams answer revenue, operations, funnel, and performance questions earlier.</p>
+          <span class="output-tag">queries.sql</span>
         </div>
       </div>
     </div>
 
-    <div class="code-section reveal">
-      <div class="code-tabs">
-        <button class="code-tab active">install</button>
-        <button class="code-tab">setup</button>
-        <button class="code-tab">check</button>
-      </div>
-      <div class="code-body">
-        <span class="cm"># install the CLI globally</span>
-        <span class="kw">npm install -g</span> <span class="str">@teckedd-code2save/b2dp</span>
-
-        <span class="cm"># interactive ecosystem setup</span>
-        <span class="fn">b2dp</span> setup
-
-        <span class="cm"># or accept detected defaults</span>
-        <span class="fn">b2dp</span> setup <span class="kw">--yes</span>
-
-        <span class="cm"># scope setup to the current repository</span>
-        <span class="fn">b2dp</span> setup <span class="kw">--project</span>
-
-        <span class="cm"># inspect current configuration health</span>
-        <span class="fn">b2dp</span> check
-
-        <span class="cm"># inspect installed skill metadata</span>
-        <span class="fn">b2dp</span> skills list
-      </div>
-    </div>
   </section>
 
   <div class="divider"></div>
@@ -1101,28 +1080,26 @@
   <section id="setup">
     <div class="req-section reveal">
       <div class="section-label">Requirements &amp; setup</div>
-      <h2 class="section-title" style="color:var(--paper)">Install b2dp and connect your agents in <em>three steps</em></h2>
+      <h2 class="section-title" style="color:var(--paper)">Install b2dp and connect the <em>toolchain</em></h2>
 
       <div class="req-grid">
         <div class="req-block">
           <h4>What b2dp needs</h4>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">A supported AI agent or editor</strong> such as Claude Code/Desktop, Cursor, Gemini CLI, VS Code/Copilot, or Antigravity &mdash; ideally with MCP support enabled</span>
+            <span><strong style="color:#e8e8e8">Claude Code</strong>, <strong style="color:#e8e8e8">Codex</strong>,
+              <strong style="color:#e8e8e8">Gemini CLI</strong>, <strong style="color:#e8e8e8">Antigravity</strong>,
+              or <strong style="color:#e8e8e8">VS Code</strong> with MCP support enabled</span>
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> &mdash; <code
-                style="color:#f09060;font-family:var(--mono);font-size:0.8em">@teckedd-code2save/datafy</code>
-              registered in your tool's MCP config files (e.g. <code
-                style="color:#f09060;font-family:var(--mono);font-size:0.8em">claude_desktop_config.json</code>, <code
-                style="color:#f09060;font-family:var(--mono);font-size:0.8em">mcp_config.json</code>, <code
-                style="color:#f09060;font-family:var(--mono);font-size:0.8em">settings.json</code>, or via Cursor
-              UI)</span>
+            <span><strong style="color:#e8e8e8">The b2dp CLI</strong> &mdash; use <code
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">b2dp setup</code> to install skills,
+              configure MCP servers, and write the right agent-specific rules</span>
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">PostgreSQL instance</strong> &mdash; local or remote, defined as a
+            <span><strong style="color:#e8e8e8">Datafy MCP Server</strong> &mdash; local or remote data sources defined as a
               source in your <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">dbhub.toml</code></span>
           </div>
@@ -1136,7 +1113,7 @@
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">Installed skill files and agent rules</strong> &mdash; placed in the right global or project-level location so the orchestrator is actually available when you prompt your agent</span>
+            <span><strong style="color:#e8e8e8">Optional MCPs</strong> &mdash; Context7, Prisma, GitHub, Redis, and search tools enrich the workflow when available</span>
           </div>
         </div>
         <div class="req-block">
@@ -1190,18 +1167,45 @@
         </div>
       </div>
 
-      <div class="step-label">Step 1 &mdash; Install the <span style="color:#e8e8e8">CLI</span></div>
-      <div class="install-block" style="line-height:1.8;">
+      <div class="step-label">Step 1 &mdash; Install the CLI and run <span style="color:#e8e8e8">setup</span></div>
+      <div class="install-block">
         <div><span class="prompt">$</span> <span class="cmd">npm install -g @teckedd-code2save/b2dp</span></div>
         <div><span class="prompt">$</span> <span class="cmd">b2dp setup</span></div>
-        <div style="color:#555"># interactive setup for detected agents</div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># npm package</div>
+        <div><a href="https://www.npmjs.com/package/@teckedd-code2save/b2dp" target="_blank" style="color:#f09060;text-decoration:none;">https://www.npmjs.com/package/@teckedd-code2save/b2dp</a></div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># Or let b2dp auto-detect configured agents</div>
         <div><span class="prompt">$</span> <span class="cmd">b2dp setup --yes</span></div>
-        <div style="color:#555"># accept detected defaults automatically</div>
-        <div><span class="prompt">$</span> <span class="cmd">b2dp setup --project</span></div>
-        <div style="color:#555"># scope configuration to the current repo</div>
       </div>
 
-      <div class="step-label">Step 2 &mdash; Configure <span style="color:#e8e8e8">Datafy + dbhub.toml</span></div>
+      <div class="step-label">Step 2 &mdash; Confirm your <span style="color:#e8e8e8">MCP configuration</span></div>
+      <div class="install-block" style="line-height:1.8;">
+        <div style="color:#555"># Example JSON MCP entry used by several supported agents</div>
+        <div style="color:#555">{</div>
+        <div style="color:#555">&nbsp;&nbsp;<span style="color:#89ddff">"mcpServers"</span>: {</div>
+        <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"datafy"</span>: {</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"command"</span>: <span
+            style="color:#c3e88d">"npx"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"args"</span>: [</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+            style="color:#c3e88d">"@teckedd-code2save/datafy@latest"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--config"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmd">"/path/to/your/dbhub.toml"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--transport"</span>,</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"stdio"</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</div>
+        <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
+        <div style="color:#555">&nbsp;&nbsp;}</div>
+        <div style="color:#555">}</div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># Codex uses ~/.codex/config.toml and b2dp writes the TOML shape for you.</div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#28c840;font-weight:bold;"># IMPORTANT: Restart your AI assistant / editor for changes to take
+          effect.</div>
+      </div>
+
+      <div class="step-label">Step 3 &mdash; Create your <span style="color:#e8e8e8">dbhub.toml</span></div>
       <div class="install-block" style="line-height:1.8;">
         <div style="color:#555"># dbhub.toml &mdash; define all your data sources</div>
         <div style="height:0.5rem"></div>
@@ -1248,13 +1252,21 @@
           style="color:#f09060">search_objects_pet_market</span> to the agent.
       </div>
 
-      <div class="step-label">Step 3 &mdash; Prompt your <span style="color:#e8e8e8">configured agent</span></div>
+      <div class="step-label">Option A &mdash; prompt your configured agent directly</div>
       <div class="install-block">
-        <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build the backend foundation for a subscription meal-kit
+        <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build a backend for a subscription meal-kit
             service</span></div>
+        <div style="height:0.5rem"></div>
+        <div style="color:#555"># Your preferred agent uses the installed b2dp skills and MCP tools</div>
+        <div style="color:#555"># to reason, provision, generate code, and verify output.</div>
+      </div>
+
+      <div class="step-label">Option B &mdash; offload to <span style="color:#e8e8e8">b2dp generate</span></div>
+      <div class="install-block">
+        <div><span class="prompt">$</span> <span class="cmd">b2dp generate "Build a platform for a subscription meal-kit service" --agent codex</span></div>
         <div style="height:0.25rem"></div>
-        <div style="color:#555"># With b2dp installed, your AI agent can route through the orchestrator skill,</div>
-        <div style="color:#555"># use Datafy, and generate schema, code, tests, and infra scaffolding.</div>
+        <div style="color:#555"># b2dp spawns the selected agent in a fresh workspace,</div>
+        <div style="color:#555"># streams logs, shows phases, and keeps the run isolated.</div>
       </div>
     </div>
   </section>
@@ -1297,7 +1309,7 @@
 
   <footer>
     <div class="footer-brand">
-      <span>b2dp</span> &middot; CLI + skill ecosystem &middot; v1.2
+      <span>b2dp</span> &middot; Business-to-Data-Platform Orchestrator &middot; v1.2.2
     </div>
     <ul class="footer-links">
       <li><a href="#how-it-works">How it works</a></li>

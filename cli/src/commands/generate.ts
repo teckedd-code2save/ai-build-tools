@@ -1,142 +1,327 @@
 import { Command } from "commander";
 import pc from "picocolors";
-import ora from "ora";
-import { spawn } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { spawn, type ChildProcess } from "node:child_process";
+import { writeFile } from "node:fs/promises";
+import { basename, join } from "node:path";
 import { randomBytes } from "node:crypto";
+import readline from "node:readline";
 import { log } from "../utils/logger.js";
 import { ensureDir } from "../utils/fs.js";
 
 interface GenerateOptions {
-  agent: "claude" | "gemini" | "cursor";
+  agent: "claude" | "gemini" | "codex";
   deploy?: string;
+}
+
+interface AgentInvocation {
+  cmd: string;
+  args: string[];
+}
+
+function slugifyWorkspacePrompt(prompt: string): string {
+  const stopWords = new Set([
+    "a",
+    "an",
+    "and",
+    "app",
+    "application",
+    "backend",
+    "build",
+    "create",
+    "for",
+    "me",
+    "platform",
+    "system",
+    "the",
+    "to",
+  ]);
+
+  const parts = prompt
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/[\s-]+/)
+    .filter((part) => part.length > 0 && !stopWords.has(part));
+
+  const chosen = parts.slice(0, 4);
+  return chosen.length > 0 ? chosen.join("-") : "project";
+}
+
+export function buildWorkspaceName(prompt: string, runId: string): string {
+  return `b2dp-${slugifyWorkspacePrompt(prompt)}-${runId}`;
+}
+
+const PHASE_PATTERNS: Array<{ pattern: RegExp; label: string; emoji: string }> = [
+  { pattern: /analyz|understand|reading|planning|architect/i, label: "Analyzing requirements", emoji: "🔍" },
+  { pattern: /schema|database|table|model|migration/i, label: "Designing database schema", emoji: "🗄️ " },
+  { pattern: /backend|express|api|route|server|prisma/i, label: "Scaffolding backend", emoji: "⚙️ " },
+  { pattern: /frontend|next|react|vue|component|tailwind/i, label: "Building frontend", emoji: "🎨" },
+  { pattern: /test|spec|jest|vitest|supertest/i, label: "Writing tests", emoji: "🧪" },
+  { pattern: /docker|k8s|kubernetes|deploy|infra|terraform/i, label: "Setting up infrastructure", emoji: "🚀" },
+  { pattern: /install|npm|yarn|pnpm|package/i, label: "Installing dependencies", emoji: "📦" },
+  { pattern: /writing|creating|generating|scaffolding/i, label: "Generating files", emoji: "✍️ " },
+  { pattern: /complete|done|finished|success/i, label: "Wrapping up", emoji: "✅" },
+];
+
+function renderHeader(
+  runId: string,
+  agent: GenerateOptions["agent"],
+  workspace: string,
+  phase: string,
+  elapsed: string
+) {
+  const width = 64;
+  const bar = "─".repeat(width);
+  process.stdout.write("\x1b[1A\x1b[2K");
+  process.stdout.write("\x1b[1A\x1b[2K");
+  process.stdout.write("\x1b[1A\x1b[2K");
+  process.stdout.write("\x1b[1A\x1b[2K");
+  const title = pc.bold(pc.cyan("⚡ b2dp generate")) + pc.dim(` — run ${pc.white(runId)}`);
+  const timer = pc.dim(`⏱  ${elapsed}`);
+  const meta =
+    pc.dim("agent ") +
+    pc.green(agent) +
+    pc.dim("  workspace ") +
+    pc.white(workspace);
+  const status = pc.yellow(phase);
+  console.log(title + "  " + timer);
+  console.log(meta);
+  console.log(pc.dim(bar));
+  console.log(status);
+}
+
+function formatElapsed(startMs: number): string {
+  const s = Math.floor((Date.now() - startMs) / 1000);
+  const mm = String(Math.floor(s / 60)).padStart(2, "0");
+  const ss = String(s % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+}
+
+function detectPhase(text: string): { label: string; emoji: string } | null {
+  for (const phase of PHASE_PATTERNS) {
+    if (phase.pattern.test(text)) return { label: phase.label, emoji: phase.emoji };
+  }
+  return null;
+}
+
+async function showInterruptMenu(
+  agentProcess: ChildProcess,
+  targetDir: string
+): Promise<"continue" | "abort" | "keep"> {
+  agentProcess.stdout?.pause();
+  agentProcess.stderr?.pause();
+
+  console.log("\n");
+  console.log(pc.yellow("⚠  Interrupt received. What do you want to do?\n"));
+  console.log(`  ${pc.bold("1")}  Continue running`);
+  console.log(`  ${pc.bold("2")}  Stop and keep what's been built so far`);
+  console.log(`  ${pc.bold("3")}  Abort and clean up workspace`);
+  console.log("");
+
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(pc.dim("  Choice [1/2/3]: "), (answer) => {
+      rl.close();
+      const choice = answer.trim();
+
+      if (choice === "2") {
+        console.log(`\n${pc.green("✔")} Stopped. Partial build kept at:\n  ${pc.cyan(targetDir)}`);
+        agentProcess.kill("SIGTERM");
+        resolve("keep");
+      } else if (choice === "3") {
+        console.log(`\n${pc.red("✖")} Aborting and cleaning up...`);
+        agentProcess.kill("SIGTERM");
+        resolve("abort");
+      } else {
+        console.log(`\n${pc.green("✔")} Resuming...\n`);
+        agentProcess.stdout?.resume();
+        agentProcess.stderr?.resume();
+        resolve("continue");
+      }
+    });
+  });
 }
 
 export function registerGenerateCommand(program: Command): void {
   program
     .command("generate <prompt>")
     .description("Autonomously generate an application using b2dp orchestrator")
-    .option("--agent <agent>", "Which agent to spawn (claude, gemini, cursor)", "claude")
+    .option("--agent <agent>", "Which agent to spawn (claude, gemini, codex)", "claude")
     .option("--deploy <target>", "Where to deploy after generation (e.g., vercel)")
     .action(async (prompt: string, options: GenerateOptions) => {
       await generateCommand(prompt, options);
     });
 }
 
+export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvocation {
+  switch (agent) {
+    case "claude":
+      return {
+        cmd: "npx",
+        args: [
+          "@anthropic-ai/claude-code",
+          "--print",
+          "--permission-mode",
+          "bypassPermissions",
+          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+        ],
+      };
+    case "gemini":
+      return {
+        cmd: "gemini",
+        args: [
+          "-p",
+          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+          "--yolo",
+        ],
+      };
+    case "codex":
+      return {
+        cmd: "codex",
+        args: [
+          "exec",
+          "--skip-git-repo-check",
+          "--full-auto",
+          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+        ],
+      };
+    default:
+      throw new Error(`Unsupported agent: ${agent satisfies never}`);
+  }
+}
+
 async function generateCommand(prompt: string, options: GenerateOptions): Promise<void> {
   const runId = randomBytes(4).toString("hex");
-  const targetDir = join(process.cwd(), `b2dp-app-${runId}`);
+  const targetDir = join(process.cwd(), buildWorkspaceName(prompt, runId));
+  const startMs = Date.now();
 
-  log.info(`🚀 Starting b2dp generate run: ${pc.cyan(runId)}`);
-  log.info(`📂 Workspace: ${pc.dim(targetDir)}`);
+  console.log("");
+  console.log("");
+  console.log("");
+  console.log("");
 
-  const spinner = ora("Scaffolding workspace...").start();
+  let currentPhase = `🤖 Spawning ${pc.green(options.agent)} agent...`;
+  const updateHeader = () =>
+    renderHeader(runId, options.agent, basename(targetDir), currentPhase, formatElapsed(startMs));
+  updateHeader();
+
   try {
     await ensureDir(targetDir);
-    
-    // Write the prompt to a planning document
     const systemPrompt = `
 # b2dp Orchestrator Task
-You are the **Business-to-Data-Platform (b2dp) Orchestrator**. You are an autonomous AI coding agent with full shell access and a powerful ecosystem of MCP servers.
+You are the **Business-to-Data-Platform (b2dp) Orchestrator**. 
 
 ## Goal
 ${prompt}
 
-## Mandates & Workflow
-1. **Cloud Solution Architect & Infrastructure**: 
-   - Design the data model and infrastructure.
-   - If you require infrastructure (like PostgreSQL or Redis), write a \`docker-compose.yml\` and actively run \`docker-compose up -d\` using your shell tools to spin it up.
-   - IMPORTANT: Leverage the \`datafy\` MCP server. Datafy supports SQL databases (PostgreSQL, MySQL, SQLite, etc.), Redis, and Elasticsearch. Datafy can even CREATE databases if they don't exist. Use it to provision and inspect your data stores.
-   - Use the \`prisma-mcp-server\` if using Prisma for ORM.
-2. **Database & API Generation**:
-   - Create the actual database schemas and migration scripts. Run the necessary shell commands (like \`npx prisma db push\`) to apply them.
-   - Generate fully functional backend APIs. DO NOT leave boilerplate.
-3. **Frontend Data Consumer**:
-   - Build the actual frontend UI components to consume the APIs. 
-   - Implement real application logic (e.g., actual stateful "Add to Cart" functionality, functional login forms).
-   - DO NOT leave default framework boilerplate.
-4. **Context & Tracking**:
-   - Use the \`context7\` MCP server to document your progress, architectural decisions, and current state.
-5. **Completion Criteria**:
-   - You MUST actively verify that your infrastructure is running, your database is connected, your APIs return data, and your frontend builds successfully without TypeScript errors.
-   - If you get stuck on infrastructure, prompt for human intervention.
-   - Do NOT exit until the full stack is implemented, connected, and verified.
+## Workflow
+1. Find and use the **business-to-data-platform** skill to fulfill this goal.
+2. Respect any explicit stack, framework, cloud, database version, ORM, or UI instructions in the goal. Do not silently default to TypeScript or another stack if the goal specified something else.
+3. Implement all major product surfaces implied by the business, not just a single dashboard view.
+4. You have full shell access and a powerful ecosystem of MCP servers (Datafy, Prisma, Context7, GitHub, etc.).
+5. Do NOT exit until the full stack is implemented, connected, and verified.
 `;
     await writeFile(join(targetDir, "SYSTEM_PROMPT.md"), systemPrompt, "utf-8");
-    spinner.succeed("Workspace ready.");
+    currentPhase = `📂 Workspace ready — ${pc.dim(targetDir)}`;
+    updateHeader();
   } catch (err) {
-    spinner.fail("Failed to scaffold workspace.");
-    log.error(String(err));
+    log.error(`Failed to scaffold workspace: ${String(err)}`);
     return;
   }
 
-  log.blank();
-  log.info(`🤖 Spawning agent: ${pc.green(options.agent)}`);
-
-  // Define the command based on the selected agent
-  let cmd = "";
-  let args: string[] = [];
-
-  switch (options.agent) {
-    case "claude":
-      cmd = "npx";
-      args = ["@anthropic-ai/claude-code", "--print", "--permission-mode", "bypassPermissions", "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done."];
-      break;
-    case "gemini":
-      cmd = "gemini"; // Assuming gemini CLI is installed globally
-      args = ["-p", "'Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.'", "--yolo"];
-      break;
-    case "cursor":
-      log.error("Cursor does not currently support headless CLI generation.");
-      return;
-    default:
-      log.error(`Unsupported agent: ${options.agent}`);
-      return;
-  }
-
-  // Execute the Agent
+  const { cmd, args } = buildAgentInvocation(options.agent);
   const agentProcess = spawn(cmd, args, {
     cwd: targetDir,
-    stdio: "inherit", // Pipe output directly to user's terminal
-    shell: true,
+    stdio: ["inherit", "pipe", "pipe"],
+    shell: false,
+  });
+
+  const headerTick = setInterval(updateHeader, 1000);
+
+  agentProcess.on("error", (err) => {
+    clearInterval(headerTick);
+    console.log("");
+    log.error(`Failed to start ${options.agent}: ${err.message}`);
+  });
+
+  let lineBuffer = "";
+  const processChunk = (chunk: Buffer) => {
+    const text = chunk.toString();
+    lineBuffer += text;
+    process.stdout.write(pc.dim(text));
+
+    const lines = lineBuffer.split("\n");
+    for (const line of lines) {
+      const detected = detectPhase(line);
+      if (detected) {
+        currentPhase = `${detected.emoji} ${detected.label}`;
+      }
+    }
+    lineBuffer = lines[lines.length - 1] ?? "";
+  };
+
+  agentProcess.stdout?.on("data", processChunk);
+  agentProcess.stderr?.on("data", processChunk);
+
+  let interrupted = false;
+  process.on("SIGINT", async () => {
+    if (interrupted) return;
+    interrupted = true;
+    clearInterval(headerTick);
+
+    const choice = await showInterruptMenu(agentProcess, targetDir);
+
+    if (choice === "continue") {
+      interrupted = false;
+      const resumedTick = setInterval(updateHeader, 1000);
+      agentProcess.on("close", () => clearInterval(resumedTick));
+    } else {
+      process.exit(choice === "abort" ? 1 : 0);
+    }
   });
 
   agentProcess.on("close", async (code) => {
-    if (code !== 0) {
-      log.error(`Agent exited with code ${code}. Skipping deployment.`);
+    clearInterval(headerTick);
+
+    if (code !== 0 && !interrupted) {
+      console.log("");
+      log.error(`Agent exited with code ${code}.`);
       return;
     }
 
-    log.success("✅ Agent successfully completed the generation.");
+    console.log("");
+    console.log(pc.dim("─".repeat(64)));
+    log.success(pc.bold("Generation complete!"));
+    log.info(`📂 Output: ${pc.cyan(targetDir)}`);
+    log.info(`⏱  Total time: ${pc.white(formatElapsed(startMs))}`);
 
-    // Handle Deployment if requested
     if (options.deploy === "vercel") {
       log.blank();
-      const deploySpinner = ora("Deploying to Vercel...").start();
-      try {
-        const deployProcess = spawn("npx", ["vercel", "deploy", "--prod", "--yes"], {
-          cwd: targetDir,
-          shell: true,
-        });
+      log.info("🚀 Deploying to Vercel...");
 
-        let output = "";
-        deployProcess.stdout.on("data", (data) => (output += data.toString()));
-        deployProcess.stderr.on("data", (data) => (output += data.toString()));
+      const deployProcess = spawn("npx", ["vercel", "deploy", "--prod", "--yes"], {
+        cwd: targetDir,
+        stdio: ["inherit", "pipe", "pipe"],
+        shell: true,
+      });
 
-        deployProcess.on("close", (deployCode) => {
-          if (deployCode === 0) {
-            deploySpinner.succeed("Deployed successfully!");
-            log.info(pc.blue(output.trim()));
-          } else {
-            deploySpinner.fail("Deployment failed.");
-            log.error(output);
-          }
-        });
-      } catch (err) {
-        deploySpinner.fail("Deployment execution failed.");
-        log.error(String(err));
-      }
+      deployProcess.stdout?.on("data", (chunk: Buffer) => {
+        process.stdout.write(chunk);
+      });
+      deployProcess.stderr?.on("data", (chunk: Buffer) => {
+        process.stderr.write(chunk);
+      });
+
+      deployProcess.on("close", (deployCode) => {
+        if (deployCode === 0) {
+          log.success("Deployed successfully!");
+        } else {
+          log.error("Deployment failed.");
+        }
+      });
     } else if (options.deploy) {
       log.warn(`Unknown deployment target: ${options.deploy}`);
     }

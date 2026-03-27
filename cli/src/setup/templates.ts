@@ -27,15 +27,18 @@ This project uses the **business-to-data-platform** skill as the central orchest
 export const DBHUB_TOML_SAMPLE = `# Datafy DBHub Configuration (dbhub.toml)
 # This file connects Datafy to your database instances
 
-[databases.pet_market]
+[[sources]]
+name = "pet_market"
 type = "postgres"
 url = "postgresql://user:pass@localhost:5432/pet_market"
 
-[databases.ride_sharing]
+[[sources]]
+name = "ride_sharing"
 type = "postgres"
 url = "postgresql://user:pass@localhost:5432/ride_sharing"
 
-[databases.session_storage]
+[[sources]]
+name = "session_storage"
 type = "redis"
 url = "redis://localhost:6379"
 `;

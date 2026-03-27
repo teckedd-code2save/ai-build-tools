@@ -1,6 +1,6 @@
 {
   "name": "@teckedd-code2save/b2dp",
-  "version": "1.1.0",
+  "version": "1.2.3",
   "description": "b2dp CLI — One-command setup for the Business-to-Data-Platform skill ecosystem",
   "repository": {
     "type": "git",
@@ -28,7 +28,8 @@
     "commander": "^13.1.0",
     "figlet": "^1.9.4",
     "ora": "^9.0.0",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "smol-toml": "^1.6.0"
   },
   "devDependencies": {
     "@types/figlet": "^1.7.0",

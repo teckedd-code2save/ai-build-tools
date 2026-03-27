@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { pathExists } from "../utils/fs.js";
 
-export type AgentName = "antigravity" | "claude" | "cursor" | "vscode" | "gemini";
+export type AgentName = "antigravity" | "claude" | "vscode" | "gemini" | "codex";
 
 export interface AgentConfig {
   name: AgentName;
@@ -64,29 +64,6 @@ const agents: Record<AgentName, AgentConfig> = {
     },
   },
 
-  // Cursor — ~/.cursor/
-  cursor: {
-    name: "cursor",
-    displayName: "Cursor",
-    skillsDir: (scope) =>
-      scope === "global"
-        ? join(homedir(), ".cursor", "skills")
-        : join(".cursor", "skills"),
-    rulesDir: (scope) =>
-      scope === "global"
-        ? join(homedir(), ".cursor", "rules")
-        : join(".cursor", "rules"),
-    mcpConfigPath: (scope) =>
-      scope === "global"
-        ? join(homedir(), ".cursor", "mcp.json")
-        : join(".cursor", "mcp.json"),
-    mcpConfigKey: "mcpServers",
-    detect: {
-      projectPaths: [".cursor"],
-      globalPaths: [join(homedir(), ".cursor")],
-    },
-  },
-
   // VS Code — uses .vscode/ for project-level config
   vscode: {
     name: "vscode",
@@ -132,6 +109,29 @@ const agents: Record<AgentName, AgentConfig> = {
       globalPaths: [join(homedir(), ".gemini", "settings.json")],
     },
   },
+  
+  // Codex — ~/.codex/config.toml
+  codex: {
+    name: "codex",
+    displayName: "Codex",
+    skillsDir: (scope) =>
+      scope === "global"
+        ? join(homedir(), ".agents", "skills")
+        : join(".agents", "skills"),
+    rulesDir: (scope) =>
+      scope === "global"
+        ? join(homedir(), ".agents", "rules")
+        : join(".agents", "rules"),
+    mcpConfigPath: (scope) =>
+      scope === "global"
+        ? join(homedir(), ".codex", "config.toml")
+        : join(".codex", "config.toml"),
+    mcpConfigKey: "mcp_servers",
+    detect: {
+      projectPaths: [".codex"],
+      globalPaths: [join(homedir(), ".codex")],
+    },
+  },
 };
 
 export function getAgent(name: AgentName): AgentConfig {
@@ -143,9 +143,9 @@ export const ALL_AGENT_NAMES = Object.keys(agents) as AgentName[];
 export const AGENT_DISPLAY_NAMES: Record<AgentName, string> = {
   antigravity: "Antigravity (Gemini CLI)",
   claude: "Claude Code",
-  cursor: "Cursor",
   vscode: "VS Code (Copilot)",
   gemini: "Gemini CLI",
+  codex: "Codex",
 };
 
 export async function detectAgents(
