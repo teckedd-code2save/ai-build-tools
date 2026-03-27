@@ -1,40 +1,141 @@
-# AI Build Tools
+# b2dp
 
-A collection of AI build tools and skills that help you do things faster.
+**Describe your product. Get the backend foundation.**
 
-## Datafy MCP Server Setup
+`b2dp` is a CLI and agent-skill ecosystem for turning plain-English product requirements into production-minded backend workflows.
 
-The `@teckedd-code2save/datafy` Model Context Protocol (MCP) server allows AI assistants to interact with your databases, extract schema information, execute SQL, and generate code.
+Instead of manually wiring every skill, MCP server, and agent rule yourself, `b2dp` installs and configures the ecosystem your AI coding tools need to help with:
 
-To use the Datafy MCP server, you need to configure your AI assistant with the following MCP settings:
+- schema design
+- migrations
+- repository scaffolding
+- integration tests
+- frontend data contracts
+- infrastructure scaffolding
+
+It is not just a single prompt or a toy code generator. It is the setup layer for a broader backend-delivery workflow.
+
+## What b2dp actually is
+
+`b2dp` is an **ecosystem bootstrapper**.
+
+It helps you:
+- detect supported AI agents/editors
+- install the core business-to-data-platform orchestrator skill
+- install sibling skills used for architecture, testing, frontend generation, and IaC
+- configure MCP servers like Datafy
+- verify that everything is wired correctly
+
+Once installed, your configured AI agent can use that ecosystem to generate real backend artifacts from a business or product specification.
+
+## What it helps generate
+
+With the full ecosystem configured, your agents can work toward outputs like:
+
+- business/domain modeling
+- PostgreSQL schema proposals
+- migrations
+- repository and service code
+- analytics queries
+- integration tests
+- frontend-facing data contracts
+- Docker / Kubernetes / CI scaffolding
+
+## Supported environments
+
+The CLI is designed to work with supported agent/editor setups such as:
+
+- Claude Code / Claude Desktop
+- Cursor
+- VS Code / Copilot-style workflows
+- Gemini CLI
+- Antigravity
+
+## Quick start
+
+### Install
+
+```bash
+npm install -g @teckedd-code2save/b2dp
+```
+
+### Run setup
+
+```bash
+b2dp setup
+```
+
+Or accept detected defaults automatically:
+
+```bash
+b2dp setup --yes
+```
+
+To scope configuration to the current repository:
+
+```bash
+b2dp setup --project
+```
+
+### Verify configuration
+
+```bash
+b2dp check
+```
+
+### Explore installed skills
+
+```bash
+b2dp skills list
+b2dp skills info business-to-data-platform
+```
+
+## Core commands
+
+### `b2dp setup`
+Installs skills, configures MCP servers, and writes agent rules.
+
+Useful flags:
+- `--yes` — accept detected defaults
+- `--project` — configure only the current repository
+- agent-specific flags such as `--claude`, `--cursor`, etc.
+
+### `b2dp check`
+Checks whether your agents, skills, and MCP integrations are configured correctly.
+
+### `b2dp skills`
+Inspect available skills and view skill details.
+
+## Datafy MCP setup
+
+The ecosystem relies heavily on `@teckedd-code2save/datafy`, which gives AI assistants database-aware capabilities such as schema inspection, SQL execution, and code generation.
+
+Example MCP config:
 
 ```json
-"datafy": {
-  "command": "npx",
-  "args": [
-    "@teckedd-code2save/datafy@latest",
-    "--config",
-    "/path/to/your/dbhub.toml",
-    "--transport",
-    "stdio"
-  ]
+{
+  "mcpServers": {
+    "datafy": {
+      "command": "npx",
+      "args": [
+        "@teckedd-code2save/datafy@latest",
+        "--config",
+        "/path/to/your/dbhub.toml",
+        "--transport",
+        "stdio"
+      ]
+    }
+  }
 }
 ```
 
-*(Note: Replace `/path/to/your/dbhub.toml` with the absolute path to your `dbhub.toml` configuration file).*
-
-The server requires a `dbhub.toml` configuration file to define your data sources. Here is an example:
+## Example `dbhub.toml`
 
 ```toml
 [sources.pet_market]
 type = "postgres"
 url = "postgres://user:pass@localhost:5432/pet_market"
 description = "Pet market database"
-
-[sources.ride_sharing]
-type = "postgres"
-url = "postgres://user:pass@localhost:5432/ride_sharing"
-description = "Ride sharing database"
 
 [sources.session_storage]
 type = "redis"
@@ -49,91 +150,34 @@ lazy = true
 description = "Elasticsearch for logs and analytics"
 ```
 
-### Adding to Claude Desktop
+## The skill ecosystem
 
-1. Open Claude Desktop Settings -> Developer
-2. Click "Edit Config"
-3. Add the `datafy` server configuration to the `mcpServers` object in your `claude_desktop_config.json`:
+The `business-to-data-platform` skill acts as the orchestrator, but the full workflow is broader than one skill.
 
-```json
-{
-  "mcpServers": {
-    "datafy": {
-      "command": "npx",
-      "args": [
-        "@teckedd-code2save/datafy@latest",
-        "--config",
-        "/path/to/your/dbhub.toml",
-        "--transport",
-        "stdio"
-      ]
-    }
-  }
-}
-```
-4. Restart Claude Desktop.
+### Core sibling skills
+- `cloud-solution-architect`
+- `api-test-generator`
+- `frontend-data-consumer`
+- `infrastructure-as-code-architect`
 
-### Adding to Cursor
+### MCP integrations
+- `@teckedd-code2save/datafy` — required for database operations and code generation
+- Context7 MCP — optional for current documentation/patterns
+- Prisma MCP — optional for migrations and DB exploration
+- GitHub MCP — optional for repository discovery and CI/CD setup
 
-1. Open Cursor Settings -> Features -> MCP
-2. Click "+ Add New MCP Server"
-3. Name: `datafy`
-4. Type: `command`
-5. Command: `npx @teckedd-code2save/datafy@latest --config /path/to/your/dbhub.toml --transport stdio`
-6. Click Save and reload the window (or restart Cursor).
+## Positioning
 
-### Adding to VS Code / Windsurf
+The shortest version:
 
-1. Follow the respective editor's MCP integration guides to add a standard stdio-based MCP server.
-2. Provide the exact same `npx` command and arguments as shown above.
-3. Reload the editor window to ensure the new MCP server is detected.
+> **b2dp turns product requirements into backend delivery workflows.**
 
-### Adding to Gemini CLI / Antigravity
+Not by pretending one package does everything alone — but by installing and coordinating the skills and MCP tooling your AI agents need to do the work properly.
 
-For command-line tools and agents that support `mcp_config.json` (like Antigravity or Gemini CLI extensions):
-1. For **Gemini CLI**, open or create `~/.gemini/settings.json`.
-2. For **Antigravity**, open or create `~/.gemini/antigravity/mcp_config.json`.
-3. Add the `datafy` server configuration inside the `mcpServers` key:
+## Repository
 
-```json
-{
-  "mcpServers": {
-    "datafy": {
-      "command": "npx",
-      "args": [
-        "@teckedd-code2save/datafy@latest",
-        "--config",
-        "/path/to/your/dbhub.toml",
-        "--transport",
-        "stdio"
-      ]
-    }
-  }
-}
-```
+GitHub: https://github.com/teckedd-code2save/ai-build-tools
 
-## Including the `business-to-data-platform` Skill
+## License
 
-The `business-to-data-platform` skill transforms any business description into a production-grade database, schema, repository code, and data seeded through Datafy.
-
-If you want to use this skill, ensure the `business-to-data-platform/SKILL.md` file is placed in the specific directory monitored by your AI assistants:
-- **Claude**: Place skills in `~/.claude/skills/`
-- **Cursor**: Embed skill logic inside `.cursorrules` or project-specific system prompts.
-- **Gemini CLI**: Place skills in `~/.gemini/skills/`
-- **Antigravity**: Place skills in `~/.gemini/antigravity/skills/` or `.agent/workflows/` in your workspace.
-
-## Full Dependency Stack (The Orchestrator Ecosystem)
-
-The `business-to-data-platform` skill acts as an **Orchestrator**. To achieve the full production-grade workflow (automated design, testing, UI generation, and IaC provisioning), you should also include the following sibling skills and MCP servers:
-
-### Mandatory Sibling Skills
-- **cloud-solution-architect**: Designs the Docker/K8s + GitHub Actions stack.
-- **api-test-generator**: Generates comprehensive integration tests for the scaffolded backend.
-- **frontend-data-consumer**: Scaffolds Vite/Next.js components using Tailwind CSS and Shadcn/UI for the frontend.
-- **infrastructure-as-code-architect**: Generates Dockerfiles, K8s manifests, and GitHub Actions workflows.
-
-### Integrated MCP Servers
-- **Datafy MCP** (`@teckedd-code2save/datafy`): Required for all database operations and code generation.
-- **Context7 MCP**: (Optional) Fetches latest best practices and patterns for the chosen stack.
-- **Prisma MCP**: (Optional) For migrations and database exploration if using Prisma.
-- **GitHub MCP**: (Optional) For repository discovery and CI/CD setup.
+MIT

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Business &rarr; Data Platform &middot; Agent Skill</title>
+  <title>b2dp &middot; AI backend scaffolding ecosystem</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap"
@@ -655,6 +655,70 @@
       align-items: center;
     }
 
+    .use-cases-grid {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .use-case-card {
+      background: #faf7f0;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+      padding: 2rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .use-case-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .use-case-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .use-case-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .cta-panel {
+      margin-top: 4rem;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 12px;
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .cta-panel h3 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .cta-panel p {
+      color: rgba(245, 240, 232, 0.78);
+      line-height: 1.8;
+      max-width: 52ch;
+    }
+
+    .cta-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
     .blog-tag {
       font-family: var(--mono);
       font-size: 0.7rem;
@@ -810,6 +874,11 @@
         grid-template-columns: 1fr;
       }
 
+      .use-cases-grid,
+      .cta-panel {
+        grid-template-columns: 1fr;
+      }
+
       nav {
         padding: 1rem 1.5rem;
       }
@@ -834,12 +903,12 @@
 <body>
 
   <nav>
-    <a class="nav-logo" href="#">&#x2B21; business-to-data-platform</a>
+    <a class="nav-logo" href="#">&#x2B21; b2dp</a>
     <ul class="nav-links">
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#outputs">What you get</a></li>
       <li><a href="#setup">Setup</a></li>
-      <li><a href="#blog">Blog post</a></li>
+      <li><a href="#use-cases">Use cases</a></li>
     </ul>
   </nav>
 
@@ -847,11 +916,11 @@
     <div class="hero-decor"></div>
     <div class="hero-decor-dots"></div>
     <div class="hero-left">
-      <div class="hero-badge">Agent Skill &middot; v1.2</div>
-      <h1>Describe a business.<br><em>Get a database.</em></h1>
+      <div class="hero-badge">CLI &middot; Skill ecosystem &middot; v1.2</div>
+      <h1>Describe a product.<br><em>Get the backend foundation.</em></h1>
       <p class="hero-sub">
-        An Agent skill that transforms any business description into a fully provisioned PostgreSQL database &mdash;
-        schema, seed data, analytics queries, and repository code &mdash; in one conversation.
+        b2dp is a CLI and agent-skill ecosystem that turns plain-English product requirements into a production-minded backend foundation &mdash;
+        schema, migrations, repositories, tests, frontend contracts, and infrastructure scaffolding wired into your AI coding tools.
       </p>
       <div class="hero-actions">
         <a href="#setup" class="btn btn-primary">&#8595; Get started</a>
@@ -865,34 +934,27 @@
           <div class="dot dot-r"></div>
           <div class="dot dot-y"></div>
           <div class="dot dot-g"></div>
-          <span class="terminal-title">agent &middot; business-to-data-platform</span>
+          <span class="terminal-title">b2dp &middot; setup + orchestrator ecosystem</span>
         </div>
         <div class="terminal-body">
-          <div><span class="t-prompt">you</span><span class="t-out"> &rsaquo; </span><span class="t-cmd">I need a
-              backend for a ride-sharing app</span></div>
+          <div><span class="t-prompt">$</span><span class="t-out"> </span><span class="t-cmd">npm i -g @teckedd-code2save/b2dp</span></div>
+          <div><span class="t-prompt">$</span><span class="t-out"> </span><span class="t-cmd">b2dp setup --yes</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Extracting entities...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;users, drivers, vehicles, rides, payments</span></div>
+          <div><span class="t-accent">&#9658; Detecting AI agents...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;Claude Code &middot; Cursor &middot; Gemini CLI</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Designing schema (3NF)...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;8 tables &middot; 42 columns &middot; 11 indexes</span></div>
+          <div><span class="t-accent">&#9658; Installing orchestrator skills...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;b2dp &middot; cloud-solution-architect &middot; api-test-generator</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;frontend-data-consumer &middot; infrastructure-as-code-architect</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Creating database...</span></div>
-          <div><span class="t-success">&nbsp;&nbsp;&#10003; ride_sharing_db created</span></div>
+          <div><span class="t-accent">&#9658; Configuring MCP servers...</span></div>
+          <div><span class="t-success">&nbsp;&nbsp;&#10003; datafy configured</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;&#9675; context7 optional &middot; github optional</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Provisioning tables...</span></div>
-          <div><span class="t-success">&nbsp;&nbsp;&#10003; users</span><span class="t-out">&nbsp;&nbsp;&#10003;
-              drivers&nbsp;&nbsp;&#10003; vehicles</span></div>
-          <div><span class="t-success">&nbsp;&nbsp;&#10003; rides</span><span class="t-out">&nbsp;&nbsp;&#10003;
-              payments&nbsp;&nbsp;&#10003; ratings</span></div>
+          <div><span class="t-accent">&#9658; Ready for prompt-driven delivery...</span></div>
+          <div><span class="t-out">&nbsp;&nbsp;schema &middot; repos &middot; tests &middot; UI contracts &middot; IaC</span></div>
           <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Seeding realistic data...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;83 users &middot; 41 drivers &middot; 312 rides</span></div>
-          <div style="height:0.5rem"></div>
-          <div><span class="t-accent">&#9658; Generating code...</span></div>
-          <div><span class="t-out">&nbsp;&nbsp;TypeScript &middot; C# &middot; 8 analytics queries</span></div>
-          <div style="height:0.5rem"></div>
-          <div><span class="t-success">&#10003; Platform ready</span> <span class="t-cursor"></span></div>
+          <div><span class="t-success">&#10003; Ecosystem ready</span> <span class="t-cursor"></span></div>
         </div>
       </div>
     </div>
@@ -902,53 +964,46 @@
 
   <!-- HOW IT WORKS -->
   <section id="how-it-works">
-    <div class="section-label">The pipeline</div>
-    <h2 class="section-title">Six steps from <em>idea</em> to live database</h2>
-    <p class="section-body">No SQL expertise required. Describe your product in plain English &mdash; the skill handles
-      entity design, normalization, provisioning, and code generation end-to-end.</p>
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Six steps from <em>idea</em> to a backend-ready workflow</h2>
+    <p class="section-body">b2dp does two things: it installs the right skills and MCP tooling into your AI agents, then those agents can turn product requirements into backend artifacts with far less boilerplate and setup friction.</p>
 
     <div class="pipeline reveal">
       <div class="pipe-step">
         <div class="pipe-num">01</div>
         <span class="pipe-icon">&#x1F9E0;</span>
-        <h3>Entity Extraction</h3>
-        <p>The agent reads your spec and identifies every actor, resource, transaction, relationship, and event before
-          writing any SQL.</p>
+        <h3>Agent Detection</h3>
+        <p>The CLI detects supported AI environments like Claude Code, Cursor, VS Code/Copilot, Gemini CLI, and Antigravity so setup starts from your real toolchain.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">02</div>
         <span class="pipe-icon">&#x1F4D0;</span>
-        <h3>Schema Design</h3>
-        <p>Full PostgreSQL DDL in 3NF &mdash; UUID PKs, proper FK policies, NUMERIC for money, TIMESTAMPTZ everywhere,
-          and indexes on every FK.</p>
+        <h3>Skill Installation</h3>
+        <p>b2dp installs the core orchestrator plus the sibling skills needed for architecture, testing, frontend data consumption, and infrastructure generation.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">03</div>
         <span class="pipe-icon">&#x1F5C4;&#xFE0F;</span>
-        <h3>Database Creation</h3>
-        <p>Creates the target database automatically from the business name. Every DDL statement uses IF NOT EXISTS so
-          re-runs never crash.</p>
+        <h3>MCP Configuration</h3>
+        <p>It wires in required MCP servers like Datafy for database operations, with optional Context7 and GitHub integrations for docs and repo-aware workflows.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">04</div>
         <span class="pipe-icon">&#x1F331;</span>
-        <h3>Realistic Seed Data</h3>
-        <p>100&ndash;500 rows of coherent, domain-accurate data. Real names, realistic prices, valid FK references via
-          CTEs &mdash; not placeholder junk data.</p>
+        <h3>Prompt-Driven Modeling</h3>
+        <p>Once installed, the orchestrator skill can extract entities, relationships, and operational flows from plain-English product specs before any implementation begins.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">05</div>
         <span class="pipe-icon">&#x1F4CA;</span>
-        <h3>Analytics Queries</h3>
-        <p>6&ndash;10 labeled, ready-to-run queries covering revenue, funnels, top performers, anomalies, and
-          operational monitoring.</p>
+        <h3>Artifact Generation</h3>
+        <p>The ecosystem can produce schema proposals, migrations, repository code, tests, frontend contracts, and deployment scaffolding instead of isolated code snippets.</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-num">06</div>
         <span class="pipe-icon">&#x1F4BB;</span>
-        <h3>Repository Code</h3>
-        <p>TypeScript (pg/Prisma) and C# (Dapper/EF Core) functions for the 5 most common operations &mdash; drop them
-          straight into your API.</p>
+        <h3>Health Checks & Reuse</h3>
+        <p>Use the CLI to verify what is configured, reuse the setup globally or per project, and keep your agents aligned across multiple repositories.</p>
       </div>
     </div>
   </section>
@@ -957,100 +1012,85 @@
 
   <!-- WHAT YOU GET -->
   <section id="outputs">
-    <div class="section-label">Deliverables</div>
-    <h2 class="section-title">Everything you need to <em>ship</em></h2>
-    <p class="section-body">One conversation, seven concrete artifacts you can use immediately &mdash; or export as SQL
-      files if running offline.</p>
+    <div class="section-label">What you get</div>
+    <h2 class="section-title">Everything you need to <em>go from idea to implementation</em></h2>
+    <p class="section-body">The package itself gives you setup, configuration, and validation. The installed skill ecosystem then gives your AI agents the context and tooling to generate real backend deliverables.</p>
 
     <div class="outputs-grid reveal">
       <div class="output-card">
         <div class="output-icon">&#x1F3D7;&#xFE0F;</div>
         <div>
-          <h3>Business Analysis</h3>
-          <p>Structured breakdown of entities and relationships.</p>
-          <span class="output-tag">markdown</span>
+          <h3>One-Command Setup</h3>
+          <p>Install and configure the b2dp ecosystem with a single CLI entry point instead of manually wiring every skill and MCP server by hand.</p>
+          <span class="output-tag">cli</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x1F4C4;</div>
         <div>
-          <h3>Schema &amp; Migrations</h3>
-          <p>Full DDL schema and versioned migrations.</p>
-          <span class="output-tag">sql &middot; ts/py</span>
+          <h3>Multi-Agent Support</h3>
+          <p>Works across supported coding agents and editors so the same backend workflow can follow you between local tools and projects.</p>
+          <span class="output-tag">claude &middot; cursor &middot; gemini</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x2705;</div>
         <div>
-          <h3>Provision &amp; Seed</h3>
-          <p>Live execution logs and realistic seed data injection.</p>
-          <span class="output-tag">auto-execute</span>
+          <h3>Datafy Integration</h3>
+          <p>Database-aware agent workflows via Datafy MCP so your assistant can inspect sources, execute SQL, and generate code from real schemas.</p>
+          <span class="output-tag">mcp</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x26A1;</div>
         <div>
-          <h3>Repos &amp; UI Contracts</h3>
-          <p>Typed repository code and API data contracts (no hardcoded arrays).</p>
-          <span class="output-tag">ts &middot; cs &middot; py &middot; java</span>
+          <h3>Orchestrator Skills</h3>
+          <p>Installs the business-to-data-platform orchestrator plus sibling skills for architecture, testing, frontend generation, and infrastructure.</p>
+          <span class="output-tag">skills</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x1F50D;</div>
         <div>
-          <h3>Cache &amp; Search</h3>
-          <p>Ready-to-use Redis and Elasticsearch configuration strategies.</p>
-          <span class="output-tag">architecture</span>
+          <h3>Backend Deliverables</h3>
+          <p>When used through a configured agent, the ecosystem can generate schema designs, repos, tests, analytics queries, and frontend data contracts.</p>
+          <span class="output-tag">artifacts</span>
         </div>
       </div>
       <div class="output-card">
         <div class="output-icon">&#x1F4CA;</div>
         <div>
-          <h3>Analytics Queries</h3>
-          <p>Business-ready SQL for reporting and operational dashboards.</p>
-          <span class="output-tag">queries.sql</span>
+          <h3>Health Checks</h3>
+          <p>Verify which agents, skills, and MCP servers are configured so onboarding and troubleshooting are faster.</p>
+          <span class="output-tag">check</span>
         </div>
       </div>
     </div>
 
     <div class="code-section reveal">
       <div class="code-tabs">
-        <button class="code-tab active">schema.sql</button>
-        <button class="code-tab">seed.sql</button>
-        <button class="code-tab">repository.ts</button>
+        <button class="code-tab active">install</button>
+        <button class="code-tab">setup</button>
+        <button class="code-tab">check</button>
       </div>
       <div class="code-body">
-        <span class="cm">-- &#10003; Created extension pgcrypto</span>
-        <span class="cm">-- &#10003; Created enum: ride_status</span>
+        <span class="cm"># install the CLI globally</span>
+        <span class="kw">npm install -g</span> <span class="str">@teckedd-code2save/b2dp</span>
 
-        <span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">users</span> (
-        id <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span
-          class="fn">gen_random_uuid</span>(),
-        email <span class="ty">TEXT</span> <span class="kw">NOT NULL UNIQUE</span>,
-        full_name <span class="ty">TEXT</span> <span class="kw">NOT NULL</span>,
-        phone <span class="ty">TEXT</span>,
-        created_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
-        updated_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
-        deleted_at <span class="ty">TIMESTAMPTZ</span>
-        );
+        <span class="cm"># interactive ecosystem setup</span>
+        <span class="fn">b2dp</span> setup
 
-        <span class="kw">CREATE TABLE IF NOT EXISTS</span> <span class="ty">rides</span> (
-        id <span class="ty">UUID</span> <span class="kw">PRIMARY KEY DEFAULT</span> <span
-          class="fn">gen_random_uuid</span>(),
-        user_id <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span
-          class="ty">users</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
-        driver_id <span class="ty">UUID</span> <span class="kw">NOT NULL REFERENCES</span> <span
-          class="ty">drivers</span>(id) <span class="kw">ON DELETE RESTRICT</span>,
-        fare_amount <span class="ty">NUMERIC</span>(12,2) <span class="kw">NOT NULL</span>,
-        status <span class="ty">ride_status</span> <span class="kw">DEFAULT</span> <span class="str">'pending'</span>,
-        created_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>(),
-        updated_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">NOW</span>()
-        );
+        <span class="cm"># or accept detected defaults</span>
+        <span class="fn">b2dp</span> setup <span class="kw">--yes</span>
 
-        <span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_user_id <span class="kw">ON</span> <span
-          class="ty">rides</span>(user_id);
-        <span class="kw">CREATE INDEX IF NOT EXISTS</span> idx_rides_driver_id <span class="kw">ON</span> <span
-          class="ty">rides</span>(driver_id);
+        <span class="cm"># scope setup to the current repository</span>
+        <span class="fn">b2dp</span> setup <span class="kw">--project</span>
+
+        <span class="cm"># inspect current configuration health</span>
+        <span class="fn">b2dp</span> check
+
+        <span class="cm"># inspect installed skill metadata</span>
+        <span class="fn">b2dp</span> skills list
       </div>
     </div>
   </section>
@@ -1061,16 +1101,14 @@
   <section id="setup">
     <div class="req-section reveal">
       <div class="section-label">Requirements &amp; setup</div>
-      <h2 class="section-title" style="color:var(--paper)">Connect via <em>MCP</em> in three steps</h2>
+      <h2 class="section-title" style="color:var(--paper)">Install b2dp and connect your agents in <em>three steps</em></h2>
 
       <div class="req-grid">
         <div class="req-block">
-          <h4>Required</h4>
+          <h4>What b2dp needs</h4>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">Claude Desktop</strong>, <strong style="color:#e8e8e8">Cursor</strong>,
-              <strong style="color:#e8e8e8">Gemini CLI</strong>, <strong style="color:#e8e8e8">Antigravity</strong>,
-              etc. &mdash; with MCP support enabled</span>
+            <span><strong style="color:#e8e8e8">A supported AI agent or editor</strong> such as Claude Code/Desktop, Cursor, Gemini CLI, VS Code/Copilot, or Antigravity &mdash; ideally with MCP support enabled</span>
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
@@ -1090,20 +1128,19 @@
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">Sibling Skills</strong> &mdash; <code
+            <span><strong style="color:#e8e8e8">The b2dp sibling skills</strong> &mdash; <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">cloud-solution-architect</code>, <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">api-test-generator</code>, <code
                 style="color:#f09060;font-family:var(--mono);font-size:0.8em">frontend-data-consumer</code>, <code
-                style="color:#f09060;font-family:var(--mono);font-size:0.8em">infrastructure-as-code-architect</code> &mdash; for the full Design &rarr; Test &rarr; UI &rarr; IaC workflow</span>
+                style="color:#f09060;font-family:var(--mono);font-size:0.8em">infrastructure-as-code-architect</code> &mdash; installed by the CLI for the full design &rarr; test &rarr; UI &rarr; IaC workflow</span>
           </div>
           <div class="req-item">
             <span class="check">&#10003;</span>
-            <span><strong style="color:#e8e8e8">SKILL.md</strong> &mdash; placed in your agent skills directory so the
-              skill auto-triggers</span>
+            <span><strong style="color:#e8e8e8">Installed skill files and agent rules</strong> &mdash; placed in the right global or project-level location so the orchestrator is actually available when you prompt your agent</span>
           </div>
         </div>
         <div class="req-block">
-          <h4>MCP tools Datafy exposes</h4>
+          <h4>What the ecosystem exposes</h4>
           <p style="font-size:0.75rem; color:#aaa; margin-top:-0.5rem; margin-bottom:0.75rem;">(where <code
               style="color:#f09060;">&lt;id&gt;</code> is the source id from your <code>dbhub.toml</code>)</p>
           <div class="req-item">
@@ -1153,37 +1190,18 @@
         </div>
       </div>
 
-      <div class="step-label">Step 1 &mdash; Add to <span style="color:#e8e8e8">MCP Configuration</span></div>
+      <div class="step-label">Step 1 &mdash; Install the <span style="color:#e8e8e8">CLI</span></div>
       <div class="install-block" style="line-height:1.8;">
-        <div style="color:#555"># Example for claude_desktop_config.json or mcp_config.json</div>
-        <div style="color:#555">{</div>
-        <div style="color:#555">&nbsp;&nbsp;<span style="color:#89ddff">"mcpServers"</span>: {</div>
-        <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"datafy"</span>: {</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"command"</span>: <span
-            style="color:#c3e88d">"npx"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#89ddff">"args"</span>: [</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
-            style="color:#c3e88d">"@teckedd-code2save/datafy@latest"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--config"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmd">"/path/to/your/dbhub.toml"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"--transport"</span>,</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3e88d">"stdio"</span></div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]</div>
-        <div style="color:#555">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-        <div style="color:#555">&nbsp;&nbsp;}</div>
-        <div style="color:#555">}</div>
-        <div style="height:0.5rem"></div>
-        <div style="color:#555"># If using Cursor:</div>
-        <div style="color:#555"># Settings &rarr; Features &rarr; MCP &rarr; Add New</div>
-        <div style="color:#555"># Type: command</div>
-        <div style="color:#555"># Command: npx @teckedd-code2save/datafy@latest --config /path/to/your/dbhub.toml
-          --transport stdio</div>
-        <div style="height:0.5rem"></div>
-        <div style="color:#28c840;font-weight:bold;"># IMPORTANT: Restart your AI assistant / editor for changes to take
-          effect.</div>
+        <div><span class="prompt">$</span> <span class="cmd">npm install -g @teckedd-code2save/b2dp</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">b2dp setup</span></div>
+        <div style="color:#555"># interactive setup for detected agents</div>
+        <div><span class="prompt">$</span> <span class="cmd">b2dp setup --yes</span></div>
+        <div style="color:#555"># accept detected defaults automatically</div>
+        <div><span class="prompt">$</span> <span class="cmd">b2dp setup --project</span></div>
+        <div style="color:#555"># scope configuration to the current repo</div>
       </div>
 
-      <div class="step-label">Step 2 &mdash; Create your <span style="color:#e8e8e8">dbhub.toml</span></div>
+      <div class="step-label">Step 2 &mdash; Configure <span style="color:#e8e8e8">Datafy + dbhub.toml</span></div>
       <div class="install-block" style="line-height:1.8;">
         <div style="color:#555"># dbhub.toml &mdash; define all your data sources</div>
         <div style="height:0.5rem"></div>
@@ -1230,33 +1248,63 @@
           style="color:#f09060">search_objects_pet_market</span> to the agent.
       </div>
 
-      <div class="step-label">Then just talk to your AI assistant</div>
+      <div class="step-label">Step 3 &mdash; Prompt your <span style="color:#e8e8e8">configured agent</span></div>
       <div class="install-block">
-        <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build a database for a subscription meal-kit
+        <div><span class="prompt">you</span> <span class="cmd">&rsaquo; Build the backend foundation for a subscription meal-kit
             service</span></div>
         <div style="height:0.25rem"></div>
-        <div style="color:#555"># AI detects the skill, calls execute_sql_pet_market,</div>
-        <div style="color:#555"># creates the DB, seeds data, and generates analytics queries.</div>
+        <div style="color:#555"># With b2dp installed, your AI agent can route through the orchestrator skill,</div>
+        <div style="color:#555"># use Datafy, and generate schema, code, tests, and infra scaffolding.</div>
       </div>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <!-- BLOG SECTION HIDDEN TEMPORARILY -->
+  <section id="use-cases">
+    <div class="section-label">Use cases</div>
+    <h2 class="section-title">Who this is <em>actually for</em></h2>
+    <p class="section-body">b2dp is strongest when you already know the product shape and want your agents to stop wasting time on repetitive backend setup, wiring, and structural drift.</p>
 
-  <div style="height:4rem"></div>
+    <div class="use-cases-grid reveal">
+      <div class="use-case-card">
+        <h3>Indie SaaS builders</h3>
+        <p>Go from a product idea to a credible backend foundation faster, without hand-assembling schema, repos, tests, and infra prompts every single time.</p>
+      </div>
+      <div class="use-case-card">
+        <h3>Agencies and consultants</h3>
+        <p>Standardize how client backends get scaffolded so every new engagement starts from a more repeatable architecture and delivery workflow.</p>
+      </div>
+      <div class="use-case-card">
+        <h3>Startup engineers</h3>
+        <p>Turn messy requirement docs into structured backend artifacts and reduce drift between product language, schema design, and implementation plans.</p>
+      </div>
+    </div>
+
+    <div class="cta-panel reveal">
+      <div>
+        <h3>Stop rebuilding backend setup from scratch.</h3>
+        <p>Install b2dp, wire your agents once, and let the ecosystem handle the boring part: getting from product intent to a usable backend delivery workflow.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="#setup" class="btn btn-primary">Install b2dp</a>
+        <a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank" class="btn btn-secondary" style="color:var(--paper); border-color:rgba(245,240,232,0.4)">View GitHub</a>
+      </div>
+    </div>
+  </section>
+
   <div class="divider"></div>
 
   <footer>
     <div class="footer-brand">
-      <span>business-to-data-platform</span> &middot; An Agent Skill &middot; v1.2
+      <span>b2dp</span> &middot; CLI + skill ecosystem &middot; v1.2
     </div>
     <ul class="footer-links">
       <li><a href="#how-it-works">How it works</a></li>
       <li><a href="#outputs">Outputs</a></li>
       <li><a href="#setup">Setup</a></li>
-      <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub</a></li>
+      <li><a href="#use-cases">Use cases</a></li>
+      <li><a href="https://github.com/teckedd-code2save/ai-build-tools" target="_blank">GitHub repo</a></li>
     </ul>
   </footer>
 
