@@ -1,0 +1,100 @@
+name: Infisical Sync
+
+# Phase 5 of references/infisical-flow.md.
+# Renders /opt/{{slug}}/.env on the VPS from Infisical prod, restarts
+# the web container only if the .env content actually changed.
+# Also re-mirrors NEXT_PUBLIC_* to GitHub Variables so the next build
+# bakes the new values.
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # hourly
+  workflow_dispatch:
+
+concurrency:
+  group: infisical-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync Infisical → VPS .env + GH Variables
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Install Infisical CLI
+        run: |
+          curl -1sLf "https://artifacts-cli.infisical.com/setup.deb.sh" | sudo -E bash
+          sudo apt-get update && sudo apt-get install -y infisical
+
+      - name: Fetch secrets from Infisical
+        env:
+          INFISICAL_API_URL: https://<your-infisical-domain>/api
+          INFISICAL_CLIENT_ID: ${{ secrets.INFISICAL_CLIENT_ID }}
+          INFISICAL_CLIENT_SECRET: ${{ secrets.INFISICAL_CLIENT_SECRET }}
+        run: |
+          set -euo pipefail
+          export INFISICAL_TOKEN=$(infisical login \
+            --method=universal-auth \
+            --client-id="${INFISICAL_CLIENT_ID}" \
+            --client-secret="${INFISICAL_CLIENT_SECRET}" \
+            --domain="${INFISICAL_API_URL%/api}" \
+            --plain --silent)
+          # Render full prod env to a file (only this job sees it)
+          infisical export \
+            --env=prod \
+            --format=dotenv \
+            --domain="${INFISICAL_API_URL%/api}" \
+            > /tmp/infisical-prod.env
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Diff against VPS .env + sync if changed
+        env:
+          SSH_USER: ${{ secrets.VPS_USER }}
+          SSH_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          set -euo pipefail
+          NEW_SHA=$(sha256sum /tmp/infisical-prod.env | cut -d' ' -f1)
+          OLD_SHA=$(ssh -i ~/.ssh/deploy_key "${SSH_USER}@${SSH_HOST}" \
+            "sha256sum /opt/{{slug}}/.env 2>/dev/null | cut -d' ' -f1" || echo "none")
+          echo "old=$OLD_SHA new=$NEW_SHA"
+          if [ "$NEW_SHA" = "$OLD_SHA" ]; then
+            echo "No drift — exiting."
+            exit 0
+          fi
+          echo "Drift detected — pushing new .env and restarting web container."
+          scp -i ~/.ssh/deploy_key /tmp/infisical-prod.env \
+            "${SSH_USER}@${SSH_HOST}:/opt/{{slug}}/.env.new"
+          ssh -i ~/.ssh/deploy_key "${SSH_USER}@${SSH_HOST}" bash -se <<'EOF'
+          set -euo pipefail
+          cd /opt/{{slug}}
+          chmod 600 .env.new
+          mv .env.new .env
+          docker compose up -d --no-deps web
+          sleep 4
+          docker logs --tail=20 {{slug}}-web
+          EOF
+
+      - name: Re-mirror NEXT_PUBLIC_* to GitHub Variables
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Read only NEXT_PUBLIC_* keys from the rendered prod env
+          while IFS='=' read -r key val; do
+            case "$key" in
+              NEXT_PUBLIC_*)
+                # Strip surrounding quotes if present
+                val="${val%\"}"; val="${val#\"}"
+                echo "Setting variable $key"
+                gh variable set "$key" --repo "$REPO" --body "$val" || true
+                ;;
+            esac
+          done < /tmp/infisical-prod.env
