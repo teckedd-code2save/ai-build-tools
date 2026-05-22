@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Roll the web container back to a previous GHCR image tag.
+#
+# Usage:
+#   bin/rollback                         # roll back to :bootstrap (the original known-good image)
+#   bin/rollback <sha>                   # roll back to ghcr.io/{{ghcr_namespace}}/{{slug}}:<sha>
+#   bin/rollback ghcr.io/.../foo:bar     # roll back to an explicit image ref
+#
+# Migrations: this script does NOT auto-revert DB migrations. If the rollback
+# requires a schema rewind, do that manually first via prisma migrate resolve.
+set -euo pipefail
+
+VPS_HOST="${VPS_HOST:-{{vps_host}}}"
+VPS_USER="${VPS_USER:-{{vps_user}}}"
+SSH_KEY="${SSH_KEY:-$HOME/{{ssh_key_relpath}}}"
+REPO="ghcr.io/{{ghcr_namespace}}/{{slug}}"
+
+target="${1:-bootstrap}"
+if [[ "$target" != *":"* && "$target" != *"/"* ]]; then
+  target="${REPO}:${target}"
+elif [[ "$target" != *"/"* ]]; then
+  target="${REPO}:${target}"
+fi
+
+echo "[rollback] target image: $target"
+read -r -p "[rollback] confirm rolling {{slug}}-web to this image? [y/N] " ans
+[[ "$ans" =~ ^[Yy]$ ]] || { echo "[rollback] cancelled"; exit 1; }
+
+ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new "${VPS_USER}@${VPS_HOST}" \
+  "WEB_IMAGE='$target' bash -se" <<'REMOTE'
+set -euo pipefail
+cd /opt/{{slug}}
+echo "[vps] pulling ${WEB_IMAGE}"
+docker pull "${WEB_IMAGE}"
+echo "[vps] swapping web container"
+export WEB_IMAGE
+docker compose up -d --no-deps web
+sleep 4
+docker compose ps
+docker logs --tail=30 {{slug}}-web
+REMOTE
+
+echo "[rollback] done. Verify https://{{domain}}/"

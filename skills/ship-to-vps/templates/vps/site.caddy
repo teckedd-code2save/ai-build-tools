@@ -1,0 +1,17 @@
+# Lives at /etc/caddy/sites/<priority>-<slug>.caddy on the VPS.
+# Caddy auto-TLS handles certs; the host-level Caddyfile imports this file.
+# Priority is a two-digit number controlling load order (default 50).
+
+{{domain}} {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:{{host_port}} {
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+    log {
+        output file /var/log/caddy/{{slug}}.log {
+            roll_size 50mb
+            roll_keep 5
+        }
+    }
+}

@@ -1,0 +1,71 @@
+# Multi-stage Dockerfile for Next.js (App Router, standalone) + Prisma 7.
+# Rendered by ship-to-vps from templates/Dockerfile.nextjs-prisma7.
+#
+# Validated against every failure mode hit during the perfume-emporio
+# bootstrap. Do not "optimize" the runner stage without re-reading
+# ~/.claude/skills/ship-to-vps/references/shippability-contract.md item 1.
+
+FROM node:20-alpine AS deps
+WORKDIR /app
+RUN apk add --no-cache libc6-compat openssl
+COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+COPY prisma.config.ts ./
+RUN npm ci --ignore-scripts
+RUN npx prisma generate
+
+FROM node:20-alpine AS builder
+WORKDIR /app
+RUN apk add --no-cache libc6-compat openssl
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/prisma ./prisma
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+# NEXT_PUBLIC_* must be present at build time to be inlined into the
+# client bundle. The ship-to-vps renderer expands the block below from
+# the list of NEXT_PUBLIC_* keys found in Infisical prod at setup time.
+# To add a new one later: add the key to Infisical, then add matching
+# ARG + ENV here AND a build-arg in .github/workflows/deploy.yml.
+# ──────── BEGIN public_build_args ────────
+{{public_build_args}}
+# ──────── END public_build_args ────────
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+# OCI labels — the source label auto-links this package to the repo on
+# GHCR, so the deploy workflow's GITHUB_TOKEN (packages:read) can pull.
+# Without this, deploys 403 until the package is manually linked.
+LABEL org.opencontainers.image.source="https://github.com/{{ghcr_namespace}}/{{slug}}"
+LABEL org.opencontainers.image.description="{{slug}} — Next.js app"
+LABEL org.opencontainers.image.licenses="UNLICENSED"
+RUN apk add --no-cache libc6-compat openssl
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+
+# Standalone Next.js bundle + static assets + public/.
+# public/ must contain at least .gitkeep — otherwise this COPY breaks on
+# CI (git doesn't track empty dirs, but local FS makes it look fine).
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Prisma 7 + migrations: the runner needs the FULL node_modules tree,
+# not just node_modules/prisma + @prisma. @prisma/config requires
+# `effect` (and other transitive deps); without them, `migrate deploy`
+# fails with MODULE_NOT_FOUND. Image grows ~300MB; this is the price
+# of running migrations from a one-shot container based on the runner
+# image. Splitting into a separate migrator stage is a future
+# optimization; see related "trim runner image" issue in any ship-to-vps
+# bootstrap.
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+USER nextjs
+EXPOSE 3000
+CMD ["node", "server.js"]
