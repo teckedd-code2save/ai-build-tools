@@ -5,7 +5,7 @@ description: >
   Container Registry, GitHub Actions, Caddy, and Cloudflare DNS. Auto-build → migrate → swap →
   smoke-test, with rollback and observability helpers. Trigger when the user says "ship it",
   "deploy this", "set up CI/CD", "wire this to my VPS", or "auto-build on push". Designed to take
-  over right where `business-to-data-platform` leaves off — both skills share the
+  over right where `forge` leaves off — both skills share the
   `shippability-contract.md` handshake.
 compatibility:
   requires:
@@ -25,7 +25,7 @@ Take a repo that satisfies `references/shippability-contract.md` and put it on t
 
 ## When to use
 
-- After `business-to-data-platform` has scaffolded an app
+- After `forge` has scaffolded an app
 - When the user says: "ship this", "deploy to my VPS", "wire up CI/CD", "set up auto-deploy"
 - When an existing app needs to be migrated from manual `docker compose up` deploys to a CI flow
 
@@ -37,7 +37,7 @@ Take a repo that satisfies `references/shippability-contract.md` and put it on t
 4. **Never assume the user's VPS has port X free.** Probe before binding.
 5. **Never co-tenant another app's Docker network or volume.** Each app gets `/opt/<slug>/` + its own Docker network + its own postgres volume (if needed).
 6. **Never commit `.env*`.** Already gitignored across user repos — verify, don't re-add.
-7. **If the repo fails `references/shippability-contract.md`, do NOT proceed.** Either fix the violations (with user approval) or hand back to `business-to-data-platform` to re-scaffold.
+7. **If the repo fails `references/shippability-contract.md`, do NOT proceed.** Either fix the violations (with user approval) or hand back to `forge` to re-scaffold.
 
 ## Inputs the skill needs
 
@@ -87,8 +87,8 @@ If unset, ask the user once and remember in a project memory:
 2. Verify `gh auth status` shows `write:packages` + `repo` + `workflow` scopes
 3. Verify Infisical project exists for this repo: `cat .infisical.json | jq .workspaceId`
 4. **Run the shippability contract checker**: `~/.claude/skills/ship-to-vps/check-shippability.sh <repo-path>`. Exits 0 if shippable, prints PASS/FAIL per item. If any item fails, present the list and offer:
-   - **a)** Fill the gaps via this skill (Step 3 will render templates for missing infra; app-level gaps like missing `package.json` scripts go back to b2dp)
-   - **b)** Hand back to `business-to-data-platform` to re-scaffold the whole repo properly
+   - **a)** Fill the gaps via this skill (Step 3 will render templates for missing infra; app-level gaps like missing `package.json` scripts go back to forge)
+   - **b)** Hand back to `forge` to re-scaffold the whole repo properly
 5. Verify `<domain>` is on a Cloudflare-managed zone the user has API access to (if user opted into Cloudflare integration).
 
 ### Step 1 — VPS slot provisioning
@@ -194,7 +194,7 @@ If any step fails:
 1. **Do not proceed.** Surface the failure to the user.
 2. **Do not roll back what's already provisioned** — VPS slot, DNS record, GH secrets are all idempotent and safe to leave in place.
 3. **Diagnose with `bin/logs`** if it's a runtime failure, with `gh run view --log-failed` if it's a CI failure.
-4. **Loop back to Step 0 contract check** if the failure is shape-related (missing eslintrc, untracked dir, etc.). Often the right fix is to update the scaffold in b2dp, not patch around it here.
+4. **Loop back to Step 0 contract check** if the failure is shape-related (missing eslintrc, untracked dir, etc.). Often the right fix is to update the scaffold in forge, not patch around it here.
 
 ## Files this skill ships with
 

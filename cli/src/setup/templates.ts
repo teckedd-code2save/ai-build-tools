@@ -2,11 +2,11 @@ export const RULE_CONTENT = `---
 alwaysApply: true
 ---
 
-# Business-to-Data-Platform Orchestrator
+# Forge Orchestrator
 
-This project uses the **business-to-data-platform** skill as the central orchestrator. When building any backend feature, database schema, or data-driven system:
+This project uses the **forge** skill as the central orchestrator. When building any backend feature, database schema, or data-driven system:
 
-1. **Invoke \`business-to-data-platform\`** as the primary skill — it drives architecture design, schema creation, ORM setup, testing, frontend scaffolding, and infra provisioning.
+1. **Invoke \`forge\`** as the primary skill — it drives architecture design, schema creation, ORM setup, testing, frontend scaffolding, and infra provisioning.
 2. **Never hardcode data in UI components.** All data must come from real DB queries or API endpoints.
 3. **Always use Datafy MCP** for database operations — never raw psql in the terminal.
 4. **Follow the 12-step workflow** defined in the orchestrator skill — from architecture design through infrastructure provisioning.

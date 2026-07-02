@@ -5,7 +5,7 @@ description: Ingests backend API contracts and scaffolds high-quality, typed Rea
 
 # Frontend Data Consumer
 
-Automatically convert backend API contracts, database schemas, or ORM models into fully functional, strongly-typed frontend components. This skill is the perfect companion to the `business-to-data-platform` backend generator.
+Automatically convert backend API contracts, database schemas, or ORM models into fully functional, strongly-typed frontend components. This skill is the perfect companion to the `forge` backend generator.
 
 ## 🎯 When to Use
 - When the backend has been scaffolded and the user wants to start building the frontend features.

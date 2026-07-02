@@ -47,7 +47,7 @@ function slugifyWorkspacePrompt(prompt: string): string {
 }
 
 export function buildWorkspaceName(prompt: string, runId: string): string {
-  return `b2dp-${slugifyWorkspacePrompt(prompt)}-${runId}`;
+  return `forge-${slugifyWorkspacePrompt(prompt)}-${runId}`;
 }
 
 const PHASE_PATTERNS: Array<{ pattern: RegExp; label: string; emoji: string }> = [
@@ -75,7 +75,7 @@ function renderHeader(
   process.stdout.write("\x1b[1A\x1b[2K");
   process.stdout.write("\x1b[1A\x1b[2K");
   process.stdout.write("\x1b[1A\x1b[2K");
-  const title = pc.bold(pc.cyan("⚡ b2dp generate")) + pc.dim(` — run ${pc.white(runId)}`);
+  const title = pc.bold(pc.cyan("⚡ forge generate")) + pc.dim(` — run ${pc.white(runId)}`);
   const timer = pc.dim(`⏱  ${elapsed}`);
   const meta =
     pc.dim("agent ") +
@@ -148,7 +148,7 @@ async function showInterruptMenu(
 export function registerGenerateCommand(program: Command): void {
   program
     .command("generate <prompt>")
-    .description("Autonomously generate an application using b2dp orchestrator")
+    .description("Autonomously generate an application using the Forge orchestrator")
     .option("--agent <agent>", "Which agent to spawn (claude, gemini, codex)", "claude")
     .option("--deploy <target>", "Where to deploy after generation (e.g., vercel)")
     .action(async (prompt: string, options: GenerateOptions) => {
@@ -166,7 +166,7 @@ export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvo
           "--print",
           "--permission-mode",
           "bypassPermissions",
-          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+          "Read SYSTEM_PROMPT.md and execute the Forge task. Exit when done.",
         ],
       };
     case "gemini":
@@ -174,7 +174,7 @@ export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvo
         cmd: "gemini",
         args: [
           "-p",
-          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+          "Read SYSTEM_PROMPT.md and execute the Forge task. Exit when done.",
           "--yolo",
         ],
       };
@@ -185,7 +185,7 @@ export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvo
           "exec",
           "--skip-git-repo-check",
           "--full-auto",
-          "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+          "Read SYSTEM_PROMPT.md and execute the Forge task. Exit when done.",
         ],
       };
     default:
@@ -211,14 +211,14 @@ async function generateCommand(prompt: string, options: GenerateOptions): Promis
   try {
     await ensureDir(targetDir);
     const systemPrompt = `
-# b2dp Orchestrator Task
-You are the **Business-to-Data-Platform (b2dp) Orchestrator**. 
+# Forge Orchestrator Task
+You are the **Forge Orchestrator**.
 
 ## Goal
 ${prompt}
 
 ## Workflow
-1. Find and use the **business-to-data-platform** skill to fulfill this goal.
+1. Find and use the **forge** skill to fulfill this goal.
 2. Respect any explicit stack, framework, cloud, database version, ORM, or UI instructions in the goal. Do not silently default to TypeScript or another stack if the goal specified something else.
 3. Implement all major product surfaces implied by the business, not just a single dashboard view.
 4. You have full shell access and a powerful ecosystem of MCP servers (Datafy, Prisma, Context7, GitHub, etc.).

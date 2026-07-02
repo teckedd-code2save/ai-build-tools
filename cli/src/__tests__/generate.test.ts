@@ -10,7 +10,7 @@ describe("generate command", () => {
       "exec",
       "--skip-git-repo-check",
       "--full-auto",
-      "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+      "Read SYSTEM_PROMPT.md and execute the Forge task. Exit when done.",
     ]);
   });
 
@@ -20,18 +20,18 @@ describe("generate command", () => {
     expect(invocation.cmd).toBe("gemini");
     expect(invocation.args).toEqual([
       "-p",
-      "Read SYSTEM_PROMPT.md and execute the b2dp task. Exit when done.",
+      "Read SYSTEM_PROMPT.md and execute the Forge task. Exit when done.",
       "--yolo",
     ]);
   });
 
   it("builds a workspace name from the product prompt", () => {
     expect(buildWorkspaceName("Build a platform for a subscription meal-kit service", "abcd1234"))
-      .toBe("b2dp-subscription-meal-kit-service-abcd1234");
+      .toBe("forge-subscription-meal-kit-service-abcd1234");
   });
 
   it("falls back to a generic workspace name when the prompt is too vague", () => {
     expect(buildWorkspaceName("Build a platform", "abcd1234"))
-      .toBe("b2dp-project-abcd1234");
+      .toBe("forge-project-abcd1234");
   });
 });

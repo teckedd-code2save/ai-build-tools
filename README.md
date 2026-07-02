@@ -1,10 +1,10 @@
-# b2dp
+# Forge
 
 **Describe your product. Get the backend foundation.**
 
-`b2dp` is a CLI and agent-skill ecosystem for turning plain-English product requirements into production-minded backend workflows.
+Forge is a CLI and agent-skill ecosystem for turning plain-English product requirements into production-minded backend workflows.
 
-Instead of manually wiring every skill, MCP server, and agent rule yourself, `b2dp` installs and configures the ecosystem your AI coding tools need to help with:
+Instead of manually wiring every skill, MCP server, and agent rule yourself, the `forge` CLI installs and configures the ecosystem your AI coding tools need to help with:
 
 - schema design
 - migrations
@@ -15,13 +15,13 @@ Instead of manually wiring every skill, MCP server, and agent rule yourself, `b2
 
 It is not just a single prompt or a toy code generator. It is the setup layer for a broader backend-delivery workflow.
 
-## What b2dp actually is
+## What Forge actually is
 
-`b2dp` is an **ecosystem bootstrapper**.
+Forge is an **ecosystem bootstrapper**.
 
 It helps you:
 - detect supported AI agents/editors
-- install the core business-to-data-platform orchestrator skill
+- install the core Forge orchestrator skill
 - install sibling skills used for architecture, testing, frontend generation, and IaC
 - configure MCP servers like Datafy
 - verify that everything is wired correctly
@@ -56,44 +56,44 @@ The CLI is designed to work with supported agent/editor setups such as:
 ### Install
 
 ```bash
-npm install -g @teckedd-code2save/b2dp
+npm install -g @teckedd-code2save/forge
 ```
 
 ### Run setup
 
 ```bash
-b2dp setup
+forge setup
 ```
 
 Or accept detected defaults automatically:
 
 ```bash
-b2dp setup --yes
+forge setup --yes
 ```
 
 To scope configuration to the current repository:
 
 ```bash
-b2dp setup --project
+forge setup --project
 ```
 
 ### Verify configuration
 
 ```bash
-b2dp check
+forge check
 ```
 
 ### Explore installed skills
 
 ```bash
-b2dp skills list
-b2dp skills info business-to-data-platform
+forge skills list
+forge skills info forge
 ```
 
 5. Command: `npx @teckedd-code2save/datafy@latest --config /path/to/your/dbhub.toml --transport stdio`
 6. Click Save and reload the window (or restart Cursor).
 
-### `b2dp skills`
+### `forge skills`
 Inspect available skills and view skill details.
 
 ## Datafy MCP setup
@@ -130,11 +130,11 @@ command = "npx"
 args = ["@teckedd-code2save/datafy@latest", "--config", "/path/to/your/dbhub.toml", "--transport", "stdio"]
 ```
 
-## Including the `business-to-data-platform` Skill
+## Including the `forge` Skill
 
-> **b2dp turns product requirements into backend delivery workflows.**
+> **Forge turns product requirements into backend delivery workflows.**
 
-If you want to use this skill, ensure the `business-to-data-platform/SKILL.md` file is placed in the specific directory monitored by your AI assistants:
+If you want to use this skill, ensure the `forge/SKILL.md` file is placed in the specific directory monitored by your AI assistants:
 - **Claude**: Place skills in `~/.claude/skills/`
 - **Gemini CLI**: Place skills in `~/.gemini/skills/`
 - **Antigravity**: Place skills in `~/.gemini/antigravity/skills/` or `.agent/workflows/` in your workspace.

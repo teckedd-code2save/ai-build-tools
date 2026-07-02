@@ -86,8 +86,8 @@ export async function writeJsonConfig(
   await writeFile(filePath, content, "utf-8");
 }
 
-/** MCP server entries for the b2dp ecosystem */
-export const B2DP_MCP_SERVERS: Record<string, Record<string, unknown>> = {
+/** MCP server entries for the Forge ecosystem */
+export const FORGE_MCP_SERVERS: Record<string, Record<string, unknown>> = {
   datafy: {
     command: "npx",
     args: [

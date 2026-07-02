@@ -1,6 +1,6 @@
 # Shippable Web App Contract
 
-The handshake between `business-to-data-platform` (scaffolds) and `ship-to-vps` (deploys). A repo that satisfies this contract can be auto-built, migrated, and rolled to a Hetzner-class VPS without human babysitting.
+The handshake between `forge` (scaffolds) and `ship-to-vps` (deploys). A repo that satisfies this contract can be auto-built, migrated, and rolled to a Hetzner-class VPS without human babysitting.
 
 Every item in this contract corresponds to a failure that has happened in production. Skip nothing.
 
@@ -51,7 +51,7 @@ Must exist at repo root with:
 { "workspaceId": "<infisical-project-id>", "defaultEnvironment": "dev" }
 ```
 
-Created at b2dp Step 0 when the Infisical project + machine identity are provisioned. See `references/infisical-flow.md`.
+Created at forge Step 0 when the Infisical project + machine identity are provisioned. See `references/infisical-flow.md`.
 
 ## 6. package.json scripts
 
@@ -89,7 +89,7 @@ The repo must ship with `AGENTS.md` describing: stack, local dev via `sec --`, b
 
 ---
 
-## Checklist (b2dp's Step 5 must pass all of these)
+## Checklist (forge's Step 5 must pass all of these)
 
 - [ ] `Dockerfile` at root with OCI label, multi-stage, full deps for migrations
 - [ ] `.eslintrc.json` (or equivalent) exists

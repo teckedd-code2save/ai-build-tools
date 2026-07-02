@@ -1,17 +1,17 @@
-# b2dp CLI 🚀
+# Forge CLI 🚀
 
-> One-command setup for the Business-to-Data-Platform (b2dp) skill ecosystem across your favorite AI coding agents.
+> One-command setup for the Forge skill ecosystem across your favorite AI coding agents.
 
-## What is b2dp?
+## What is Forge?
 
-**b2dp** is a powerful "Orchestrator" skill ecosystem designed for AI coding agents. It transforms high-level business requirements into production-grade technical implementations—from database schema and backend code to frontend components and Infrastructure as Code (IaC).
+**Forge** is a powerful orchestrator skill ecosystem designed for AI coding agents. It transforms high-level business requirements into production-grade technical implementations, from database schema and backend code to frontend components and Infrastructure as Code (IaC).
 
-The `b2dp` CLI tool automates the installation and configuration of this entire ecosystem, ensuring your agents have the right skills and tools (MCP servers) to build complex software.
+The `forge` CLI tool automates the installation and configuration of this entire ecosystem, ensuring your agents have the right skills and tools (MCP servers) to build complex software.
 
 ## Key Capabilities
 
 - **Multi-Agent Support**: Automatically detects and configures [Antigravity](https://github.com), [Claude Code](https://claude.ai), [VS Code (Copilot)](https://code.visualstudio.com), [Gemini CLI](https://github.com), and [Codex](https://openai.com).
-- **Skill Installation**: Provisions the core `business-to-data-platform` orchestrator along with mandatory sibling skills:
+- **Skill Installation**: Provisions the core `forge` orchestrator skill along with mandatory sibling skills:
     - `cloud-solution-architect`
     - `api-test-generator`
     - `frontend-data-consumer`
@@ -25,7 +25,7 @@ The `b2dp` CLI tool automates the installation and configuration of this entire 
 ### Installation
 
 ```bash
-npm install -g @teckedd-code2save/b2dp
+npm install -g @teckedd-code2save/forge
 ```
 
 ### Full Ecosystem Setup
@@ -33,13 +33,13 @@ npm install -g @teckedd-code2save/b2dp
 Run the setup command to interactively choose your agents and skills:
 
 ```bash
-b2dp setup
+forge setup
 ```
 
 Alternatively, use the auto-setup flag to install everything with detected defaults:
 
 ```bash
-b2dp setup --yes
+forge setup --yes
 ```
 
 ## Commands
@@ -50,15 +50,15 @@ Provision skills, configure MCP servers, and write agent rules.
 - `--claude`, `--gemini`, `--codex`, etc.: Force setup for a specific agent.
 
 ### `generate`
-Autonomously generate an application using the b2dp orchestrator.
+Autonomously generate an application using the Forge orchestrator.
 - `--agent <agent>`: Which agent to spawn (`claude`, `gemini`, `codex`).
 - `--deploy <target>`: Deploy the result (e.g., `vercel`).
 
 ### `check`
-Verify that your AI agents are correctly configured with b2dp skills and MCP servers.
+Verify that your AI agents are correctly configured with Forge skills and MCP servers.
 - `--project`: Check project-level configuration.
 
-Manage and explore the available b2dp skills.
+Manage and explore the available Forge skills.
 - `skills list`: Show all available skills and their descriptions.
 - `skills info <name>`: View details and content of a specific skill.
 
