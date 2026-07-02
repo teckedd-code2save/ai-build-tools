@@ -8,7 +8,7 @@ description: Generates comprehensive API integration tests (using Jest/Supertest
 Generate production-grade integration tests for existing API endpoints and backend services. This skill ensures that newly provisioned schemas and controllers are fully validated against business requirements.
 
 ## 🎯 When to Use
-- After using the `business-to-data-platform` skill to scaffold a new backend.
+- After using the `forge` skill to scaffold a new backend.
 - When adding new endpoints to an existing service.
 - When refactoring DTOs, Schemas, or ORM models.
 - When generating Postman/Bruno collections for manual API testing.

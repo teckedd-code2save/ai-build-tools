@@ -3,10 +3,10 @@ export const VERSION = "1.2.3";
 export const SKILLS_DIR_NAME = "skills";
 export const RULES_DIR_NAME = "rules";
 
-export const ORCHESTRATOR_SKILL = "business-to-data-platform";
+export const ORCHESTRATOR_SKILL = "forge";
 
 export const ALL_SKILLS = [
-  "business-to-data-platform",
+  "forge",
   "cloud-solution-architect",
   "api-test-generator",
   "frontend-data-consumer",
@@ -18,7 +18,7 @@ export const ALL_SKILLS = [
 export type SkillName = (typeof ALL_SKILLS)[number];
 
 export const SKILL_DESCRIPTIONS: Record<SkillName, string> = {
-  "business-to-data-platform":
+  "forge":
     "Orchestrator — converts any business spec into a production-grade data platform",
   "cloud-solution-architect":
     "Designs Docker/K8s + GitHub Actions cloud architectures",
@@ -34,4 +34,4 @@ export const SKILL_DESCRIPTIONS: Record<SkillName, string> = {
     "Fetches up-to-date docs and patterns for any library or framework",
 };
 
-export const RULE_FILENAME = "b2dp.md";
+export const RULE_FILENAME = "forge.md";

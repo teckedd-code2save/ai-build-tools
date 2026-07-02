@@ -1,5 +1,5 @@
 ---
-name: business-to-data-platform
+name: forge
 description: >
   Converts any business specification into a fully provisioned, production-grade data platform and
   full-stack product implementation. Trigger whenever a user describes a business system, app,
@@ -22,7 +22,7 @@ compatibility:
     - Context7 MCP (for up-to-date documentation and patterns)
 ---
 
-# Business → Data Platform Skill
+# Forge Skill
 
 Turn any business description into a production-grade data platform and complete product scaffold:
 schema, migrations, repository code, APIs, tests, UI surfaces, Docker Compose, and infra-ready
@@ -247,7 +247,7 @@ If Prisma is involved, explicitly validate the Prisma commands from the package 
 
 When acting as the orchestrator:
 
-1. Use the `business-to-data-platform` skill immediately.
+1. Use the `forge` skill immediately.
 2. Respect the exact stack named in the user's goal.
 3. Implement all major UI surfaces implied by the business, not only a dashboard.
 4. Use current official docs and patterns for the selected stack.

@@ -1,14 +1,14 @@
 {
-  "name": "@teckedd-code2save/b2dp",
+  "name": "@teckedd-code2save/forge",
   "version": "1.2.3",
-  "description": "b2dp CLI — One-command setup for the Business-to-Data-Platform skill ecosystem",
+  "description": "Forge CLI — One-command setup for the Forge skill ecosystem",
   "repository": {
     "type": "git",
     "url": "https://github.com/teckedd-code2save/ai-build-tools.git"
   },
   "type": "module",
   "bin": {
-    "b2dp": "dist/index.js"
+    "forge": "dist/index.js"
   },
   "files": [
     "dist",
@@ -39,7 +39,7 @@
     "vitest": "^3.0.7"
   },
   "keywords": [
-    "b2dp",
+    "forge",
     "ai",
     "skills",
     "mcp",

@@ -8,7 +8,7 @@ description: Translates local database and cache requirements (e.g. docker-compo
 Translate local development setups (like a loaded `docker-compose.yml`) into enterprise-ready, production infrastructure deployments using Terraform, Pulumi, or Bicep.
 
 ## 🎯 When to Use
-- After a data platform is generated using the `business-to-data-platform` skill.
+- After a data platform is generated using the `forge` skill.
 - When the user asks "How do I deploy this?" or "Can you write the Terraform for this?"
 - When migrating from a local Docker environment to managed cloud services (e.g., AWS RDS, Azure Cache for Redis).
 - When standing up fresh environments (staging, production).

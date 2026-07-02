@@ -1,4 +1,4 @@
-# Infisical Lifecycle Across b2dp + ship-to-vps
+# Infisical Lifecycle Across forge + ship-to-vps
 
 Infisical is the single source of truth for every project secret. Everything else (GitHub Variables, GitHub Secrets, VPS `.env`) is a **projection** of Infisical state. When secrets change, projections must re-sync.
 
@@ -8,10 +8,10 @@ The user runs a self-hosted Infisical at **https://<your-infisical-domain>**. Se
 
 ## The 6 phases
 
-### Phase 0 — Project bootstrap (b2dp Step 0)
-**Owner:** b2dp
+### Phase 0 — Project bootstrap (forge Step 0)
+**Owner:** forge
 
-For every new project, b2dp uses the bootstrap identity to:
+For every new project, forge uses the bootstrap identity to:
 
 1. `POST /v2/workspace` → create Infisical project (slug = repo name) → capture `projectId`
 2. `POST /v3/secrets/raw/<KEY>` → seed initial secrets, copying shared values from the `shared` project as placeholders

@@ -12,17 +12,17 @@ import {
 export function registerSkillsCommand(program: Command): void {
   const skills = program
     .command("skills")
-    .description("Manage b2dp skills");
+    .description("Manage Forge skills");
 
-  // b2dp skills list
+  // forge skills list
   skills
     .command("list")
-    .description("List all available b2dp skills")
+    .description("List all available Forge skills")
     .action(async () => {
       await listSkillsCommand();
     });
 
-  // b2dp skills info <name>
+  // forge skills info <name>
   skills
     .command("info <skillName>")
     .description("Show details about a specific skill")
@@ -33,7 +33,7 @@ export function registerSkillsCommand(program: Command): void {
 
 async function listSkillsCommand(): Promise<void> {
   log.blank();
-  console.log(pc.bold("Available b2dp skills:"));
+  console.log(pc.bold("Available Forge skills:"));
   log.blank();
 
   const available = await getAvailableSkills();
@@ -57,7 +57,7 @@ async function listSkillsCommand(): Promise<void> {
     `${availableCount}/${ALL_SKILLS.length} skills available locally.`
   );
   log.dim(
-    "Run `b2dp setup` to install all skills into your AI coding agent."
+    "Run `forge setup` to install all skills into your AI coding agent."
   );
 }
 
@@ -65,7 +65,7 @@ async function infoSkillCommand(skillName: string): Promise<void> {
   const validSkill = ALL_SKILLS.find((s) => s === skillName);
   if (!validSkill) {
     log.error(
-      `Unknown skill: "${skillName}". Run \`b2dp skills list\` to see available skills.`
+      `Unknown skill: "${skillName}". Run \`forge skills list\` to see available skills.`
     );
     process.exit(1);
   }
@@ -97,6 +97,6 @@ async function infoSkillCommand(skillName: string): Promise<void> {
   log.blank();
 
   log.dim(
-    `Install with: b2dp setup --yes  (or select it during interactive setup)`
+    `Install with: forge setup --yes  (or select it during interactive setup)`
   );
 }

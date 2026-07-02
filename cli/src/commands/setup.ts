@@ -26,7 +26,7 @@ import {
   readJsonConfig,
   mergeServerEntry,
   writeJsonConfig,
-  B2DP_MCP_SERVERS,
+  FORGE_MCP_SERVERS,
 } from "../setup/mcp-writer.js";
 import { RULE_CONTENT } from "../setup/templates.js";
 
@@ -43,7 +43,7 @@ interface SetupOptions {
 export function registerSetupCommand(program: Command): void {
   program
     .command("setup")
-    .description("Set up the b2dp skill ecosystem for your AI coding agent")
+    .description("Set up the Forge skill ecosystem for your AI coding agent")
     .option("--antigravity", "Set up for Antigravity / Gemini CLI")
     .option("--claude", "Set up for Claude Code")
     .option("--vscode", "Set up for VS Code (Copilot)")
@@ -101,7 +101,7 @@ async function resolveTargetAgents(
   }));
 
   return checkbox({
-    message: "Which AI coding agents should b2dp be set up for?",
+    message: "Which AI coding agents should Forge be set up for?",
     choices,
     validate: (v) => (v.length > 0 ? true : "Please select at least one agent."),
   });
@@ -128,7 +128,7 @@ async function resolveTargetSkills(options: SetupOptions): Promise<SkillName[]> 
 }
 
 async function resolveTargetMCPs(options: SetupOptions): Promise<string[]> {
-  const allMcps = Object.keys(B2DP_MCP_SERVERS);
+  const allMcps = Object.keys(FORGE_MCP_SERVERS);
   if (options.yes) return allMcps.filter((m) => m !== "redis");
 
   const choices = allMcps.map((name) => ({
@@ -170,7 +170,7 @@ async function configureMCPServers(
     let updatedConfig = config;
 
     for (const serverName of selectedMcps) {
-      const baseEntry = B2DP_MCP_SERVERS[serverName];
+      const baseEntry = FORGE_MCP_SERVERS[serverName];
       const entry = { ...baseEntry };
 
       // Apply specific env vars to specific servers
@@ -213,7 +213,7 @@ async function configureMCPServers(
 }
 
 async function writeRuleFile(rulesDir: string) {
-  const rulesSpinner = ora("Writing b2dp rule file...").start();
+  const rulesSpinner = ora("Writing forge rule file...").start();
   try {
     await ensureDir(rulesDir);
     const rulePath = join(rulesDir, RULE_FILENAME);
@@ -286,7 +286,7 @@ async function setupCommand(options: SetupOptions): Promise<void> {
     await setupAgent(agentName, scope, selectedSkills, selectedMcps, env);
   }
 
-  log.success(pc.bold(pc.green("b2dp setup complete! 🚀")));
+  log.success(pc.bold(pc.green("forge setup complete! 🚀")));
   log.blank();
   
   log.info(pc.bold("NEXT STEPS (ACTION REQUIRED):"));
@@ -305,5 +305,5 @@ async function setupCommand(options: SetupOptions): Promise<void> {
   log.info(pc.dim("Sample dbhub.toml can be found at:"));
   log.info(pc.blue("https://github.com/teckedd-code2save/ai-build-tools/blob/main/samples/dbhub.toml"));
   log.blank();
-  log.dim("Run `b2dp check` to verify your MCP configuration at any time.");
+  log.dim("Run `forge check` to verify your MCP configuration at any time.");
 }

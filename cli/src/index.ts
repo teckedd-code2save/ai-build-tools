@@ -9,14 +9,14 @@ import { registerSkillsCommand } from "./commands/skills.js";
 import { registerGenerateCommand } from "./commands/generate.js";
 
 function printBanner(): void {
-  const banner = figlet.textSync("b2dp", {
+  const banner = figlet.textSync("forge", {
     font: "Small",
     horizontalLayout: "default",
   });
   console.log(pc.cyan(banner));
   console.log(
     pc.dim(
-      "  Business-to-Data-Platform Orchestrator CLI — skill setup in one command\n"
+      "  Forge Orchestrator CLI — skill setup in one command\n"
     )
   );
 }
@@ -26,9 +26,9 @@ const program = new Command();
 printBanner();
 
 program
-  .name("b2dp")
+  .name("forge")
   .description(
-    "Set up the business-to-data-platform skill ecosystem for your AI coding agent"
+    "Set up the Forge skill ecosystem for your AI coding agent"
   )
   .version(VERSION, "-v, --version", "Output the current version");
 
