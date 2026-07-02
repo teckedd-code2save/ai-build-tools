@@ -33,18 +33,20 @@ npm install -g @teckedd-code2save/forge
 Run the setup command to interactively choose your agents and skills:
 
 ```bash
-forge setup
+npx @teckedd-code2save/forge init
 ```
+
+`init` is an alias for `setup`, so global installs can also use `forge setup`.
 
 Alternatively, use the auto-setup flag to install everything with detected defaults:
 
 ```bash
-forge setup --yes
+forge init --yes
 ```
 
 ## Commands
 
-### `setup`
+### `setup` / `init`
 Provision skills, configure MCP servers, and write agent rules.
 - `--project`: Configure for the current directory only.
 - `--claude`, `--gemini`, `--codex`, etc.: Force setup for a specific agent.

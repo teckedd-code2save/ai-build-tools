@@ -43,6 +43,7 @@ interface SetupOptions {
 export function registerSetupCommand(program: Command): void {
   program
     .command("setup")
+    .alias("init")
     .description("Set up the Forge skill ecosystem for your AI coding agent")
     .option("--antigravity", "Set up for Antigravity / Gemini CLI")
     .option("--claude", "Set up for Claude Code")

@@ -62,19 +62,25 @@ npm install -g @teckedd-code2save/forge
 ### Run setup
 
 ```bash
+npx @teckedd-code2save/forge init
+```
+
+If you installed it globally, the same setup is available as:
+
+```bash
 forge setup
 ```
 
 Or accept detected defaults automatically:
 
 ```bash
-forge setup --yes
+forge init --yes
 ```
 
 To scope configuration to the current repository:
 
 ```bash
-forge setup --project
+forge init --project
 ```
 
 ### Verify configuration
