@@ -1,4 +1,4 @@
-name: Publish b2dp to npm
+name: Publish Forge to npm
 
 on:
   # Manual trigger with customizable version and tag
@@ -19,6 +19,7 @@ on:
       - main
     paths:
       - 'cli/package.json'
+      - '.github/workflows/forge-publish.yml'
 
 jobs:
   build-and-publish:
@@ -58,6 +59,7 @@ jobs:
           cd cli
           # Get current version from package.json
           CURRENT_VERSION=$(jq -r '.version' package.json)
+          PACKAGE_NAME=$(jq -r '.name' package.json)
           
           # CASE 1: Manual workflow trigger with specified version
           if [ -n "${{ inputs.version }}" ]; then
@@ -71,8 +73,8 @@ jobs:
             VERSION="${CURRENT_VERSION}"
             
             # Check if this version already exists in npm registry to avoid duplicates
-            if npm view @teckedd-code2save/b2dp@${VERSION} version &> /dev/null; then
-              echo "Version ${VERSION} already exists in npm registry. Skipping publish."
+            if npm view ${PACKAGE_NAME}@${VERSION} version &> /dev/null; then
+              echo "${PACKAGE_NAME}@${VERSION} already exists in npm registry. Skipping publish."
               SHOULD_PUBLISH="false"
             else
               echo "Version ${VERSION} is new. Proceeding with publish."
@@ -91,6 +93,7 @@ jobs:
           fi
           
           # Store values as environment variables for use in later steps
+          echo "PACKAGE_NAME=${PACKAGE_NAME}" >> $GITHUB_ENV
           echo "PACKAGE_VERSION=${VERSION}" >> $GITHUB_ENV
           echo "NPM_TAG=${TAG}" >> $GITHUB_ENV
           echo "SHOULD_PUBLISH=${SHOULD_PUBLISH}" >> $GITHUB_ENV
@@ -102,9 +105,9 @@ jobs:
 
           # Only modify package.json if we're going to publish
           if [ "${SHOULD_PUBLISH}" = "true" ]; then
-            # Step 1: Update package name and version
+            # Step 1: Update package version
             echo "Preparing package.json for publishing..."
-            jq --arg version "$VERSION" '.name = "@teckedd-code2save/b2dp" | .version = $version' package.json > package.json.tmp
+            jq --arg version "$VERSION" '.version = $version' package.json > package.json.tmp
             mv package.json.tmp package.json
             
             # Step 2: Configure which files to include in the published package
@@ -114,11 +117,6 @@ jobs:
             jq '.files = ["dist/**/*", "skills/**/*", "LICENSE", "README.md"]' package.json > package.json.tmp
             mv package.json.tmp package.json
 
-            # Step 3: Add binary entry for CLI usage
-            echo "Adding bin entry for CLI usage..."
-            jq '.bin = {"b2dp": "dist/index.js"}' package.json > package.json.tmp 
-            mv package.json.tmp package.json
-            
             echo "Package.json prepared successfully for publishing"
           else
             echo "Skipping package.json modifications as we won't be publishing"
@@ -129,7 +127,7 @@ jobs:
         if: env.SHOULD_PUBLISH == 'true'
         run: |
           cd cli
-          echo "Publishing @teckedd-code2save/b2dp@${{ env.PACKAGE_VERSION }} with tag ${{ env.NPM_TAG }}..."
+          echo "Publishing ${{ env.PACKAGE_NAME }}@${{ env.PACKAGE_VERSION }} with tag ${{ env.NPM_TAG }}..."
           echo "npm version: $(npm --version)"
           # --provenance enables OIDC authentication and signed attestation
           npm publish --access public --tag ${{ env.NPM_TAG }} --provenance
