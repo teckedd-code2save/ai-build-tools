@@ -1,19 +1,20 @@
 # Forge
 
-**Describe your product. Get the backend foundation.**
+**From product spec to live URL — scaffold a backend, ship it to your VPS.**
 
-Forge is a CLI and agent-skill ecosystem for turning plain-English product requirements into production-minded backend workflows.
+Forge is a CLI and agent-skill ecosystem that turns plain-English product requirements into deployed, production-grade backends. Describe your business in a sentence, and Forge's pipeline handles everything from schema design to GitHub Actions auto-deploy on your VPS.
 
-Instead of manually wiring every skill, MCP server, and agent rule yourself, the `forge` CLI installs and configures the ecosystem your AI coding tools need to help with:
+Instead of manually wiring every skill, MCP server, and agent rule yourself, the `forge` CLI installs and configures the ecosystem your AI coding tools need. The same setup that scaffolds your data platform also provisions CI/CD, GHCR image builds, and Cloudflare DNS — so "describe and deploy" is one continuous flow.
 
-- schema design
-- migrations
-- repository scaffolding
+It powers outputs across the full delivery chain:
+- schema design & migrations
+- repository and service code
 - integration tests
 - frontend data contracts
-- infrastructure scaffolding
-
-It is not just a single prompt or a toy code generator. It is the setup layer for a broader backend-delivery workflow.
+- GitHub Actions CI/CD workflows
+- GHCR container builds & VPS auto-deploy
+- Cloudflare DNS provisioning
+- runbook helpers (`bin/logs`, `bin/rollback`)
 
 ## What Forge actually is
 
@@ -21,25 +22,34 @@ Forge is an **ecosystem bootstrapper**.
 
 It helps you:
 - detect supported AI agents/editors
-- install the core Forge orchestrator skill
-- install sibling skills used for architecture, testing, frontend generation, and IaC
+- install the Forge orchestrator skill and its sibling skills
 - configure MCP servers like Datafy
 - verify that everything is wired correctly
 
-Once installed, your configured AI agent can use that ecosystem to generate real backend artifacts from a business or product specification.
+Once installed, your configured AI agent can use that ecosystem to generate real backend artifacts — and deploy them — from a business or product specification.
 
-## What it helps generate
+## From spec to live URL in 10 minutes
 
-With the full ecosystem configured, your agents can work toward outputs like:
+Forge works in two phases that together form an end-to-end pipeline:
 
-- business/domain modeling
-- PostgreSQL schema proposals
-- migrations
-- repository and service code
-- analytics queries
-- integration tests
-- frontend-facing data contracts
-- Docker / Kubernetes / CI scaffolding
+1. **Scaffold with `forge`** — Describe your business. Forge (via the `b2dp` skill) generates schema, services, migrations, tests, and frontend data contracts. Dockerfile and CI workflow are included.
+
+2. **Ship with `ship-to-vps`** — The `ship-to-vps` skill turns your GitHub repo into a live deployment: pushes the Docker image to GHCR, runs the CI pipeline on push, configures Caddy + Cloudflare DNS, and provides runbook commands for logs and rollbacks.
+
+The `forge init` command configures both phases in a single pass. You describe your product once; Forge and ship-to-vps handle the rest.
+
+## The 8 skills
+
+| Skill | Description |
+|---|---|
+| **forge** | Converts business specs into a fully provisioned data platform and product implementation |
+| **ship-to-vps** | Ships any web app to a Hetzner-class VPS via GHCR, GitHub Actions, Caddy, and Cloudflare DNS |
+| **api-test-generator** | Generates comprehensive API integration tests from existing backend repos and schemas |
+| **cloud-solution-architect** | Cloud architecture design following Azure Architecture Center best practices |
+| **context7-mcp** | Library, framework, and API reference lookup for setup questions and code generation |
+| **frontend-data-consumer** | Scaffolds typed React/Vue data components from backend API contracts |
+| **frontend-design-review** | Reviews and creates production-grade frontend interfaces with design system compliance |
+| **infrastructure-as-code-architect** | Translates local infra config into Terraform/Pulumi IaC for AWS, Azure, or GCP |
 
 ## Supported environments
 
