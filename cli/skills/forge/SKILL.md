@@ -193,6 +193,37 @@ Use `infrastructure-as-code-architect`.
 5. Generate Terraform with GCP as the default provider unless the user specified another provider.
 6. Generate CI/CD and deployment assets.
 
+**SHIPPABILITY CONTRACT — MANDATORY for any web app destined for `ship-to-vps`:**
+
+The repo this step emits must satisfy every item in
+`~/.claude/skills/ship-to-vps/references/shippability-contract.md`. Each item maps to a real
+production failure that has happened. Do not skip any:
+
+- **Dockerfile** at repo root, multi-stage, with `LABEL org.opencontainers.image.source=...` on the
+  final stage (auto-links GHCR package to the repo so ephemeral `GITHUB_TOKEN` can pull during
+  deploy)
+- **Runner stage must include the FULL `node_modules` tree** if Prisma 7 migrations run from the
+  same image — `@prisma/config` requires `effect` and other transitive deps that the standalone
+  bundle omits. Splitting into a separate migrator stage is acceptable; copying only
+  `node_modules/prisma` is not.
+- **Invoke migrations via `node ./node_modules/<orm>/build/index.js`**, not `npx` — standalone
+  runners don't ship `node_modules/.bin/` shims
+- **`.eslintrc.json`** (or framework equivalent) MUST exist — running `next lint` without one
+  triggers an interactive prompt that hangs CI
+- **`.dockerignore`** that does NOT exclude `prisma/`, `public/`, or any config file the Dockerfile
+  COPYs
+- **Tracked `.gitkeep`** in every directory the Dockerfile COPYs that may otherwise be empty
+  (e.g. `public/.gitkeep` for Next.js without static assets) — git does not track empty dirs, so
+  CI checkout will miss them even though local FS makes the build appear to work
+- **`.infisical.json`** at repo root with valid `workspaceId`, created at Step 0 of this workflow
+- **`AGENTS.md`** — use `~/.claude/skills/ship-to-vps/templates/docs/AGENTS.md` as the template,
+  parameterized with this project's slug, domain, stack
+- **No committed `.env*` files** — verify gitignore covers them
+- **App reads `DATABASE_URL` from env** and listens on a single TCP port (default 3000)
+
+Before declaring Step 5 complete, walk the checklist at the bottom of
+`~/.claude/skills/ship-to-vps/references/shippability-contract.md` and confirm every box.
+
 ### Step 6 — Provision Database via Datafy
 
 Use available `execute_admin_sql_<id>` and `execute_sql_<id>` tools.
@@ -263,3 +294,25 @@ Hard rules:
 - Never emit only one UI view when the business clearly needs several.
 - Never rely on cwd-sensitive env loading for Prisma monorepos.
 - Never default to `@db.Numeric(...)` for Prisma 7 PostgreSQL money fields in this setup.
+- Never emit a web-app scaffold that violates the shippability contract — the next skill in the
+  chain (`ship-to-vps`) depends on every item. See Step 5 for the enumerated requirements and
+  `~/.claude/skills/ship-to-vps/references/shippability-contract.md` for full rationale.
+- Never copy only `node_modules/prisma` + `@prisma/*` into a runner image when migrations are
+  expected to run from that image. Prisma 7's `@prisma/config` requires `effect`. Copy the full
+  `node_modules` tree or build a dedicated migrator stage.
+- Never let CI invoke `next lint` without `.eslintrc.json` present — it prompts interactively and
+  hangs the runner.
+
+## Handoff to `ship-to-vps`
+
+After Step 9 verification, if the user wants the app deployed to their VPS, hand off to the
+`ship-to-vps` skill. It expects exactly the contract this skill emits and will scaffold:
+
+- `.github/workflows/{ci,deploy,infisical-sync}.yml`
+- `/opt/<slug>/` on the VPS (docker-compose, `.env` projected from Infisical, Caddy site config)
+- Cloudflare DNS A-record (if user opted into Cloudflare integration)
+- GHCR bootstrap (push current image with `:bootstrap` tag for rollback)
+- First end-to-end deploy
+
+If the user says "ship it" / "deploy this" / "wire up CI/CD" / "set up auto-deploy", trigger
+`ship-to-vps`.

@@ -22,6 +22,7 @@ This project uses the **forge** skill as the central orchestrator. When building
 - \`api-test-generator\` → integration tests
 - \`frontend-data-consumer\` → Vite/Next.js UI components
 - \`infrastructure-as-code-architect\` → Dockerfiles, K8s manifests, GitHub Actions
+- \`ship-to-vps\` → Deploy to a Hetzner-class VPS with GHCR, Caddy, and Cloudflare DNS
 `;
 
 export const DBHUB_TOML_SAMPLE = `# Datafy DBHub Configuration (dbhub.toml)

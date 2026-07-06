@@ -6,6 +6,7 @@ import { VERSION } from "./constants.js";
 import { registerSetupCommand } from "./commands/setup.js";
 import { registerCheckCommand } from "./commands/check.js";
 import { registerSkillsCommand } from "./commands/skills.js";
+import { registerConfigureCommand } from "./commands/configure.js";
 import { registerGenerateCommand } from "./commands/generate.js";
 
 function printBanner(): void {
@@ -35,6 +36,7 @@ program
 registerSetupCommand(program);
 registerCheckCommand(program);
 registerSkillsCommand(program);
+registerConfigureCommand(program);
 registerGenerateCommand(program);
 
 program.parse(process.argv);

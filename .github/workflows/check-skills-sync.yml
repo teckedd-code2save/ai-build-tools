@@ -1,0 +1,22 @@
+name: Check Skills Sync
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**'
+      - 'cli/skills/**'
+      - 'scripts/check-skills-sync.sh'
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'cli/skills/**'
+      - 'scripts/check-skills-sync.sh'
+
+jobs:
+  check-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check skills/ and cli/skills/ are in sync
+        run: bash scripts/check-skills-sync.sh

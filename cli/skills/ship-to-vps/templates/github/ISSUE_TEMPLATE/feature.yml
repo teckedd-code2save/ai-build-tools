@@ -1,0 +1,54 @@
+name: Feature
+description: A new capability or enhancement
+title: "feat: "
+labels: ["type:feature", "status:ready"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing! Make the issue self-contained so any agent can pick it up without asking questions.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user or business pain does this address? Be concrete.
+      placeholder: "Admins can't add new products without editing seed.ts. Every new SKU requires a deploy."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What does the fix look like? Files, components, endpoints, data shape.
+      placeholder: "Add `/admin/products/new` page with a form (name, brand, category, description, variants, images). Cloudinary signed upload. New API route POST /api/admin/products."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Bullet list. A reviewer can tick each box before approving.
+      value: |
+        - [ ]
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Implementation notes
+      description: Hints, gotchas, files to read first, schema changes, security considerations.
+      placeholder: "Cloudinary upload must be signed server-side; never expose the API secret to the client. See lib/cloudinary.ts."
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0-critical
+        - P1-high
+        - P2-medium
+        - P3-low
+      default: 2
+    validations:
+      required: true

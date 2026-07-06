@@ -13,6 +13,7 @@ export const ALL_SKILLS = [
   "frontend-design-review",
   "infrastructure-as-code-architect",
   "context7-mcp",
+  "ship-to-vps",
 ] as const;
 
 export type SkillName = (typeof ALL_SKILLS)[number];
@@ -32,6 +33,8 @@ export const SKILL_DESCRIPTIONS: Record<SkillName, string> = {
     "Generates Dockerfiles, K8s manifests, and GitHub Actions workflows",
   "context7-mcp":
     "Fetches up-to-date docs and patterns for any library or framework",
+  "ship-to-vps":
+    "Ships any web app to a Hetzner-class VPS via GHCR, GitHub Actions, Caddy, and Cloudflare DNS",
 };
 
 export const RULE_FILENAME = "forge.md";

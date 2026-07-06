@@ -1,0 +1,47 @@
+# Lives at /opt/{{slug}}/docker-compose.yml on the VPS.
+# Image is always pulled from GHCR; never built on the VPS.
+# .env is rendered by infisical-sync.yml (Phase 5).
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: {{slug}}-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: {{slug_underscored}}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: {{slug_underscored}}
+    volumes:
+      - {{slug}}-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{slug_underscored}} -d {{slug_underscored}}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    ports:
+      - "127.0.0.1:{{db_host_port}}:5432"
+    networks:
+      - {{slug}}
+
+  web:
+    # Pin via WEB_IMAGE env in deploy.yml + bin/rollback; default to :latest
+    # for manual operations from the VPS. Always pulled, never built.
+    image: ${WEB_IMAGE:-ghcr.io/{{ghcr_namespace}}/{{slug}}:latest}
+    container_name: {{slug}}-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:{{host_port}}:3000"
+    networks:
+      - {{slug}}
+
+volumes:
+  {{slug}}-pg-data:
+
+networks:
+  {{slug}}:
+    name: {{slug}}

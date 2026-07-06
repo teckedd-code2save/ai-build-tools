@@ -1,0 +1,25 @@
+name: Chore
+description: Tooling, refactor, docs, or cleanup
+title: "chore: "
+labels: ["type:chore", "status:ready"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs to be done
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why now
+      description: What does this unblock or simplify?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Done when
+      value: |
+        - [ ]
+        - [ ]

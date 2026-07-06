@@ -1,0 +1,45 @@
+name: Bug
+description: Something doesn't work as expected
+title: "fix: "
+labels: ["type:bug", "status:ready"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happens
+      description: Observed behavior. One sentence is fine.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Logs, screenshots, request/response. Redact PII and tokens.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0-critical
+        - P1-high
+        - P2-medium
+        - P3-low
+      default: 2
+    validations:
+      required: true
