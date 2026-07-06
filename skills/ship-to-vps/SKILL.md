@@ -41,6 +41,10 @@ Take a repo that satisfies `references/shippability-contract.md` and put it on t
 
 ## Inputs the skill needs
 
+> **Defaults come from `~/.forge/ship-to-vps-config.json` if it exists.**
+> Run `forge configure ship-to-vps` to set persistent defaults (VPS host, SSH key, GHCR namespace, Infisical domain).
+> If the config file is absent or a value is unset, ask the user once and remember in project memory.
+
 If unset, ask the user once and remember in a project memory:
 
 | Input | Example | Where it lands |
