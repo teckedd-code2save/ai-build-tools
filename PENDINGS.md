@@ -117,4 +117,4 @@ Items tracked as planned work, not sharp edges:
 1. **ship-to-vps personalization step** — replace `<placeholder>` defaults with an interactive configure step at install time.
 2. **README positioning update** — the repo is still pitched build-only; "scaffold AND deploy" is the current product story and the README should lead with it.
 3. **CLI surface audit** — sweep help text, samples, and docs for `ship-to-vps` awareness so the deploy path is discoverable everywhere.
-4. **Dedicated typecheck-and-build CI** — the repo currently only has the sync check and the publish workflow; a fast CI workflow for `npm run typecheck` and `npm test` would catch regressions before publish.
+4. **Dedicated typecheck-and-build CI** — **fixed** `ci.yml` (runs typecheck, lint, test, and build on push/PR via `.github/workflows/ci.yml`).

@@ -37,7 +37,7 @@ export function mergeServerEntry(
 
   // If server already exists, we might still want to merge env vars if they were empty
   if (serverName in section) {
-    const existingEntry = section[serverName] as Record<string, any>;
+    const existingEntry = section[serverName] as Record<string, unknown>;
     const newEnv = (entry.env as Record<string, string>) ?? {};
     const existingEnv = (existingEntry.env as Record<string, string>) ?? {};
 

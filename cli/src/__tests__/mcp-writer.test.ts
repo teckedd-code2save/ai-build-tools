@@ -15,7 +15,7 @@ describe("mcp-writer.ts", () => {
 
       expect(alreadyExists).toBe(false);
       expect(config.mcpServers).toHaveProperty("test-server");
-      expect((config.mcpServers as any)["test-server"]).toEqual(entry);
+      expect((config.mcpServers as Record<string, unknown>)["test-server"]).toEqual(entry);
     });
 
     it("should merge env variables for an existing server if they were missing or different", () => {
@@ -33,11 +33,11 @@ describe("mcp-writer.ts", () => {
         existing,
         "mcpServers",
         "test-server",
-        entry as any
+        entry
       );
 
       expect(alreadyExists).toBe(true);
-      const updatedEnv = (config.mcpServers as any)["test-server"].env;
+      const updatedEnv = (config.mcpServers as Record<string, { env: Record<string, string> }>)["test-server"].env;
       expect(updatedEnv.NEW).toBe("token");
       expect(updatedEnv.OLD).toBe("val");
     });
@@ -53,10 +53,10 @@ describe("mcp-writer.ts", () => {
       };
       const entry = { env: { KEY: "VAL" } };
       const { alreadyExists } = mergeServerEntry(
-        existing as any,
+        existing,
         "mcpServers",
         "test-server",
-        entry as any
+        entry
       );
 
       expect(alreadyExists).toBe(true);

@@ -31,7 +31,7 @@ ai-build-tools/
 │   └── tsup.config.ts
 ├── skills/                 8 skill directories (source of truth)
 ├── scripts/                check-skills-sync.sh, sync-skills.sh
-├── .github/workflows/      forge-publish.yml, check-skills-sync.yml
+├── .github/workflows/      ci.yml, forge-publish.yml, check-skills-sync.yml
 └── samples/                Example project outputs
 ```
 
@@ -67,7 +67,7 @@ npm test             # run tests
 ## 6. Build & Deploy
 
 - **Package**: `npm run build` produces `cli/dist/` — published to npm as `@teckedd-code2save/forge`
-- **CI**: Every push to `main` triggers `forge-publish.yml` (npm publish + GitHub Pages). Also runs `check-skills-sync.yml` to ensure `skills/` and `cli/skills/` are in sync.
+- **CI**: `ci.yml` runs typecheck, lint, test, and build on every push/PR to `main`. Every push to `main` also triggers `forge-publish.yml` (npm publish + GitHub Pages). `check-skills-sync.yml` ensures `skills/` and `cli/skills/` stay in sync.
 - **Pages**: The repo's GitHub Pages site (live at `https://teckedd-code2save.github.io/ai-build-tools/`) serves the landing page from `index.html`.
 
 ## 7. The 8 Skills

@@ -5,7 +5,6 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 import { input } from "@inquirer/prompts";
 import { log } from "../utils/logger.js";
-import { pathExists } from "../utils/fs.js";
 
 export interface ShipToVpsConfig {
   vps_host: string;
@@ -127,7 +126,7 @@ async function configureShipToVpsCommand(): Promise<void> {
       default: currentValue || field.default,
     });
 
-    (config as any)[field.key] = answer;
+    config[field.key] = answer;
   }
 
   await writeShipToVpsConfig(config);
@@ -137,7 +136,7 @@ async function configureShipToVpsCommand(): Promise<void> {
   log.blank();
   log.info(pc.bold("Summary:"));
   for (const field of CONFIG_FIELDS) {
-    const val = (config as any)[field.key];
+    const val = config[field.key] ?? "";
     log.info(
       `  ${pc.dim(field.label + ":")} ${val === field.default ? pc.yellow(val) : pc.green(val)}`,
     );
@@ -165,7 +164,7 @@ async function listConfigCommand(): Promise<void> {
 
   log.info(pc.bold("ship-to-vps:"));
   for (const field of CONFIG_FIELDS) {
-    const val = (config as any)[field.key];
+    const val = config[field.key] ?? "";
     const display = val || pc.dim("(not set)");
     log.info(`  ${pc.dim(field.label + ":")} ${display}`);
   }

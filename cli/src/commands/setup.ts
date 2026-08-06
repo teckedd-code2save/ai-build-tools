@@ -8,6 +8,7 @@ import { join } from "node:path";
 import { log } from "../utils/logger.js";
 import { ensureDir } from "../utils/fs.js";
 import {
+  type AgentConfig,
   type AgentName,
   ALL_AGENT_NAMES,
   AGENT_DISPLAY_NAMES,
@@ -160,7 +161,7 @@ async function installSkillFiles(skills: SkillName[], skillsDir: string) {
 }
 
 async function configureMCPServers(
-  agent: Record<string, any>,
+  agent: AgentConfig,
   mcpConfigPath: string,
   selectedMcps: string[],
   env: Record<string, string>

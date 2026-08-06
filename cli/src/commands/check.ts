@@ -6,7 +6,6 @@ import { log } from "../utils/logger.js";
 import {
   type AgentName,
   ALL_AGENT_NAMES,
-  AGENT_DISPLAY_NAMES,
   getAgent,
 } from "../setup/agents.js";
 import { readJsonConfig } from "../setup/mcp-writer.js";
