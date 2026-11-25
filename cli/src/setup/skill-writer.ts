@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { cp, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -44,7 +44,7 @@ export async function readSkillFile(skill: SkillName): Promise<string | null> {
 
 /**
  * Install a single skill into the target directory.
- * Creates <targetDir>/<skillName>/SKILL.md
+ * Copy the complete package, including references, scripts and templates.
  */
 export async function installSkill(
   skill: SkillName,
@@ -60,15 +60,9 @@ export async function installSkill(
     throw new Error(`Could not read SKILL.md for skill: ${skill}`);
   }
 
-  if (alreadyExisted) {
-    const existingContent = await readFile(targetPath, "utf-8");
-    if (existingContent === content) {
-      return { skill, targetPath, alreadyExisted: true };
-    }
-  }
-
   await ensureDir(skillDir);
-  await writeFile(targetPath, content, "utf-8");
+  // Do not skip an identical SKILL.md: older installers omitted its resources.
+  await cp(join(SKILLS_REPO_DIR, skill), skillDir, { recursive: true });
 
   return { skill, targetPath, alreadyExisted };
 }

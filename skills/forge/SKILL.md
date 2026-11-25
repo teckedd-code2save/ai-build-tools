@@ -10,10 +10,9 @@ description: >
   "I need a backend", "design a database", "create schema", "bootstrap an app", "add a feature",
   "build the UI", or "update the data model". Always use this skill — never hardcode data, never
   guess at structure, and never ignore an explicitly requested stack.
-compatibility:
-  requires:
-    - Datafy MCP Server (@teckedd-code2save/datafy) connected and available as MCP tool
-  optional:
+metadata:
+  optional-integrations:
+    - Datafy MCP Server (@teckedd-code2save/datafy)
     - Redis (for caching, sessions, queues, pub/sub)
     - Elasticsearch (for full-text search, analytics, event streaming)
     - PostgreSQL connection via Datafy
@@ -27,6 +26,29 @@ compatibility:
 Turn any business description into a production-grade data platform and complete product scaffold:
 schema, migrations, repository code, APIs, tests, UI surfaces, Docker Compose, and infra-ready
 artifacts.
+
+## Entry points and responsibilities
+
+Forge is the product-workflow orchestrator across new builds and existing projects. Start from the
+user's brief, repository, issue/change request, design or available conversation context. Inspect
+and reuse existing code, decisions and tests. Do not require the user to re-describe an existing app
+or switch to Codex; Codex, Claude, Gemini and other configured skill-capable environments are hosts
+for the workflow, subject to their actual available tools.
+
+- Forge coordinates requirements, architecture, implementation, testing, review, provisioning,
+  deployment and subsequent iteration through the applicable skills and tools.
+- GitHub provides source/history, issues, branches, pull requests, CI and release artifacts when
+  selected. Use the user's authorized repository workflow and carry exact revisions/results into
+  deployment. A GitHub issue can supply context through the agent's tools; do not invent an automatic
+  ingestion or webhook feature that is not installed.
+- GroundControl assists with infrastructure/resource discovery, provisioning, configuration,
+  deployment and runtime operations when selected. Discover capabilities instead of assuming every
+  resource, provider or lifecycle action is already exposed. Keep product decisions and workflow
+  orchestration in Forge and infrastructure mechanics in GC.
+
+Choose the applicable work: implement a feature, fix a bug, evolve a schema, add infrastructure,
+release an existing product or start a new one. A deployment is not required for every task. The
+current GC/Postgres rehearsal is one integration test, not Forge's product boundary.
 
 ## Core Principles
 
@@ -54,6 +76,18 @@ artifacts.
    - Docker Compose Postgres image: `postgres:18-alpine`
    - Include Docker Compose in the infra repo as well as app-local setup when useful
 
+## GroundControl target
+
+When the user chooses GroundControl (GC), read [the GroundControl handoff](references/groundcontrol.md)
+and coordinate infrastructure work through the authorized GC capabilities. This explicit target takes
+precedence over GCP/Terraform defaults and the generic ship-to-vps trigger. Prepare the app and
+its database without requiring a new cloud account, Infisical workspace or Cloudflare account.
+Use existing resources or plan new ones according to the request and available capabilities.
+New deployment creation currently uses GC Projects and templates; do not claim an unimplemented
+agent provisioning tool exists.
+Skill-relative sibling paths below resolve from this installed skill directory for every agent,
+including Codex; never assume a `~/.claude` installation.
+
 ## Clarification Rules
 
 Before building, resolve or infer:
@@ -74,8 +108,9 @@ When the prompt is specific, proceed with that stack.
 
 Use `cloud-solution-architect` first.
 
-1. Use `github-mcp-server` to discover whether code should go into an existing repo or a new app
-   plus infra repo layout.
+1. Inspect available local/repository context first. When GitHub is selected, use its available
+   authorized tools to inspect the repository, relevant issues and CI before deciding whether a new
+   repository or infrastructure package is needed. Preserve the existing project when changing it.
 2. Choose architecture style that matches the product and scale.
 3. Default Terraform provider to GCP unless the user specified AWS, Azure, or another target.
 4. Ensure there is an infra home for deployment assets. Put Docker Compose alongside app setup when
@@ -193,10 +228,10 @@ Use `infrastructure-as-code-architect`.
 5. Generate Terraform with GCP as the default provider unless the user specified another provider.
 6. Generate CI/CD and deployment assets.
 
-**SHIPPABILITY CONTRACT — MANDATORY for any web app destined for `ship-to-vps`:**
+**DIRECT VPS CONTRACT — only when direct SSH-managed deployment is selected:**
 
 The repo this step emits must satisfy every item in
-`~/.claude/skills/ship-to-vps/references/shippability-contract.md`. Each item maps to a real
+`../ship-to-vps/references/direct-vps-contract.md`. Each item maps to a real
 production failure that has happened. Do not skip any:
 
 - **Dockerfile** at repo root, multi-stage, with `LABEL org.opencontainers.image.source=...` on the
@@ -208,28 +243,37 @@ production failure that has happened. Do not skip any:
   `node_modules/prisma` is not.
 - **Invoke migrations via `node ./node_modules/<orm>/build/index.js`**, not `npx` — standalone
   runners don't ship `node_modules/.bin/` shims
-- **`.eslintrc.json`** (or framework equivalent) MUST exist — running `next lint` without one
-  triggers an interactive prompt that hangs CI
+- **Noninteractive lint/check command** with configuration appropriate to the installed framework
+  and version; execute it in CI rather than assuming a legacy framework command exists
 - **`.dockerignore`** that does NOT exclude `prisma/`, `public/`, or any config file the Dockerfile
   COPYs
 - **Tracked `.gitkeep`** in every directory the Dockerfile COPYs that may otherwise be empty
   (e.g. `public/.gitkeep` for Next.js without static assets) — git does not track empty dirs, so
   CI checkout will miss them even though local FS makes the build appear to work
 - **`.infisical.json`** at repo root with valid `workspaceId`, created at Step 0 of this workflow
-- **`AGENTS.md`** — use `~/.claude/skills/ship-to-vps/templates/docs/AGENTS.md` as the template,
+- **`AGENTS.md`** — use `../ship-to-vps/templates/docs/AGENTS.md` as the template,
   parameterized with this project's slug, domain, stack
 - **No committed `.env*` files** — verify gitignore covers them
 - **App reads `DATABASE_URL` from env** and listens on a single TCP port (default 3000)
 
-Before declaring Step 5 complete, walk the checklist at the bottom of
-`~/.claude/skills/ship-to-vps/references/shippability-contract.md` and confirm every box.
+Before declaring Step 5 complete, complete the contract for the selected target in
+`../ship-to-vps/references/shippability-contract.md`. For GroundControl, follow
+[the GC handoff](references/groundcontrol.md) and its GitHub image delivery readiness checks.
+Derive the required delivery assets from the described service; the user need not enumerate them.
 
 ### Step 6 — Provision Database via Datafy
 
-Use available `execute_admin_sql_<id>` and `execute_sql_<id>` tools.
+For a GC target, prepare the database recipe and migrations following
+[the GroundControl handoff](references/groundcontrol.md). A generated recipe is not a running
+database. Use GC's supported launch path for new services and report any missing authorization.
+Datafy is optional for this path: use the chosen stack's database and migration tools when
+Datafy is unavailable, within the authorized environment. Do not substitute fabricated data.
+For an already connected database, use available `execute_admin_sql_<id>` and `execute_sql_<id>`
+tools within the user's authorized scope. If no DB connection is available, continue preparing
+code and migrations, but explicitly leave live migration and data verification pending.
 
 1. Verify or create the target database.
-2. Apply schema in dependency order.
+2. Apply versioned migrations in dependency order; do not replace migration history with ad hoc DDL.
 3. Keep execution safe and repeatable.
 4. If `dbhub.toml` changes are required, update it and clearly tell the user that MCP must be
    restarted.
@@ -294,19 +338,18 @@ Hard rules:
 - Never emit only one UI view when the business clearly needs several.
 - Never rely on cwd-sensitive env loading for Prisma monorepos.
 - Never default to `@db.Numeric(...)` for Prisma 7 PostgreSQL money fields in this setup.
-- Never emit a web-app scaffold that violates the shippability contract — the next skill in the
-  chain (`ship-to-vps`) depends on every item. See Step 5 for the enumerated requirements and
-  `~/.claude/skills/ship-to-vps/references/shippability-contract.md` for full rationale.
+- For a `ship-to-vps` target, never emit a scaffold that violates its shippability contract. See Step 5 for the enumerated requirements and
+  `../ship-to-vps/references/shippability-contract.md` for full rationale.
 - Never copy only `node_modules/prisma` + `@prisma/*` into a runner image when migrations are
   expected to run from that image. Prisma 7's `@prisma/config` requires `effect`. Copy the full
   `node_modules` tree or build a dedicated migrator stage.
-- Never let CI invoke `next lint` without `.eslintrc.json` present — it prompts interactively and
-  hangs the runner.
+- Verify that CI uses supported, configured, noninteractive commands for the actual framework version.
 
 ## Handoff to `ship-to-vps`
 
-After Step 9 verification, if the user wants the app deployed to their VPS, hand off to the
-`ship-to-vps` skill. It expects exactly the contract this skill emits and will scaffold:
+For delivery, hand off to `ship-to-vps` with the selected target and available evidence. Its GC route
+continues the unified GitHub/GHCR/GC pipeline. The direct VPS route below applies only when explicitly
+selected after Step 9 verification. It expects exactly the contract this skill emits and will scaffold:
 
 - `.github/workflows/{ci,deploy,infisical-sync}.yml`
 - `/opt/<slug>/` on the VPS (docker-compose, `.env` projected from Infisical, Caddy site config)
@@ -314,5 +357,4 @@ After Step 9 verification, if the user wants the app deployed to their VPS, hand
 - GHCR bootstrap (push current image with `:bootstrap` tag for rollback)
 - First end-to-end deploy
 
-If the user says "ship it" / "deploy this" / "wire up CI/CD" / "set up auto-deploy", trigger
-`ship-to-vps`.
+For "ship it" / "deploy this" / "wire up CI/CD" / "set up auto-deploy", retain the selected deployment target. Use the GC handoff and `ship-to-vps` GC route when GC is selected; retain the direct VPS route for explicit SSH-managed delivery.

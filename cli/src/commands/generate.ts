@@ -1,10 +1,9 @@
 import { Command } from "commander";
 import pc from "picocolors";
-import { spawn, type ChildProcess } from "node:child_process";
-import { writeFile } from "node:fs/promises";
+import { spawn } from "node:child_process";
+import { readdir, writeFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { randomBytes } from "node:crypto";
-import readline from "node:readline";
 import { log } from "../utils/logger.js";
 import { ensureDir } from "../utils/fs.js";
 
@@ -103,48 +102,6 @@ function detectPhase(text: string): { label: string; emoji: string } | null {
   return null;
 }
 
-async function showInterruptMenu(
-  agentProcess: ChildProcess,
-  targetDir: string
-): Promise<"continue" | "abort" | "keep"> {
-  agentProcess.stdout?.pause();
-  agentProcess.stderr?.pause();
-
-  console.log("\n");
-  console.log(pc.yellow("⚠  Interrupt received. What do you want to do?\n"));
-  console.log(`  ${pc.bold("1")}  Continue running`);
-  console.log(`  ${pc.bold("2")}  Stop and keep what's been built so far`);
-  console.log(`  ${pc.bold("3")}  Abort and clean up workspace`);
-  console.log("");
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise((resolve) => {
-    rl.question(pc.dim("  Choice [1/2/3]: "), (answer) => {
-      rl.close();
-      const choice = answer.trim();
-
-      if (choice === "2") {
-        console.log(`\n${pc.green("✔")} Stopped. Partial build kept at:\n  ${pc.cyan(targetDir)}`);
-        agentProcess.kill("SIGTERM");
-        resolve("keep");
-      } else if (choice === "3") {
-        console.log(`\n${pc.red("✖")} Aborting and cleaning up...`);
-        agentProcess.kill("SIGTERM");
-        resolve("abort");
-      } else {
-        console.log(`\n${pc.green("✔")} Resuming...\n`);
-        agentProcess.stdout?.resume();
-        agentProcess.stderr?.resume();
-        resolve("continue");
-      }
-    });
-  });
-}
-
 export function registerGenerateCommand(program: Command): void {
   program
     .command("generate <prompt>")
@@ -194,23 +151,25 @@ export function buildAgentInvocation(agent: GenerateOptions["agent"]): AgentInvo
 }
 
 async function generateCommand(prompt: string, options: GenerateOptions): Promise<void> {
+  const { cmd, args } = buildAgentInvocation(options.agent);
+  if (options.deploy && options.deploy !== "vercel") {
+    throw new Error(`Unsupported deployment target: ${options.deploy}`);
+  }
   const runId = randomBytes(4).toString("hex");
   const targetDir = join(process.cwd(), buildWorkspaceName(prompt, runId));
   const startMs = Date.now();
+  let currentPhase = `Spawning ${options.agent} agent...`;
+  const updateHeader = () => {
+    if (process.stdout.isTTY) {
+      renderHeader(runId, options.agent, basename(targetDir), currentPhase, formatElapsed(startMs));
+    }
+  };
+  if (process.stdout.isTTY) for (let i = 0; i < 4; i++) log.blank();
+  log.info(`Workspace: ${targetDir}`);
+  log.dim("Ctrl-C stops the agent and keeps the workspace for inspection.");
 
-  console.log("");
-  console.log("");
-  console.log("");
-  console.log("");
-
-  let currentPhase = `🤖 Spawning ${pc.green(options.agent)} agent...`;
-  const updateHeader = () =>
-    renderHeader(runId, options.agent, basename(targetDir), currentPhase, formatElapsed(startMs));
-  updateHeader();
-
-  try {
-    await ensureDir(targetDir);
-    const systemPrompt = `
+  await ensureDir(targetDir);
+  await writeFile(join(targetDir, "SYSTEM_PROMPT.md"), `
 # Forge Orchestrator Task
 You are the **Forge Orchestrator**.
 
@@ -219,111 +178,80 @@ ${prompt}
 
 ## Workflow
 1. Find and use the **forge** skill to fulfill this goal.
-2. Respect any explicit stack, framework, cloud, database version, ORM, or UI instructions in the goal. Do not silently default to TypeScript or another stack if the goal specified something else.
-3. Implement all major product surfaces implied by the business, not just a single dashboard view.
-4. You have full shell access and a powerful ecosystem of MCP servers (Datafy, Prisma, Context7, GitHub, etc.).
-5. Do NOT exit until the full stack is implemented, connected, and verified.
-`;
-    await writeFile(join(targetDir, "SYSTEM_PROMPT.md"), systemPrompt, "utf-8");
-    currentPhase = `📂 Workspace ready — ${pc.dim(targetDir)}`;
-    updateHeader();
-  } catch (err) {
-    log.error(`Failed to scaffold workspace: ${String(err)}`);
-    return;
-  }
+2. Respect explicit stack, framework, cloud, database version, ORM, and UI instructions.
+3. Implement all major product surfaces implied by the business.
+4. Check which tools and credentials are actually available; never assume a configured MCP server is connected.
+5. Implement and verify the full stack. Report executed checks and remaining blockers separately.
+6. Prepare deployment configuration, but leave resource creation and deployment to the caller's explicit provisioning step.
+`, "utf-8");
 
-  const { cmd, args } = buildAgentInvocation(options.agent);
   const agentProcess = spawn(cmd, args, {
     cwd: targetDir,
     stdio: ["inherit", "pipe", "pipe"],
     shell: false,
   });
-
   const headerTick = setInterval(updateHeader, 1000);
-
-  agentProcess.on("error", (err) => {
-    clearInterval(headerTick);
-    console.log("");
-    log.error(`Failed to start ${options.agent}: ${err.message}`);
-  });
-
+  let interrupted = false;
+  let stopTimer: ReturnType<typeof setTimeout> | undefined;
+  const onInterrupt = () => {
+    if (interrupted) { agentProcess.kill("SIGKILL"); return; }
+    interrupted = true;
+    agentProcess.kill("SIGTERM");
+    stopTimer = setTimeout(() => agentProcess.kill("SIGKILL"), 5000);
+  };
+  process.on("SIGINT", onInterrupt);
   let lineBuffer = "";
   const processChunk = (chunk: Buffer) => {
     const text = chunk.toString();
-    lineBuffer += text;
     process.stdout.write(pc.dim(text));
-
-    const lines = lineBuffer.split("\n");
+    const lines = (lineBuffer + text).split("\n");
     for (const line of lines) {
       const detected = detectPhase(line);
-      if (detected) {
-        currentPhase = `${detected.emoji} ${detected.label}`;
-      }
+      if (detected) currentPhase = `${detected.emoji} ${detected.label}`;
     }
-    lineBuffer = lines[lines.length - 1] ?? "";
+    // Bound memory when an agent emits a long line with no newline.
+    lineBuffer = (lines.at(-1) ?? "").slice(-4096);
   };
-
   agentProcess.stdout?.on("data", processChunk);
   agentProcess.stderr?.on("data", processChunk);
-
-  let interrupted = false;
-  process.on("SIGINT", async () => {
-    if (interrupted) return;
-    interrupted = true;
+  try {
+    const result = await new Promise<{ code: number | null; signal: string | null }>((resolve, reject) => {
+      agentProcess.once("error", () => reject(new Error(`Failed to start ${options.agent}. Check that it is installed and available.`)));
+      agentProcess.once("close", (code, signal) => resolve({ code, signal }));
+    });
+    if (interrupted || result.signal) {
+      process.exitCode = 130;
+      throw new Error(`Generation stopped; partial workspace kept at ${targetDir}. No deployment started.`);
+    }
+    if (result.code !== 0) throw new Error(`Agent exited with code ${result.code}. Workspace kept at ${targetDir}.`);
+  } finally {
     clearInterval(headerTick);
+    clearTimeout(stopTimer);
+    process.removeListener("SIGINT", onInterrupt);
+  }
 
-    const choice = await showInterruptMenu(agentProcess, targetDir);
+  const files = await readdir(targetDir);
+  if (!files.some((file) => file !== "SYSTEM_PROMPT.md" && file !== ".git")) {
+    throw new Error(`Agent exited successfully but produced no application files. Workspace kept at ${targetDir}.`);
+  }
+  log.info(`Agent finished. Output: ${targetDir}`);
+  log.info(`Total time: ${formatElapsed(startMs)}`);
+  log.warn("Application checks have not been independently verified by Forge. Review the agent's results before treating the app as ready.");
 
-    if (choice === "continue") {
-      interrupted = false;
-      const resumedTick = setInterval(updateHeader, 1000);
-      agentProcess.on("close", () => clearInterval(resumedTick));
-    } else {
-      process.exit(choice === "abort" ? 1 : 0);
-    }
-  });
-
-  agentProcess.on("close", async (code) => {
-    clearInterval(headerTick);
-
-    if (code !== 0 && !interrupted) {
-      console.log("");
-      log.error(`Agent exited with code ${code}.`);
-      return;
-    }
-
-    console.log("");
-    console.log(pc.dim("─".repeat(64)));
-    log.success(pc.bold("Generation complete!"));
-    log.info(`📂 Output: ${pc.cyan(targetDir)}`);
-    log.info(`⏱  Total time: ${pc.white(formatElapsed(startMs))}`);
-
-    if (options.deploy === "vercel") {
-      log.blank();
-      log.info("🚀 Deploying to Vercel...");
-
-      const deployProcess = spawn("npx", ["vercel", "deploy", "--prod", "--yes"], {
-        cwd: targetDir,
-        stdio: ["inherit", "pipe", "pipe"],
-        shell: true,
+  if (options.deploy === "vercel") {
+    log.info("Deploying to Vercel as requested...");
+    const deployProcess = spawn("npx", ["vercel", "deploy", "--prod", "--yes"], {
+      cwd: targetDir,
+      stdio: "inherit",
+      shell: false,
+    });
+    await new Promise<void>((resolve, reject) => {
+      deployProcess.once("error", () => reject(new Error("Could not start Vercel deployment.")));
+      deployProcess.once("close", (code, signal) => {
+        if (code === 0 && !signal) resolve();
+        else reject(new Error(`Vercel deployment failed (exit ${code}, signal ${signal ?? "none"}).`));
       });
-
-      deployProcess.stdout?.on("data", (chunk: Buffer) => {
-        process.stdout.write(chunk);
-      });
-      deployProcess.stderr?.on("data", (chunk: Buffer) => {
-        process.stderr.write(chunk);
-      });
-
-      deployProcess.on("close", (deployCode) => {
-        if (deployCode === 0) {
-          log.success("Deployed successfully!");
-        } else {
-          log.error("Deployment failed.");
-        }
-      });
-    } else if (options.deploy) {
-      log.warn(`Unknown deployment target: ${options.deploy}`);
-    }
-  });
+    });
+    log.success("Vercel reported a successful deployment. Live application checks are still required.");
+  }
 }

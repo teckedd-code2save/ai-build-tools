@@ -67,3 +67,35 @@ Manage and explore the available Forge skills.
 ## License
 
 MIT
+
+
+## Codex reliability and GroundControl
+
+Local development changes (not yet published): setup copies complete skill packages, refuses
+invalid existing configuration, and reports write failures with a nonzero exit status. Codex
+instructions are merged into the active `AGENTS.md` / `AGENTS.override.md` without replacing
+existing user guidance. Start a new Codex session after setup to load them.
+
+Use Node 22.13+ on the 22.x line, or Node 23.5+; Node 24 LTS is recommended for development.
+
+`forge check --project --agent codex` checks configuration only, and exits nonzero for missing,
+invalid or placeholder entries. It does not prove authentication or a live MCP/database connection.
+`forge generate "..." --agent codex` propagates agent failures, rejects empty output and retains
+partial work on interruption. A successful agent exit is explicitly distinct from app readiness.
+The existing `--deploy vercel` option is an explicit production deployment request; it is never
+run after failed, empty or interrupted generation. GroundControl is not yet a CLI `--deploy` target.
+
+When GroundControl is selected, the Forge skill prepares an app/database recipe for the existing
+GC host and respects its actual tool capabilities. New deployment creation currently uses
+**Projects → Add deployment**; fully automatic first provisioning remains planned. See the
+GroundControl handoff in `skills/forge/references/groundcontrol.md` for the current workflow.
+
+
+## Forge, GitHub and GroundControl
+
+Forge coordinates the product workflow across new and existing projects. A brief, repository or
+issue/change request can supply the starting context through a supported agent and its authorized
+tools; Codex is one workspace choice. GitHub supports source, issues, review, CI and artifacts.
+GroundControl assists with resources, provisioning, deployment and runtime operations when selected.
+The first GC rehearsal is a test case, not a limit on Forge's agents, inputs, stacks or providers.
+Native issue ingestion and automatic GC first-launch tools are not implied by this architecture.

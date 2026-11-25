@@ -1,105 +1,54 @@
-# Shippable Web App Contract
+# Delivery contract: Forge → ship-to-vps → selected target
 
-The handshake between `forge` (scaffolds) and `ship-to-vps` (deploys). A repo that satisfies this contract can be auto-built, migrated, and rolled to a Hetzner-class VPS without human babysitting.
+This contract separates repository readiness from live acceptance. Select the deployment route
+before applying provider-specific requirements. For explicit direct SSH/VPS delivery, use
+[the direct contract](direct-vps-contract.md). The checklist below is for GroundControl.
 
-Every item in this contract corresponds to a failure that has happened in production. Skip nothing.
+## GroundControl repository readiness
 
----
+- [ ] Retain the selected GC instance, host, repository, deployment branch and application identity.
+- [ ] Document a fast local preview command and exercise a real database-dependent smoke flow.
+      A dev server or local Compose is suitable; preview containers are not production artifacts.
+- [ ] Describe each custom app/API/worker/migrator: build context, Dockerfile, runtime command,
+      configuration keys, internal port and health endpoint. Include only required services.
+- [ ] Repository-owned Compose gives each custom build service an explicit
+      `image: ghcr.io/OWNER/NAME`. Build context and Dockerfile stay inside the repository.
+      Monorepo paths and multiple Dockerfiles are supported; a repo-root Dockerfile is not required.
+- [ ] Use upstream versioned dependency images (Postgres/Redis, when needed), private service
+      networking, health checks and persistent volumes. Do not expose database ports publicly or
+      reuse another application's volume.
+- [ ] A clean checkout can build all custom images, including runtime dependencies, migrations
+      and copied assets. Run appropriate noninteractive checks for the installed stack/version.
+- [ ] Validate Compose using actual tooling without printing expanded secrets. Report unavailable
+      Docker/database checks as pending instead of claiming success from file inspection.
+- [ ] Choose one publisher: Actions or GC/agent. For Actions, record the exact workflow name and
+      branch; failed required checks prevent publishing. Publish all custom images tagged with the
+      full commit SHA, OCI revision set to that SHA and OCI source set to the repository URL.
+- [ ] Actions uses `GITHUB_TOKEN` with `packages: write`; GC has package pull access. If GC/agent
+      publishes instead, it also needs write access. Inspect capabilities, never request raw tokens.
+- [ ] Separate public build-time configuration from runtime secrets. Store secrets through the
+      approved GC path; commit only key names and secret-free examples. Check tracked files for
+      real credentials, including nested env files. Datafy and Infisical are optional integrations.
+- [ ] Commit versioned migrations and record when they run, idempotent startup, readiness gates,
+      seed policy and a tested backup/restore approach. Test migrations on an authorized disposable
+      database. An image rollback is not a database rollback.
+- [ ] Record routing, resource needs, previous digests if any, and the application health URL.
+      Preserve the existing proxy, other workloads and host configuration.
 
-## 1. Dockerfile
+## First delivery and automatic delivery evidence
 
-**Required at repo root** (`./Dockerfile`). Multi-stage. For Next.js + Prisma, see `ship-to-vps/templates/Dockerfile.nextjs-prisma7`.
+- [ ] First deployment is owner-reviewed through GC Projects using the repository Compose template,
+      or an actually exposed and authorized creation capability. The external MCP grant includes
+      the intended new deployment before the agent mutates it.
+- [ ] A successful exact-commit named Actions workflow and matching published image revisions are
+      verified, or the selected GC/agent build has completed with explicit test evidence.
+- [ ] Follow both the build/publish operation and its child digest release to completion. Confirm
+      the running images correspond to the intended commit; do not accept only a published tag.
+- [ ] Verify public HTTPS, real app/database behavior, and persistence after a safe authorized
+      restart. Keep the exact observed results; HTTP 200 alone is not full-stack acceptance.
+- [ ] If automatic delivery is requested, verify the selected branch subscription and exercise one
+      subsequent authorized branch update. Until that succeeds, label it configured but unproven.
 
-Must satisfy:
-
-- **Multi-stage** with `deps`, `builder`, `runner` stages
-- **OCI source label** on the final stage so GHCR auto-links the package to the repo and ephemeral `GITHUB_TOKEN` (with `packages: read`) can pull during deploy:
-  ```dockerfile
-  LABEL org.opencontainers.image.source="https://github.com/<owner>/<repo>"
-  ```
-- **NEXT_PUBLIC_* (or framework-equivalent) injected as ARG → ENV** in the `builder` stage. These are inlined into client bundles at build time and **must** be present then.
-- **Runtime stage must include every dep migrations need.** For Prisma 7, that means the full `node_modules` tree (because `@prisma/config` requires `effect`, etc.). Don't try to copy a subset — you will be wrong.
-- **Migrations invoked via `node ./node_modules/<orm-pkg>/bin.js` not `npx`.** The standalone runner doesn't ship `node_modules/.bin/` shims.
-- **Run as a non-root user** with explicit UID/GID.
-
-## 2. .eslintrc.json (or framework equivalent)
-
-**Must exist** at repo root. `next lint` without config triggers an interactive prompt that hangs CI. For Next.js the minimum is:
-
-```json
-{ "extends": "next/core-web-vitals" }
-```
-
-## 3. .dockerignore
-
-Must exist. Must NOT exclude:
-- `prisma/` (needed for `migrate deploy`)
-- `public/` (Next.js asset dir)
-- any config file the Dockerfile COPYs (`prisma.config.ts`, etc.)
-
-Should exclude: `node_modules`, `.next`, `.git`, `.env*`, `*.log`, `.DS_Store`, `.vscode`, `.idea`, `.claude`, `README.md`.
-
-## 4. Tracked empty directories
-
-`git` does not track empty directories. If the Dockerfile `COPY`s a directory, the directory **must** contain at least one tracked file. Add `.gitkeep` for any otherwise-empty dir the build needs:
-- `public/.gitkeep` for Next.js apps without static assets
-
-## 5. .infisical.json
-
-Must exist at repo root with:
-```json
-{ "workspaceId": "<infisical-project-id>", "defaultEnvironment": "dev" }
-```
-
-Created at forge Step 0 when the Infisical project + machine identity are provisioned. See `references/infisical-flow.md`.
-
-## 6. package.json scripts
-
-At minimum:
-```json
-{
-  "scripts": {
-    "dev": "...",
-    "build": "...",
-    "start": "...",
-    "lint": "next lint" /* or framework equivalent — must be non-interactive */
-  }
-}
-```
-
-## 7. Database connection convention
-
-If a database is in use, the app must read its connection from `DATABASE_URL` (or the framework's standard env name). The VPS-side `docker-compose.yml` will provide it via `env_file: .env`.
-
-## 8. Port convention
-
-App listens on a single TCP port. Default to `3000` for Node/Next.js. The Caddy site config on the VPS reverse-proxies to this port; the VPS-side compose maps it to a per-app host port (e.g. `13000`) to avoid collisions with other apps on the same box.
-
-## 9. Public values vs. secrets — strict separation
-
-- **Public** (`NEXT_PUBLIC_*`, anything that ends up in the client bundle): kept in **GitHub Variables**, mirrored from Infisical at ship-to-vps setup
-- **Private** (DB password, API keys, webhook secrets): kept in **Infisical**, projected to `/opt/<slug>/.env` on VPS by `infisical-sync.yml`
-- **Deploy plumbing** (SSH key, VPS host/user): kept in **GitHub Secrets**
-
-Never commit either kind to the repo.
-
-## 10. AGENTS.md
-
-The repo must ship with `AGENTS.md` describing: stack, local dev via `sec --`, branch naming, commit conventions, deploy path. Template at `ship-to-vps/templates/docs/AGENTS.md`.
-
----
-
-## Checklist (forge's Step 5 must pass all of these)
-
-- [ ] `Dockerfile` at root with OCI label, multi-stage, full deps for migrations
-- [ ] `.eslintrc.json` (or equivalent) exists
-- [ ] `.dockerignore` exists with correct exclusions
-- [ ] `public/.gitkeep` (for Next.js) or equivalent tracked file in any `COPY`-ed dir that may be empty
-- [ ] `.infisical.json` exists with valid `workspaceId`
-- [ ] `package.json` has non-interactive `lint`, `build`, `start` scripts
-- [ ] App reads `DATABASE_URL` from env
-- [ ] App listens on a single port (default 3000)
-- [ ] No `.env*` files committed
-- [ ] `AGENTS.md` exists
-
-If any box is unchecked, **the deploy will fail**. Fix in scaffold, not in CI.
+`check-shippability.sh` is a legacy direct-VPS scaffold check; it cannot certify this GC contract.
+Do not add SSH, Infisical or legacy ESLint files to make a GC repo pass that unrelated checker.
+Do not call the product deployment-ready while required build or migration evidence is missing.

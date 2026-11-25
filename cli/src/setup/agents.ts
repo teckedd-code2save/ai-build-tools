@@ -17,6 +17,8 @@ export interface AgentConfig {
   };
 }
 
+const codexHome = () => process.env.CODEX_HOME || join(homedir(), ".codex");
+
 const agents: Record<AgentName, AgentConfig> = {
   // Antigravity / Gemini CLI — ~/.gemini/antigravity/
   antigravity: {
@@ -120,16 +122,16 @@ const agents: Record<AgentName, AgentConfig> = {
         : join(".agents", "skills"),
     rulesDir: (scope) =>
       scope === "global"
-        ? join(homedir(), ".agents", "rules")
-        : join(".agents", "rules"),
+        ? codexHome()
+        : ".",
     mcpConfigPath: (scope) =>
       scope === "global"
-        ? join(homedir(), ".codex", "config.toml")
+        ? join(codexHome(), "config.toml")
         : join(".codex", "config.toml"),
     mcpConfigKey: "mcp_servers",
     detect: {
       projectPaths: [".codex"],
-      globalPaths: [join(homedir(), ".codex")],
+      globalPaths: [codexHome()],
     },
   },
 };

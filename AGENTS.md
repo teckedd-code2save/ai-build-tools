@@ -75,7 +75,7 @@ npm test             # run tests
 | Skill | Purpose |
 |---|---|
 | forge | Orchestrator — converts business specs into production data platforms |
-| ship-to-vps | Ships web apps to Hetzner VPS via GHCR, Caddy, Cloudflare DNS |
+| ship-to-vps | Delivers apps through GitHub/GHCR and GC, or explicit direct VPS deployment |
 | api-test-generator | Generates API integration tests from backend repos |
 | cloud-solution-architect | Cloud architecture following Azure best practices |
 | context7-mcp | Library/framework reference lookup for code generation |

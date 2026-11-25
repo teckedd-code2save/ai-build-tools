@@ -1,120 +1,76 @@
-import { Command } from "commander";
-import pc from "picocolors";
-import ora from "ora";
-
+import { Command, Option } from "commander";
 import { log } from "../utils/logger.js";
-import {
-  type AgentName,
-  ALL_AGENT_NAMES,
-  getAgent,
-} from "../setup/agents.js";
-import { readJsonConfig } from "../setup/mcp-writer.js";
-import { FORGE_MCP_SERVERS } from "../setup/mcp-writer.js";
+import { type AgentName, ALL_AGENT_NAMES, getAgent } from "../setup/agents.js";
+import { readJsonConfig, FORGE_MCP_SERVERS } from "../setup/mcp-writer.js";
 
 const REQUIRED_MCPS = ["datafy", "prisma-mcp-server", "github-mcp-server", "context7"];
-
 interface CheckOptions {
   project?: boolean;
+  agent?: AgentName;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === "object" && !Array.isArray(value);
 }
 
 export function registerCheckCommand(program: Command): void {
-  program
-    .command("check")
-    .description(
-      "Verify that the Forge MCP servers are configured for your AI coding agents"
-    )
+  program.command("check")
+    .description("Check MCP configuration files; does not test live connections")
     .option("-p, --project", "Check project-level config instead of global")
+    .addOption(new Option("--agent <agent>", "Check only this agent").choices(ALL_AGENT_NAMES))
     .action(async (options: CheckOptions) => {
-      await checkCommand(options);
+      const scope = options.project ? "project" : "global";
+      log.info(`Checking Forge MCP configuration (${scope} scope)...`);
+      log.dim("Configuration only: authentication, executable availability and live database connections are not tested.");
+      let found = false;
+      let failed = false;
+      for (const name of options.agent ? [options.agent] : ALL_AGENT_NAMES) {
+        const agent = getAgent(name);
+        const path = agent.mcpConfigPath(scope);
+        let config: Record<string, unknown>;
+        try {
+          config = await readJsonConfig(path);
+        } catch {
+          log.error(`${agent.displayName}: config invalid or unreadable (${path})`);
+          failed = true;
+          continue;
+        }
+        if (Object.keys(config).length === 0) {
+          if (options.agent) log.warn(`${agent.displayName}: no config found at ${path}`);
+          continue;
+        }
+        found = true;
+        log.info(`${agent.displayName}: ${path}`);
+        const servers = config[agent.mcpConfigKey];
+        if (servers !== undefined && !isRecord(servers)) {
+          log.error("MCP server section must be an object/table.");
+          failed = true;
+          continue;
+        }
+        for (const mcp of REQUIRED_MCPS) {
+          const entry = isRecord(servers) ? servers[mcp] : undefined;
+          const transportPresent = isRecord(entry) && (
+            (typeof entry.command === "string" && entry.command.trim().length > 0) ||
+            (typeof entry.url === "string" && /^https?:\/\//.test(entry.url))
+          );
+          if (!transportPresent) {
+            log.error(`${mcp}: missing or invalid configuration`);
+            failed = true;
+          } else if (JSON.stringify(entry).includes("/path/to/your/dbhub.toml")) {
+            log.warn(`${mcp}: needs dbhub.toml path filled in`);
+            failed = true;
+          } else {
+            log.success(`${mcp}: configuration present (connection untested)`);
+          }
+        }
+        for (const mcp of Object.keys(FORGE_MCP_SERVERS).filter((mcp) => !REQUIRED_MCPS.includes(mcp))) {
+          log.dim(`${mcp}: ${isRecord(servers) && mcp in servers ? "configuration present; connection untested" : "optional, not set"}`);
+        }
+      }
+      if (!found) {
+        log.warn("No agent configs found. Run `forge setup` first.");
+        failed = true;
+      }
+      if (failed) throw new Error("MCP configuration check failed. Fix the reported configuration before connecting your agent.");
     });
-}
-
-async function checkCommand(options: CheckOptions): Promise<void> {
-  const scope: "project" | "global" = options.project ? "project" : "global";
-
-  log.info(
-    pc.bold(`Checking Forge MCP configuration (${scope} scope)...`)
-  );
-  log.blank();
-
-  let anyAgentFound = false;
-
-  for (const agentName of ALL_AGENT_NAMES as AgentName[]) {
-    const agent = getAgent(agentName);
-    const mcpConfigPath = agent.mcpConfigPath(scope);
-
-    const spinner = ora(
-      `Reading ${agent.displayName} config...`
-    ).start();
-
-    let config: Record<string, unknown>;
-    try {
-      config = await readJsonConfig(mcpConfigPath);
-    } catch {
-      spinner.warn(`${agent.displayName}: config not readable (${mcpConfigPath})`);
-      continue;
-    }
-
-    const servers = (
-      config[agent.mcpConfigKey] as Record<string, unknown> | undefined
-    ) ?? {};
-
-    if (Object.keys(servers).length === 0 && Object.keys(config).length === 0) {
-      spinner.warn(
-        `${agent.displayName}: no config found at ${mcpConfigPath}`
-      );
-      continue;
-    }
-
-    spinner.stop();
-    anyAgentFound = true;
-
-    console.log(pc.bold(`\n  ${agent.displayName}`));
-    console.log(pc.dim(`  ${mcpConfigPath}`));
-
-    for (const mcp of REQUIRED_MCPS) {
-      const isPresent = mcp in servers;
-      const entry = servers[mcp] as Record<string, unknown> | undefined;
-
-      // Check for unfilled placeholders
-      const hasPlaceholder =
-        isPresent &&
-        JSON.stringify(entry).includes("/path/to/your/dbhub.toml");
-
-      const icon = !isPresent
-        ? pc.red("✖")
-        : hasPlaceholder
-          ? pc.yellow("⚠")
-          : pc.green("✔");
-
-      const note = !isPresent
-        ? pc.dim(" (missing — run `forge setup` to add)")
-        : hasPlaceholder
-          ? pc.yellow(" (needs dbhub.toml path filled in)")
-          : pc.dim(" (configured)");
-
-      console.log(`    ${icon} ${mcp}${note}`);
-    }
-
-    // Check for optional MCPs from the Forge ecosystem
-    const optionalMcps = Object.keys(FORGE_MCP_SERVERS).filter(
-      (s) => !REQUIRED_MCPS.includes(s)
-    );
-    for (const mcp of optionalMcps) {
-      const isPresent = mcp in servers;
-      const icon = isPresent ? pc.green("✔") : pc.dim("○");
-      const label = isPresent ? pc.dim(" (configured)") : pc.dim(" (optional, not set)");
-      console.log(`    ${icon} ${pc.dim(mcp)}${label}`);
-    }
-  }
-
-  log.blank();
-
-  if (!anyAgentFound) {
-    log.warn(
-      "No agent configs found. Run `forge setup` to install the Forge skill ecosystem."
-    );
-  } else {
-    log.dim("Run `forge setup` to add any missing MCPs or reinstall skills.");
-  }
 }

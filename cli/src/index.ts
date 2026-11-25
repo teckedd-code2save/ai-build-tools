@@ -8,6 +8,7 @@ import { registerCheckCommand } from "./commands/check.js";
 import { registerSkillsCommand } from "./commands/skills.js";
 import { registerConfigureCommand } from "./commands/configure.js";
 import { registerGenerateCommand } from "./commands/generate.js";
+import { log } from "./utils/logger.js";
 
 function printBanner(): void {
   const banner = figlet.textSync("forge", {
@@ -39,4 +40,7 @@ registerSkillsCommand(program);
 registerConfigureCommand(program);
 registerGenerateCommand(program);
 
-program.parse(process.argv);
+program.parseAsync(process.argv).catch((error: unknown) => {
+  log.error(error instanceof Error ? error.message : "Forge could not finish the command.");
+  process.exitCode ||= 1;
+});

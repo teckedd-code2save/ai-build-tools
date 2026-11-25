@@ -29,6 +29,7 @@ import {
   writeJsonConfig,
   FORGE_MCP_SERVERS,
 } from "../setup/mcp-writer.js";
+import { writeCodexInstructions } from "../setup/codex-instructions.js";
 import { RULE_CONTENT } from "../setup/templates.js";
 
 interface SetupOptions {
@@ -156,7 +157,7 @@ async function installSkillFiles(skills: SkillName[], skillsDir: string) {
     }
   } catch (err) {
     skillSpinner.fail("Failed to install skills");
-    log.error(err instanceof Error ? err.message : String(err));
+    throw err;
   }
 }
 
@@ -210,20 +211,22 @@ async function configureMCPServers(
     mcpSpinner.succeed(`MCP config written → ${mcpConfigPath}`);
   } catch (err) {
     mcpSpinner.fail("Failed to write MCP config");
-    log.error(err instanceof Error ? err.message : String(err));
+    throw err;
   }
 }
 
-async function writeRuleFile(rulesDir: string) {
+async function writeRuleFile(rulesDir: string, agentName: AgentName) {
   const rulesSpinner = ora("Writing forge rule file...").start();
   try {
     await ensureDir(rulesDir);
-    const rulePath = join(rulesDir, RULE_FILENAME);
-    await writeFile(rulePath, RULE_CONTENT, "utf-8");
+    const rulePath = agentName === "codex"
+      ? await writeCodexInstructions(rulesDir)
+      : join(rulesDir, RULE_FILENAME);
+    if (agentName !== "codex") await writeFile(rulePath, RULE_CONTENT, "utf-8");
     rulesSpinner.succeed(`Rule written → ${rulePath}`);
   } catch (err) {
     rulesSpinner.fail("Failed to write rule file");
-    log.error(err instanceof Error ? err.message : String(err));
+    throw err;
   }
 }
 
@@ -243,7 +246,7 @@ async function setupAgent(
 
   await installSkillFiles(skills, skillsDir);
   await configureMCPServers(agent, mcpConfigPath, selectedMcps, env);
-  await writeRuleFile(rulesDir);
+  await writeRuleFile(rulesDir, agentName);
 
   log.blank();
 }
@@ -254,6 +257,11 @@ async function setupCommand(options: SetupOptions): Promise<void> {
   const selectedAgents = await resolveTargetAgents(options, scope);
   const selectedSkills = await resolveTargetSkills(options);
   const selectedMcps = await resolveTargetMCPs(options);
+
+  // Fail before copying skills if an existing agent configuration is invalid.
+  for (const name of selectedAgents) {
+    await readJsonConfig(getAgent(name).mcpConfigPath(scope));
+  }
 
   // Ask for keys if not in -y mode
   const env: Record<string, string> = {};
@@ -307,5 +315,5 @@ async function setupCommand(options: SetupOptions): Promise<void> {
   log.info(pc.dim("Sample dbhub.toml can be found at:"));
   log.info(pc.blue("https://github.com/teckedd-code2save/ai-build-tools/blob/main/samples/dbhub.toml"));
   log.blank();
-  log.dim("Run `forge check` to verify your MCP configuration at any time.");
+  log.dim(`Run \`forge check${scope === "project" ? " --project" : ""}\` to inspect configuration. Live MCP connections are not tested by setup.`);
 }

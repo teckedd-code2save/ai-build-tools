@@ -9,7 +9,16 @@ This project uses the **forge** skill as the central orchestrator. When building
 1. **Invoke \`forge\`** as the primary skill — it drives architecture design, schema creation, ORM setup, testing, frontend scaffolding, and infra provisioning.
 2. **Never hardcode data in UI components.** All data must come from real DB queries or API endpoints.
 3. **Always use Datafy MCP** for database operations — never raw psql in the terminal.
-4. **Follow the 12-step workflow** defined in the orchestrator skill — from architecture design through infrastructure provisioning.
+4. **Follow the workflow** defined in the orchestrator skill — from architecture design through infrastructure provisioning.
+
+## Deployment target
+Respect the chosen target. For GroundControl, read the forge skill's references/groundcontrol.md.
+Forge coordinates the full product workflow from a brief, existing code or a change request; the
+agent workspace is a choice. Use GitHub for authorized source, issue, review, CI and artifact work
+when selected. GC assists with resources, provisioning, deployment and runtime operations. Prepare
+the requested resource/deployment plan using its actual capabilities, preserving the selected
+provider and existing resources. New deployment creation may require Projects → Add deployment. Never claim provisioning happened
+because files were generated, and never invent an MCP creation tool.
 
 ## Required MCPs for the full stack
 - **datafy** — DB operations, SQL execution, code generation
@@ -22,7 +31,7 @@ This project uses the **forge** skill as the central orchestrator. When building
 - \`api-test-generator\` → integration tests
 - \`frontend-data-consumer\` → Vite/Next.js UI components
 - \`infrastructure-as-code-architect\` → Dockerfiles, K8s manifests, GitHub Actions
-- \`ship-to-vps\` → Deploy to a Hetzner-class VPS with GHCR, Caddy, and Cloudflare DNS
+- \`ship-to-vps\` → Deliver through GitHub/GHCR and GroundControl, or the explicitly selected direct VPS route
 `;
 
 export const DBHUB_TOML_SAMPLE = `# Datafy DBHub Configuration (dbhub.toml)

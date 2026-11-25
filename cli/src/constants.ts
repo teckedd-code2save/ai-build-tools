@@ -1,4 +1,4 @@
-export const VERSION = "1.2.5";
+export const VERSION = "1.2.6";
 
 export const SKILLS_DIR_NAME = "skills";
 export const RULES_DIR_NAME = "rules";
@@ -34,7 +34,7 @@ export const SKILL_DESCRIPTIONS: Record<SkillName, string> = {
   "context7-mcp":
     "Fetches up-to-date docs and patterns for any library or framework",
   "ship-to-vps":
-    "Ships any web app to a Hetzner-class VPS via GHCR, GitHub Actions, Caddy, and Cloudflare DNS",
+    "Delivers apps through GitHub/GHCR and GroundControl, or an explicitly chosen direct VPS route",
 };
 
 export const RULE_FILENAME = "forge.md";

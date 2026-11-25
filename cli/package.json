@@ -1,7 +1,7 @@
 {
   "name": "@teckedd-code2save/forge",
-  "version": "1.2.5",
-  "description": "Forge CLI — One-command setup for the Forge skill ecosystem",
+  "version": "1.2.6",
+  "description": "Forge CLI \u2014 One-command setup for the Forge skill ecosystem",
   "repository": {
     "type": "git",
     "url": "https://github.com/teckedd-code2save/ai-build-tools.git"
@@ -21,7 +21,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run",
+    "test": "npm run build && vitest run",
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
@@ -52,6 +52,6 @@
   "author": "teckedd-code2save",
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": "^22.13.0 || >=23.5.0"
   }
 }

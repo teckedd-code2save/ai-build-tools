@@ -8,22 +8,22 @@ export async function readJsonConfig(
   let raw: string;
   try {
     raw = await readFile(filePath, "utf-8");
-  } catch {
-    return {};
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return {};
+    throw new Error(`Could not read configuration at ${filePath}; the file was not changed.`);
   }
   raw = raw.trim();
   if (!raw) return {};
 
-  if (extname(filePath) === ".toml") {
-    try {
-      return toml.parse(raw) as Record<string, unknown>;
-    } catch (err) {
-      console.error(`Failed to parse TOML at ${filePath}:`, err);
-      return {};
-    }
+  try {
+    const parsed = extname(filePath) === ".toml" ? toml.parse(raw) : JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
+    return parsed as Record<string, unknown>;
+  } catch {
+    // Parser errors can contain configuration values. Report the path only,
+    // and never treat invalid existing configuration as an empty document.
+    throw new Error(`Invalid configuration at ${filePath}; fix it before running setup. The file was not changed.`);
   }
-
-  return JSON.parse(raw) as Record<string, unknown>;
 }
 
 export function mergeServerEntry(

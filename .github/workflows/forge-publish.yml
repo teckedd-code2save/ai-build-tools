@@ -47,11 +47,20 @@ jobs:
 
       # Install project dependencies
       - name: Install dependencies
-        run: cd cli && npm install
+        run: cd cli && npm ci
 
-      # Build the project (compile TypeScript to JavaScript)
-      - name: Build
-        run: cd cli && npm run build
+      # Gate this exact artifact before publication, including packaged CLI behavior.
+      - name: Verify skill mirrors
+        run: bash scripts/check-skills-sync.sh
+
+      - name: Typecheck and lint
+        working-directory: cli
+        run: |
+          npm run typecheck
+          npm run lint
+
+      - name: Build and test CLI
+        run: cd cli && npm test
 
       # Determine if we need to publish and what version/tag to use
       - name: Check version and prepare for publishing
