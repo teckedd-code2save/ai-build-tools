@@ -61,7 +61,8 @@ current GC/Postgres rehearsal is one integration test, not Forge's product bound
 3. Never hardcode UI data. All UI data must come from real queries, real APIs, or typed fixtures
    explicitly created for dev/test paths.
 4. Use real ORMs and live database connections. Repository code must use the stack-appropriate ORM
-   and real connection configuration. Prefer Datafy MCP tools for schema and DB operations.
+   and real connection configuration. Use Datafy when connected and appropriate, or the selected
+   stack’s migration CLI/database client. Datafy is optional; its absence is not a build blocker.
 5. Every schema change must be migration-driven. Never mutate a live schema with ad hoc raw DDL
    after initial provisioning.
 6. Use strong project structure. Organize code by domain, layer, or app boundary appropriate to the
@@ -76,6 +77,15 @@ current GC/Postgres rehearsal is one integration test, not Forge's product bound
    - Docker Compose Postgres image: `postgres:18-alpine`
    - Include Docker Compose in the infra repo as well as app-local setup when useful
 
+## Deployment choice
+
+When delivery is in scope and the target is unspecified, read
+[workload-based deployment choice](references/deployment-choice.md). Offer Vercel and GC with a
+recommendation based on the actual services, data, runtime and existing resources. Respect any
+explicit choice. Both routes must account for the complete application, including its real backend,
+database and required workers; a frontend URL alone is not full deployment. Keep other explicitly
+chosen providers supported. Show this decision in the system-design breakdown.
+
 ## GroundControl target
 
 When the user chooses GroundControl (GC), read [the GroundControl handoff](references/groundcontrol.md)
@@ -83,8 +93,10 @@ and coordinate infrastructure work through the authorized GC capabilities. This 
 precedence over GCP/Terraform defaults and the generic ship-to-vps trigger. Prepare the app and
 its database without requiring a new cloud account, Infisical workspace or Cloudflare account.
 Use existing resources or plan new ones according to the request and available capabilities.
-New deployment creation currently uses GC Projects and templates; do not claim an unimplemented
-agent provisioning tool exists.
+For first deployment, discover the connected MCP catalog: when available use
+`deployment.create_options` → `deployment.plan` → `deployment.create` with explicit host creation
+permission, then follow its delivery and release operation handles. Older servers need an upgrade
+or their supported Projects UI; never invent tools or silently change the chosen host.
 Skill-relative sibling paths below resolve from this installed skill directory for every agent,
 including Codex; never assume a `~/.claude` installation.
 
@@ -101,6 +113,34 @@ Before building, resolve or infer:
 
 If the user already specified any of these, do not re-ask them unless there is a real conflict.
 When the prompt is specific, proceed with that stack.
+
+## Make the build understandable and interactive
+
+Read [the build conversation guide](references/build-conversation.md) for a product build or a
+substantial feature. Start with a compact system-design breakdown tied to the user's actual app:
+what its components do, how a real request reaches the database, and how preview and deployment
+connect. Use a small diagram when it clarifies those relationships. Explain decisions in plain
+language, then build; do not turn the breakdown into a new approval gate.
+
+Keep the user oriented at meaningful stage changes: **Design → Build & preview → Verify → Deliver →
+Live checks**. Say what now works, the evidence, what comes next and any real blocker. Offer a
+concrete preview or a small meaningful choice when ready. Incorporate feedback without restarting
+unaffected work. Do not fabricate progress percentages, passing tests, working links or deployment.
+Respect “prep only”, “don't deploy” and “don't record” even when files are delivery-ready.
+
+## Environment preflight
+
+Before dependency installation or database startup, identify the actual execution environment,
+repository and selected target. Check the relevant installed tool versions, package-registry
+access, available Docker/Compose and usable database tooling. Reuse authorized local resources;
+never infer that a cloud sandbox has access to the user's Mac Docker daemon.
+
+If sandbox networking or shared-memory restrictions block installation/native PostgreSQL, diagnose
+that boundary once. Use the platform's supported scoped execution/network approval when available,
+or an authorized disposable database container with a private network and isolated volume. Keep
+other containers and databases untouched. Do not replace the chosen framework with cached modules,
+substitute SQLite/mocks for PostgreSQL acceptance, or claim an absent DB was tested. If execution is
+still unavailable, continue independent code work and name the exact pending integration check.
 
 ## Workflow
 
@@ -261,7 +301,7 @@ Before declaring Step 5 complete, complete the contract for the selected target 
 [the GC handoff](references/groundcontrol.md) and its GitHub image delivery readiness checks.
 Derive the required delivery assets from the described service; the user need not enumerate them.
 
-### Step 6 — Provision Database via Datafy
+### Step 6 — Provision and verify the selected database
 
 For a GC target, prepare the database recipe and migrations following
 [the GroundControl handoff](references/groundcontrol.md). A generated recipe is not a running

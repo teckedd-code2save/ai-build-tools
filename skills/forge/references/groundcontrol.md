@@ -15,12 +15,12 @@ Inspect the connected tool catalog and granted deployment inventory. An installe
 not proof of a working connection. Current GC deployment tools operate on explicitly enrolled,
 approved deployments. A missing app is not authorization to repurpose an unrelated deployment.
 
-GC's current new-workload path is **Projects → Add project → Add deployment → Launch a new
-deployment**, using a Linux-server template for multi-service apps. Creation/enrollment is not a
-current general MCP tool. Prepare all the material below, then guide the owner through the final
-review. Do not invent `deployment.create`, use a generic SSH workaround, replay browser cookies,
-or replace this with an extra cloud subscription. If a future GC catalog offers scoped creation,
-use its documented authorization, plan and durable-operation contract.
+Discover whether this connection exposes `deployment.create_options`, `deployment.plan` and
+`deployment.create`. These provide scoped first launch on explicitly approved hosts, including
+when the deployment inventory is empty. An older server or cached connector may still expose only
+existing-deployment operations. Upgrade/refresh or use its supported Projects UI when authorized;
+name the real boundary and preserve the prepared recipe. Do not invent a tool, switch to SSH,
+replay browser cookies or add a cloud subscription to bypass a missing capability or grant.
 
 Select the connection by its verified control-plane URL, host identity and granted inventory,
 not by a similar tool or server name. When the user names a live instance, confirm that identity
@@ -83,13 +83,16 @@ Before calling the repository deployment-ready:
 
 Hand the selected target and evidence to `ship-to-vps` for its GC route. Its legacy SSH templates
 and checker are for the explicit direct VPS route only; do not apply them here.
-GC's unified path prepares the first target through Projects and the repository Compose template,
-then queues the existing build/publish and digest-release operations. Enable automatic delivery
-for the selected branch when requested. Where exposed in the actual MCP schema, use
-`deployment.build_publish` with `releaseAfterBuild: true`; for Actions-built images also use
-`verifyPublished: true` and `actionsWorkflowName`. Follow the returned child release operation.
-Never assume these fields exist on an older server or that an external grant includes a new
-resource. After first-launch approval, grant the agent that deployment explicitly.
+For first launch, use the current `ship-to-vps` GC workflow. When the connected server exposes them,
+read `deployment.create_options`, preflight with `deployment.plan`, and queue `deployment.create`
+under explicit host creation consent. Follow its `deliveryOperationId` and the build's
+`releaseOperationId`. Existing grants do not imply permission to create; old servers/catalogs may
+still require the supported Projects UI. State that boundary, do not invent a capability.
+For prepared existing targets, use `deployment.build_publish` with `releaseAfterBuild: true` where
+exposed; Actions images also require `verifyPublished: true` and `actionsWorkflowName`.
+The first MCP route adds only the new target to its creation grant, generates new credentials by
+key name server-side, and preserves existing shared resources. DNS/provider provisioning and
+external secret entry still require supported configuration paths; do not claim they're automatic.
 
 Confirm a successful exact-commit workflow, matching image revision and running digest, then
 verify HTTPS and real application behavior. Finally, exercise one subsequent authorized branch

@@ -49,17 +49,7 @@ export function buildWorkspaceName(prompt: string, runId: string): string {
   return `forge-${slugifyWorkspacePrompt(prompt)}-${runId}`;
 }
 
-const PHASE_PATTERNS: Array<{ pattern: RegExp; label: string; emoji: string }> = [
-  { pattern: /analyz|understand|reading|planning|architect/i, label: "Analyzing requirements", emoji: "🔍" },
-  { pattern: /schema|database|table|model|migration/i, label: "Designing database schema", emoji: "🗄️ " },
-  { pattern: /backend|express|api|route|server|prisma/i, label: "Scaffolding backend", emoji: "⚙️ " },
-  { pattern: /frontend|next|react|vue|component|tailwind/i, label: "Building frontend", emoji: "🎨" },
-  { pattern: /test|spec|jest|vitest|supertest/i, label: "Writing tests", emoji: "🧪" },
-  { pattern: /docker|k8s|kubernetes|deploy|infra|terraform/i, label: "Setting up infrastructure", emoji: "🚀" },
-  { pattern: /install|npm|yarn|pnpm|package/i, label: "Installing dependencies", emoji: "📦" },
-  { pattern: /writing|creating|generating|scaffolding/i, label: "Generating files", emoji: "✍️ " },
-  { pattern: /complete|done|finished|success/i, label: "Wrapping up", emoji: "✅" },
-];
+const BUILD_STAGES = ["Design", "Build & preview", "Verify", "Deliver", "Live checks"] as const;
 
 function renderHeader(
   runId: string,
@@ -95,11 +85,10 @@ function formatElapsed(startMs: number): string {
   return `${mm}:${ss}`;
 }
 
-function detectPhase(text: string): { label: string; emoji: string } | null {
-  for (const phase of PHASE_PATTERNS) {
-    if (phase.pattern.test(text)) return { label: phase.label, emoji: phase.emoji };
-  }
-  return null;
+export function detectPhase(text: string): { label: string; emoji: string } | null {
+  const match = text.match(/\[Forge stage: ([^\]\r\n]+)\]/);
+  const stage = BUILD_STAGES.find(stage => stage === match?.[1]);
+  return stage ? { label: `${stage} (agent-reported)`, emoji: "•" } : null;
 }
 
 export function registerGenerateCommand(program: Command): void {
@@ -183,6 +172,9 @@ ${prompt}
 4. Check which tools and credentials are actually available; never assume a configured MCP server is connected.
 5. Implement and verify the full stack. Report executed checks and remaining blockers separately.
 6. Prepare deployment configuration, but leave resource creation and deployment to the caller's explicit provisioning step.
+7. Start with a concise system-design breakdown: real components, one user request/data flow, local preview and selected delivery route, plus meaningful tradeoffs. Continue authorized work without waiting for routine design approval.
+8. At meaningful transitions report [Forge stage: Design], [Forge stage: Build & preview], [Forge stage: Verify], [Forge stage: Deliver] or [Forge stage: Live checks], followed by what works, actual evidence, the next step and any blocker. These are stage reports, not completion claims.
+9. This CLI generation run is noninteractive. State assumptions and keep a short .forge/build-status.md so the user can continue the same workspace in their interactive agent. Do not wait on an unanswered question. If a required decision or permission blocks execution, preserve the work and report it; elapsed time is never approval.
 `, "utf-8");
 
   const agentProcess = spawn(cmd, args, {
@@ -231,7 +223,7 @@ ${prompt}
   }
 
   const files = await readdir(targetDir);
-  if (!files.some((file) => file !== "SYSTEM_PROMPT.md" && file !== ".git")) {
+  if (!files.some((file) => !["SYSTEM_PROMPT.md", ".git", ".forge", "AGENTS.md", "README.md"].includes(file))) {
     throw new Error(`Agent exited successfully but produced no application files. Workspace kept at ${targetDir}.`);
   }
   log.info(`Agent finished. Output: ${targetDir}`);

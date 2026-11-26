@@ -60,6 +60,12 @@ Forge selects the relevant workflows instead of forcing every task through a new
 - Evolve schemas through versioned migrations.
 - Verify installation, application startup and applicable tests; report checks that could not run.
 
+For substantial builds, Forge starts with a concise system-design breakdown and keeps progress
+visible: **Design → Build & preview → Verify → Deliver → Live checks**. Updates describe working
+behavior, actual evidence, next steps and decisions. In Codex or another interactive agent, steer
+the same workspace as it develops. The CLI's headless `forge generate` run retains its workspace
+for continuation; its stage labels are agent reports, not independently verified readiness.
+
 Read the [Forge skill](skills/forge/SKILL.md) for the full workflow.
 
 ## The skill ecosystem
@@ -75,7 +81,7 @@ Each skill is independently readable and can be improved or extended.
 | [api-test-generator](skills/api-test-generator/SKILL.md) | API integration testing |
 | [infrastructure-as-code-architect](skills/infrastructure-as-code-architect/SKILL.md) | Infrastructure design and Terraform/Pulumi workflows |
 | [context7-mcp](skills/context7-mcp/SKILL.md) | Current framework and library documentation |
-| [ship-to-vps](skills/ship-to-vps/SKILL.md) | Container delivery, CI/CD and VPS operations |
+| [ship-to-vps](skills/ship-to-vps/SKILL.md) | Complete Vercel/GC delivery, CI/CD and explicit direct VPS operations |
 
 ## Supported agents
 
@@ -124,12 +130,13 @@ These are capabilities to select according to the task, not mandatory infrastruc
 
 ## Deployment
 
-Forge prepares deployment assets when delivery is part of the request. The chosen target determines the workflow.
+Forge prepares deployment assets when delivery is part of the request. When the target is unspecified, it compares Vercel and GroundControl using the workload, runtime, data, existing resources and account capabilities, then offers a concrete recommendation. It respects an explicit choice. See the [workload comparison](skills/forge/references/deployment-choice.md).
 
-- **GroundControl:** prepare application and database recipes, image delivery and operational checks for an authorized host. First-time deployment creation currently requires the GroundControl UI. See the [GroundControl handoff](skills/forge/references/groundcontrol.md).
+- **GroundControl:** prepare application and database recipes, image delivery and operational checks for an authorized host. Updated GC servers expose `deployment.create_options`, `deployment.plan` and `deployment.create` with explicit creation-host consent. Older servers or cached connectors require an upgrade/refresh or their supported Projects UI. See the [GroundControl handoff](skills/forge/references/groundcontrol.md).
+- **Vercel:** complete application delivery through supported Vercel tools/CLI and Git integration, including required managed data, migrations, configuration and live behavior. See the [Vercel workflow](skills/ship-to-vps/references/vercel.md).
 - **Direct VPS:** the [ship-to-vps skill](skills/ship-to-vps/SKILL.md) covers explicitly selected SSH-managed delivery with GitHub/GHCR, routing and operational runbooks.
 
-A successful code-generation command is not proof of application readiness or a successful deployment. Live verification and the necessary permissions remain essential.
+Both managed routes account for the complete app: backend, durable data, migrations, required workers, secrets, routing and verified behavior. A frontend URL alone is not full deployment. A successful code-generation command is not proof of application readiness or a successful deployment. Live verification and the necessary permissions remain essential.
 
 ## Contributing
 

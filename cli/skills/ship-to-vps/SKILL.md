@@ -1,7 +1,7 @@
 ---
 name: ship-to-vps
 description: >
-  Prepare and deliver web apps to the user's selected deployment target. For GroundControl,
+  Prepare and deliver complete web apps to Vercel, GroundControl or the user's chosen target. For GroundControl,
   connect GitHub, build and publish custom images to GHCR, then release through GC's scoped
   deployment controls with verification and rollback evidence. Also supports explicitly chosen
   direct VPS deployments. Use for "ship it", "deploy this", "set up CI/CD", "wire this to my VPS",
@@ -23,13 +23,13 @@ the user list Dockerfiles, database plumbing or CI boilerplate.
 
 - **GroundControl selected or already managing this app:** use the GC workflow below. Existing
   VPS defaults in `~/.forge/ship-to-vps-config.json` do not override this choice.
+- **Vercel selected or recommended and accepted:** read [the complete Vercel workflow](references/vercel.md). Cover the real backend, managed database, migrations, secrets, workers when needed, Git delivery and live product checks. Do not apply GC GHCR requirements to this route.
 - **Direct SSH-managed VPS explicitly selected:** read [direct-vps.md](references/direct-vps.md)
   and its [direct contract](references/direct-vps-contract.md). Its SSH, Caddy, Infisical and
   Cloudflare templates are specific to that route.
 - **Another managed target selected:** retain it and use its supported delivery tools. Do not
   convert it to GC or direct SSH just because this skill was invoked.
-- If the target cannot be inferred from the request or repository, prepare portable assets first
-  and resolve the target before provisioning or deploying.
+- If no target is specified, use [Forge’s workload comparison](../forge/references/deployment-choice.md) to offer Vercel and GC with a concrete recommendation. Prepare portable assets while the user decides. Respect another explicitly chosen target.
 
 For GC, skip the direct-VPS checker and `templates/github/workflows/deploy.yml`: that template
 performs SSH deployment. Do not add a second release job, bootstrap image, Infisical account,
@@ -75,17 +75,35 @@ workflow and use the selected branch, not a hard-coded `main` or mutable `latest
 
 ### 4. Prepare or select the deployment
 
-Reuse only the intended approved deployment. For the first deployment, prepare the repository,
-branch, Compose recipe, environment key names, database/migration plan, routing and rollback
-material for **Projects → Add project → Add deployment → Launch a new deployment** in GC.
-Use the repository Compose template for the app's services. The current owner-reviewed UI path
-prepares the target and queues the unified delivery pipeline. If GitHub is not connected, guide
-the owner through GC's supported connection/repository selection.
+Reuse only the intended approved deployment. For a first deployment, discover the connected MCP
+catalog. When `deployment.create_options`, `deployment.plan` and `deployment.create` are exposed:
 
-Do not invent a general MCP `deployment.create` tool. Inspect current capabilities in case this
-boundary changes. After first-launch review, the external agent grant must explicitly include the
-new deployment. UI ownership or an internal pipeline grant does not imply an external MCP grant.
-A scoped denial is not a reason to switch to SSH, admin shell or a different GC instance.
+1. Read the creation options; choose the user's host and connected repository. First-deployment
+   permission is explicit (`deployment:create` plus read/redeploy/operation scopes, selected hosts).
+   An old grant over existing apps does not imply creation authority. If consent is required, use
+   the supported connection flow and explain what new permission is being requested.
+2. Prepare the exact repository/branch/full SHA, Compose path, app/environment name, new hostname,
+   public service/loopback host port, health path and single publisher/workflow. Map these from the
+   repo; don't ask the user to transcribe infrastructure settings. Use scoped named volumes and
+   private database networking. Follow the current server schema and report unsupported recipes.
+3. Run `deployment.plan`; resolve its actual missing prerequisites. `generatedEnvironmentKeys`
+   generates new random app/database credentials privately. It cannot supply an existing provider
+   API key or construct a connection URL. Put non-secret defaults and interpolation in Compose;
+   external secrets use GC's supported configuration UI. Never request secret values in chat.
+4. Within deployment authorization, call `deployment.create` once with stable idempotencyKey and
+   the reviewed inputs. Follow `operation.get`, its `deliveryOperationId`, then `releaseOperationId`.
+   Creation reserves a new target and adds only that target to the approving grant. A successful
+   creation operation means preparation completed, not that the app is healthy or serving HTTPS.
+
+The first MCP creation route uses the existing Caddy proxy with a new hostname; it does not change
+DNS, cloud resources or firewall rules. Verify DNS points to the chosen host using authorized
+provider tools, or report the precise missing configuration. Do not assume arbitrary provisioning
+or routing is implemented. Never replace an existing listener, named volume, network or app.
+
+If these tools are absent, identify the server/catalog or consent boundary explicitly. Do not claim
+MCP first launch is available merely because it was implemented in source. A supported Projects UI
+launch can be used if authorized; preserve the prepared recipe and then grant the new target. Do
+not silently switch to SSH, an old rehearsal connection or an unrelated enrolled deployment.
 
 ### 5. Deliver and follow the actual release
 
