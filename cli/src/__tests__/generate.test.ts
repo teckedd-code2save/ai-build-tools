@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { buildAgentInvocation, buildWorkspaceName } from "../commands/generate.js";
+import { buildAgentInvocation, buildWorkspaceName, detectPhase } from "../commands/generate.js";
 
 describe("generate command", () => {
+  it("reports explicit stage messages without treating arbitrary log keywords as progress", () => {
+    expect(detectPhase("Tests failed; migration not completed; deploy is pending")).toBeNull();
+    expect(detectPhase("[Forge stage: Build & preview] saved a note against Postgres")).toEqual({ label: "Build & preview (agent-reported)", emoji: "•" });
+    expect(detectPhase("[Forge stage: Everything complete]")).toBeNull();
+  });
   it("builds the codex invocation with the full instruction as one argument", () => {
     const invocation = buildAgentInvocation("codex");
 

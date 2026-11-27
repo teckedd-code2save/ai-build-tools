@@ -42,7 +42,19 @@ describe("CLI entry point", () => {
     expect((await readFile(ref, "utf-8")).length).toBeGreaterThan(100);
     expect((await readFile(design, "utf-8")).length).toBeGreaterThan(100);
     const gc = await readFile(join(f.cwd, ".agents/skills/forge/references/groundcontrol.md"), "utf-8");
-    expect(gc).toContain("not a\ncurrent general MCP tool");
+    expect(gc).toContain("deployment.create_options");
+    expect(gc).toContain("older server");
+    const conversation = await readFile(join(f.cwd, ".agents/skills/forge/references/build-conversation.md"), "utf-8");
+    expect(conversation).toContain("Stage exit evidence");
+    const rules = await readFile(join(f.cwd, "AGENTS.md"), "utf-8");
+    expect(rules).not.toContain("Always use Datafy");
+    expect(rules).not.toContain("Required MCPs");
+    expect(rules).toContain("Datafy is optional");
+    expect(rules).toContain("system-design breakdown");
+    expect(rules).toContain("Live checks");
+    expect(rules).toContain("Vercel or GC");
+    expect(await readFile(join(f.cwd, ".agents/skills/forge/references/deployment-choice.md"), "utf-8")).toContain("One complete deployment contract");
+    expect(await readFile(join(f.cwd, ".agents/skills/ship-to-vps/references/vercel.md"), "utf-8")).toContain("real write/read flow");
     expect(await readFile(join(f.cwd, ".agents/skills/forge/SKILL.md"), "utf-8")).not.toContain("~/.claude/skills/");
     await rm(ref);
     const extra = join(f.cwd, ".agents/skills/ship-to-vps/local-note.txt");
@@ -130,6 +142,13 @@ describe("CLI entry point", () => {
     const r = run(f, [...generate, "--deploy", "vercel"]);
     expect(r.code).not.toBe(0);
     expect(r.output).not.toContain("Generation complete");
+    expect(await readdir(await workspace(f))).not.toContain("DEPLOY_WAS_CALLED");
+  });
+  it("does not deploy when the only output is a build-stage note", async () => {
+    const f = await fixture();
+    await fake(f.bin, "codex", 'const fs = require("node:fs"); fs.mkdirSync(".forge"); fs.writeFileSync(".forge/build-status.md", "Design complete; app not built.");');
+    await fake(f.bin, "npx", 'require("node:fs").writeFileSync("DEPLOY_WAS_CALLED", "bad");');
+    expect(run(f, [...generate, "--deploy", "vercel"]).code).not.toBe(0);
     expect(await readdir(await workspace(f))).not.toContain("DEPLOY_WAS_CALLED");
   });
   it("fails if the agent is missing and rejects unknown targets before creating a workspace", async () => {
