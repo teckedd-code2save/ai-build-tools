@@ -100,6 +100,13 @@ or their supported Projects UI; never invent tools or silently change the chosen
 Skill-relative sibling paths below resolve from this installed skill directory for every agent,
 including Codex; never assume a `~/.claude` installation.
 
+## Connections and continuity
+
+Read [connection and session handoff](references/connection-handoff.md) before asking for deployment
+setup details or reporting a connection blocker. Recover known instance/repository settings from
+the current workspace and supported metadata. Explain the exact reconnect, consent or catalog
+step yourself; keep independent work moving and preserve a non-secret handoff for resumption.
+
 ## Clarification Rules
 
 Before building, resolve or infer:
