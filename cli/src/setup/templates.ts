@@ -27,6 +27,13 @@ host. Follow the creation, delivery and release operation chain. Older servers m
 supported Projects UI; identify that boundary. Never claim provisioning or live acceptance from
 generated files, and never invent a tool.
 
+## Connection continuity
+Read Forge’s references/connection-handoff.md before asking for deployment setup or reporting an
+authentication blocker. Recover known provider URLs, repo and target from project instructions,
+\`.forge/build-status.md\` and supported non-secret metadata. Prefer the capable connected plugin;
+a direct MCP URL does not bypass OAuth. Explain the actual reconnect/consent/catalog step for this
+host, preserve the handoff, and continue independent work. Recheck access after reconnect or resume.
+
 ## Optional integrations — use what the selected stack needs
 - **datafy** — optional DB operations, SQL execution, code generation
 - **prisma-mcp-server** — migrations and DB exploration when Prisma is selected

@@ -40,6 +40,10 @@ Skill-relative paths resolve from this installed skill, including in Codex; neve
 
 ### 1. Confirm the instance and existing state
 
+Read [Forge’s connection and session handoff](../forge/references/connection-handoff.md), including
+when invoked directly. Recover known instance settings before asking, explain the exact reconnect
+or consent step, and retain a non-secret continuation record.
+
 Inspect the actual connected MCP catalog, approved deployment inventory and GitHub connection.
 Verify the GC control-plane URL, host and deployment identity against the user's selected target
 before any write. A stale rehearsal connection is not a fallback for the chosen live instance.

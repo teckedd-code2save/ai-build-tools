@@ -1,4 +1,4 @@
-export const VERSION = "1.2.7";
+export const VERSION = "1.2.8";
 
 export const SKILLS_DIR_NAME = "skills";
 export const RULES_DIR_NAME = "rules";

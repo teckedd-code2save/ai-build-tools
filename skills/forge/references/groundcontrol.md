@@ -9,6 +9,10 @@ selected, and GC assists with resources, provisioning, deployment and operations
 Preserve the chosen stack and required resources. The existing-server app/Postgres rehearsal is
 one integration fixture, not a product limit or a reason to rebuild an existing application.
 
+Read [connection and session handoff](connection-handoff.md) before asking for a GC URL or stopping
+on a connection error. Recover known identity, distinguish reconnect from missing permission or
+catalog refresh, and keep independent repository work moving.
+
 ## Establish the real capability boundary
 
 Inspect the connected tool catalog and granted deployment inventory. An installed MCP entry is

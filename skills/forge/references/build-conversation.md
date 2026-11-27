@@ -59,5 +59,9 @@ boundary; a preview does not authorize deployment or a recording.
 | Deliver | Exact repo/branch/SHA, publisher result, image digests and GC operation chain |
 | Live checks | Verified HTTPS, app/database behavior and running revision; automatic update only if exercised |
 
+For connection failures and session changes, use [connection and session handoff](connection-handoff.md).
+Carry known instance URLs and deployment settings forward; explain the exact owner action without
+asking the user to repeat known setup. A previous session’s successful access must be rechecked.
+
 At handoff, say what the user can do now and the one remaining blocker if any. Do not call the
 system “ready”, “live” or “auto-deploy verified” based only on generated files or fixture tests.
